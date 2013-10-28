@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmn20="http://www.omg.org/bpmn20" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools"
+  xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd"
+  id="_Oi0wYHenEeK6_ZZSVMnKcQ" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20"
+  typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_ArtifactUuidItem" structureRef="String" />
+  <bpmn2:itemDefinition id="_ResponseItem" structureRef="String" />
+  <bpmn2:itemDefinition id="_UpdateMetaDataUrlItem" structureRef="String" />
+  <bpmn2:itemDefinition id="_DTGovUrlItem" structureRef="String" />
+  <bpmn2:itemDefinition id="__D1229038-83E0-44B7-AB75-8C46C2399E21_StatusOutputItem"
+    structureRef="String" />
+  <bpmn2:process id="overlord.demo.NewSchemaArtifact" drools:version="1" drools:packageName="SRAMPPackage"
+    drools:adHoc="false" name="New Schema Artifact Process" isExecutable="true">
+    <bpmn2:property id="ArtifactUuid" itemSubjectRef="bpmn20:_ArtifactUuidItem" />
+    <bpmn2:property id="Response" itemSubjectRef="bpmn20:_ResponseItem" />
+    <bpmn2:property id="UpdateMetaDataUrl" itemSubjectRef="bpmn20:_UpdateMetaDataUrlItem" />
+    <bpmn2:property id="DTGovUrl" itemSubjectRef="bpmn20:_DTGovUrlItem" />
+    <bpmn2:startEvent id="_FBD0F29F-58E4-4EDA-BC25-B62D2603ECB1" drools:bgcolor="#9acd32"
+      drools:selectable="true" name="">
+      <bpmn2:outgoing>bpmn20:SequenceFlow_2</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="_D1229038-83E0-44B7-AB75-8C46C2399E21" drools:selectable="true"
+      drools:taskName="overlord.demo.ConfirmNewSchema" drools:scriptFormat="http://www.java.com/java"
+      name="Validate/Accept New Schema Artifact">
+      <bpmn2:extensionElements>
+        <drools:onEntry-script scriptFormat="http://www.java.com/java">
+          <drools:script></drools:script>
+        </drools:onEntry-script>
+        <drools:onExit-script scriptFormat="http://www.java.com/java">
+          <drools:script></drools:script>
+        </drools:onExit-script>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>bpmn20:SequenceFlow_2</bpmn2:incoming>
+      <bpmn2:outgoing>bpmn20:SequenceFlow_1</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_Oi0wcnenEeK6_ZZSVMnKcQ">
+        <bpmn2:dataInput id="_D1229038-83E0-44B7-AB75-8C46C2399E21_TaskNameInput" name="TaskName" />
+        <bpmn2:dataInput id="_D1229038-83E0-44B7-AB75-8C46C2399E21_SkippableInput" name="Skippable" />
+        <bpmn2:dataInput id="_D1229038-83E0-44B7-AB75-8C46C2399E21_GroupIdInput" name="GroupId" />
+        <bpmn2:dataInput id="DataInput_14" itemSubjectRef="bpmn20:__02FE2758-2074-41A5-A59E-6FE49BEE8DBF_NameInputItem"
+          name="DeploymentUuid" />
+        <bpmn2:dataOutput id="_D1229038-83E0-44B7-AB75-8C46C2399E21_StatusOutput"
+          drools:dtype="String" itemSubjectRef="bpmn20:__D1229038-83E0-44B7-AB75-8C46C2399E21_StatusOutputItem"
+          name="Status" />
+        <bpmn2:inputSet id="_Oi0wc3enEeK6_ZZSVMnKcQ">
+          <bpmn2:dataInputRefs>_D1229038-83E0-44B7-AB75-8C46C2399E21_SkippableInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_D1229038-83E0-44B7-AB75-8C46C2399E21_GroupIdInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_D1229038-83E0-44B7-AB75-8C46C2399E21_TaskNameInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>DataInput_14</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="_Oi0wdHenEeK6_ZZSVMnKcQ">
+          <bpmn2:dataOutputRefs>_D1229038-83E0-44B7-AB75-8C46C2399E21_StatusOutput</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_Oi0wdXenEeK6_ZZSVMnKcQ">
+        <bpmn2:targetRef>_D1229038-83E0-44B7-AB75-8C46C2399E21_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="_Oi0wdnenEeK6_ZZSVMnKcQ">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Oi0wd3enEeK6_ZZSVMnKcQ">overlord.demo.ConfirmNewSchema</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Oi0weHenEeK6_ZZSVMnKcQ">_D1229038-83E0-44B7-AB75-8C46C2399E21_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_Oi0weXenEeK6_ZZSVMnKcQ">
+        <bpmn2:targetRef>_D1229038-83E0-44B7-AB75-8C46C2399E21_GroupIdInput</bpmn2:targetRef>
+        <bpmn2:assignment id="_Oi0wenenEeK6_ZZSVMnKcQ">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Oi0we3enEeK6_ZZSVMnKcQ">dev</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Oi0wfHenEeK6_ZZSVMnKcQ">_D1229038-83E0-44B7-AB75-8C46C2399E21_GroupIdInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_Oi0wfXenEeK6_ZZSVMnKcQ">
+        <bpmn2:targetRef>_D1229038-83E0-44B7-AB75-8C46C2399E21_SkippableInput</bpmn2:targetRef>
+        <bpmn2:assignment id="_Oi0wfnenEeK6_ZZSVMnKcQ">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_Oi0wf3enEeK6_ZZSVMnKcQ">false</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_Oi0wgHenEeK6_ZZSVMnKcQ">_D1229038-83E0-44B7-AB75-8C46C2399E21_SkippableInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_2">
+        <bpmn2:sourceRef>ArtifactUuid</bpmn2:sourceRef>
+        <bpmn2:targetRef>DataInput_14</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataOutputAssociation id="_Oi0wgXenEeK6_ZZSVMnKcQ">
+        <bpmn2:sourceRef>_D1229038-83E0-44B7-AB75-8C46C2399E21_StatusOutput</bpmn2:sourceRef>
+        <bpmn2:targetRef>Response</bpmn2:targetRef>
+      </bpmn2:dataOutputAssociation>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="_B5164971-0281-4B49-BE1E-692A45713D88" drools:bgcolor="#ff6347"
+      drools:selectable="true" name="">
+      <bpmn2:incoming>bpmn20:SequenceFlow_1</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" drools:priority="1" name=""
+      sourceRef="_D1229038-83E0-44B7-AB75-8C46C2399E21" targetRef="_B5164971-0281-4B49-BE1E-692A45713D88" />
+    <bpmn2:sequenceFlow id="SequenceFlow_2" drools:priority="1" name=""
+      sourceRef="_FBD0F29F-58E4-4EDA-BC25-B62D2603ECB1" targetRef="_D1229038-83E0-44B7-AB75-8C46C2399E21" />
+  </bpmn2:process>
+</bpmn2:definitions>

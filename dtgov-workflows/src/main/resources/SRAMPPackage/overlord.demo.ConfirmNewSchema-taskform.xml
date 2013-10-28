@@ -1,0 +1,10 @@
+<form>
+  <fieldset>
+    <label>Notification</label>
+    <p>
+      You are hereby notified that a new version of Application.xsd (with UUID <b><span data-name="DeploymentUuid">Unknown</span></b>)
+      has been added to the repository.  Please review it and plan to update any affected applications.
+    </p>
+    <input type="hidden" name="Status" value="pass"></input>
+  </fieldset>
+</form>

@@ -15,4 +15,11 @@ dtov-workflows - Design Time governance workflows
 
 soapui - SOAPUI project to send SOAP messages to the Intake service
 
-mysql - sql script to setup mysql locally
+mysql - sql script to setup mysql locally  
+
+Videos to be created:  
+  
+  Fuse Service Works Home Loan Application Part 1 - Switchyard Application :: http://vimeo.com/user16928011/fswhomeloanpart1  
+  Fuse Service Works Home Loan Application Part 2 - Design Time Governance :: http://vimeo.com/user16928011/fswhomeloanpart2  
+  Fuse Service Works Home Loan Application Part 3 - Run Time Governance :: http://vimeo.com/user16928011/fswhomeloanpart3  
+  Fuse Service Works Home Loan Application Part 4 - Data Virtualization Integration :: http://vimeo.com/user16928011/fswhomeloanpart4

@@ -14,10 +14,14 @@ package org.jboss.demo.loanmanagement;
 
 import java.util.ArrayList;
 import org.jboss.demo.loanmanagement.command.GetEvaluationsCommand;
+import org.jboss.demo.loanmanagement.command.GetStatusesCommand;
+import org.jboss.demo.loanmanagement.model.ApplicationStatus;
+import org.jboss.demo.loanmanagement.model.ApplicationStatusParcelable;
 import org.jboss.demo.loanmanagement.model.Evaluation;
 import org.jboss.demo.loanmanagement.model.EvaluationParcelable;
 import org.jboss.demo.loanmanagement.widget.LoanManagementAdapter;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -32,6 +36,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * The Loan Management main screen.
@@ -79,16 +84,49 @@ public final class LoanManagementScreen extends Activity implements OnItemClickL
     private void handleHelpSelected() {
         Log.d(LoanManagementScreen.class.getSimpleName(), "Help selected"); //$NON-NLS-1$
         // TODO Auto-generated method stub
+        Toast.makeText(this, "Not implemented", Toast.LENGTH_SHORT).show();
     }
 
     private void handleNewApplicationSelected() {
         Log.d(LoanManagementScreen.class.getSimpleName(), "New Application selected"); //$NON-NLS-1$
-        // TODO Auto-generated method stub
+
+        final FragmentManager fragMgr = getFragmentManager();
+        final ApplicationDialog dialog = new ApplicationDialog();
+        dialog.show(fragMgr, ApplicationDialog.class.getSimpleName());
     }
 
     private void handleStatusesSelected() {
         Log.d(LoanManagementScreen.class.getSimpleName(), "Application Statuses selected"); //$NON-NLS-1$
-        // TODO Auto-generated method stub
+
+        final GetStatusesCommand command = new GetStatusesCommand(this) {
+
+            /**
+             * @see org.jboss.demo.loanmanagement.command.GetStatusesCommand#process(org.jboss.demo.loanmanagement.model.ApplicationStatus[])
+             */
+            @Override
+            protected void process( final ApplicationStatus[] statuses ) {
+                // pass result to statuses screen
+                ArrayList<ApplicationStatusParcelable> data = null;
+
+                if (statuses.length == 0) {
+                    data = ApplicationStatus.NO_STATUSES_LIST;
+                } else {
+                    data = new ArrayList<ApplicationStatusParcelable>(statuses.length);
+
+                    for (final ApplicationStatus status : statuses) {
+                        final ApplicationStatusParcelable parcelable = new ApplicationStatusParcelable(status);
+                        data.add(parcelable);
+                    }
+                }
+
+                final Intent intent = new Intent(getContext(), StatusesScreen.class);
+                intent.putParcelableArrayListExtra(ApplicationStatusParcelable.STATUSES, data);
+
+                startActivity(intent);
+            }
+        };
+
+        command.execute((Void[])null);
     }
 
     /**
@@ -114,7 +152,7 @@ public final class LoanManagementScreen extends Activity implements OnItemClickL
         listView.setOnItemClickListener(this);
 
         // set version in status bar
-        final TextView msg = (TextView)findViewById(R.id.statusBarMessage);
+        final TextView msg = (TextView)findViewById(R.id.status_bar_message);
         final PackageManager pkgMgr = getPackageManager();
         final ApplicationInfo appInfo = getApplicationInfo();
 

@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <ListView
-        android:id="@+id/evaluationsScreenList"
+        android:id="@+id/evaluations_screen_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -13,7 +13,7 @@
         android:cacheColorHint="@android:color/transparent" >
     </ListView>
 
-    <!-- View when no plates are visible -->
+    <!-- View when no evaluations are available -->
 
     <TextView
         android:id="@+id/empty_evaluations_item"
@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:inputType="none"
-        android:text="@string/emptyEvaluationsMessage"
+        android:text="@string/empty_evaluations_message"
         android:textIsSelectable="false"
         android:textSize="20sp" />
 

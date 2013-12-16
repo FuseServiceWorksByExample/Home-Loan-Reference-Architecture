@@ -16,34 +16,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
- * A home loan evaluation.
+ * A home loan evaluation model object.
  */
 public final class Evaluation {
-
-    /**
-     * An empty array.
-     */
-    public static final Evaluation[] NO_EVALUATIONS = new Evaluation[0];
-
-    /**
-     * An empty list.
-     */
-    public static final ArrayList<EvaluationParcelable> NO_EVALUATIONS_LIST = new ArrayList<EvaluationParcelable>(0);
-
-    /**
-     * Sorts evaluations by SSN.
-     */
-    public static final Comparator<Evaluation> SSN_SORTER = new Comparator<Evaluation>() {
-
-        /**
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
-        @Override
-        public int compare( final Evaluation thisEval,
-                            final Evaluation thatEval ) {
-            return (thisEval.getSsn() - thatEval.getSsn());
-        }
-    };
 
     /**
      * Sorts evaluations by applicant name.
@@ -63,18 +38,51 @@ public final class Evaluation {
     /**
      * An empty array.
      */
-    public static final Evaluation[] EMPTY_ARRAY = new Evaluation[0];
+    public static final Evaluation[] NO_EVALUATIONS = new Evaluation[0];
+
+    /**
+     * An empty list.
+     */
+    public static final ArrayList<EvaluationParcelable> NO_EVALUATIONS_LIST = new ArrayList<EvaluationParcelable>(0);
 
     /**
      * The value when a rate has not been set.
      */
     public static final float NOT_SET = -1.0f;
 
+    /**
+     * Sorts evaluations by SSN.
+     */
+    public static final Comparator<Evaluation> SSN_SORTER = new Comparator<Evaluation>() {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        @Override
+        public int compare( final Evaluation thisEval,
+                            final Evaluation thatEval ) {
+            return (thisEval.getSsn() - thatEval.getSsn());
+        }
+    };
+
+    /**
+     * @param original the evaluation being copied (cannot be <code>null</code>)
+     * @return the copy (never <code>null</code>)
+     */
+    public static Evaluation copy( final Evaluation original ) {
+        final Evaluation copy = new Evaluation(original.ssn, original.applicant, original.creditScore);
+        copy.insuranceCost = original.insuranceCost;
+        copy.explanation = original.explanation;
+        copy.approved = original.approved;
+
+        return copy;
+    }
+
     private final int ssn;
     private final String applicant;
     private final int creditScore;
     private float rate = NOT_SET;
-    private int insuranceCost;
+    private float insuranceCost = NOT_SET;
     private String explanation;
     private boolean approved;
 
@@ -115,7 +123,7 @@ public final class Evaluation {
     /**
      * @return the insurance cost
      */
-    public int getInsuranceCost() {
+    public float getInsuranceCost() {
         return this.insuranceCost;
     }
 
@@ -157,7 +165,7 @@ public final class Evaluation {
     /**
      * @param newInsuranceCost the new value for the insurance cost
      */
-    public void setInsuranceCost( final int newInsuranceCost ) {
+    public void setInsuranceCost( final float newInsuranceCost ) {
         this.insuranceCost = newInsuranceCost;
     }
 

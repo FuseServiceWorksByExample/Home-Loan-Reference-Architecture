@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="err_dialog_title">Error</string>
+    <string name="err_eval_applicant">Applicant name is empty.</string>
+    <string name="err_eval_credit_score">Credit score is invalid.</string>
+    <string name="err_eval_explanation">Explanation is empty.</string>
+    <string name="err_eval_insurance_cost">Insurance cost is invalid.</string>
+    <string name="err_eval_null">Evaluation is null.</string>
+    <string name="err_eval_rate">Rate is invalid.</string>
+    <string name="err_eval_ssn">Social security number is invalid.</string>
+    <string name="err_get_evaluations_command">Error obtaining application evaluations: %1$s</string>
+    <string name="err_get_statuses_command">Error obtaining available application statuses: %1$s</string>
+
+</resources>

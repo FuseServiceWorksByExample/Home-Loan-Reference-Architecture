@@ -23,14 +23,14 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
- * The main screen list adapter.
+ * The available applicaiton evaluations screen list adapter.
  */
 public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
 
     private boolean sortBySsn = true;
 
     /**
-     * @param screen the main screen (cannot be <code>null</code>)
+     * @param screen the evaluations screen (cannot be <code>null</code>)
      * @param items the available evaluations (cannot be <code>null</code>)
      */
     public EvaluationsAdapter( final Context screen,

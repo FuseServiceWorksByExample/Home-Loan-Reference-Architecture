@@ -21,6 +21,11 @@ import android.content.Context;
 public final class Util {
 
     /**
+     * An empty string constant.
+     */
+    public static final String EMPTY_STRING = ""; //$NON-NLS-1$
+
+    /**
      * @param context the app context (cannot be <code>null</code>)
      * @param title the dialog title
      * @param message the dialog message
@@ -45,7 +50,7 @@ public final class Util {
      */
     public static String formatSsn( final int ssn ) {
         final StringBuilder builder = new StringBuilder(Integer.toString(ssn));
-        return builder.insert(6, '-').insert(3, '-').toString();
+        return builder.insert(5, '-').insert(3, '-').toString();
     }
 
     /**

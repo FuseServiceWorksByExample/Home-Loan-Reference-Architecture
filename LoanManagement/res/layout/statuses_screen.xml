@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <HorizontalScrollView
+        android:id="@+id/status_table_scroller"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fadeScrollbars="false"
+        android:scrollbarFadeDuration="0" >
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingRight="10dp"
+            android:paddingTop="20dp" >
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp" >
+
+                <TextView
+                    android:id="@+id/ssn_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="@string/header_ssn"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/applicant_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="@string/header_applicant"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/status_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="@string/header_status"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/rate_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="@string/header_rate"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:fadeScrollbars="false"
+                android:scrollbarFadeDuration="0" >
+
+                <TableLayout
+                    android:id="@+id/status_table"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/table_background"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp" >
+                </TableLayout>
+            </ScrollView>
+        </TableLayout>
+    </HorizontalScrollView>
+
+    <include layout="@layout/status_bar" />
+
+</LinearLayout>

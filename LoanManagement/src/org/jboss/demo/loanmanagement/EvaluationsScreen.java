@@ -45,7 +45,7 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
      * @param item the item for the refresh action (never <code>null</code>)
      */
     public void handleRefresh( final MenuItem item ) {
-        Log.d(EvaluationsScreen.class.getSimpleName(), "Application Evaluations selected"); //$NON-NLS-1$
+        Log.d(EvaluationsScreen.class.getSimpleName(), "Application evaluations refresh selected"); //$NON-NLS-1$
 
         final GetEvaluationsCommand command = new GetEvaluationsCommand(this) {
 
@@ -69,7 +69,7 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.evaluations_screen);
 
-        this.listView = (ListView)findViewById(R.id.evaluationsScreenList);
+        this.listView = (ListView)findViewById(R.id.evaluations_screen_list);
 
         { // view when no plates are visible
             final View emptyListView = findViewById(R.id.empty_evaluations_item);
@@ -80,8 +80,8 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
         final ArrayList<EvaluationParcelable> data =
                         getIntent().getExtras().getParcelableArrayList(EvaluationParcelable.EVALUATIONS);
 
-        if (data.isEmpty()) {
-            this.evaluations = Evaluation.EMPTY_ARRAY;
+        if ((data == null) || data.isEmpty()) {
+            this.evaluations = Evaluation.NO_EVALUATIONS;
         } else {
             this.evaluations = new Evaluation[data.size()];
             int i = 0;
@@ -92,7 +92,7 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
         }
 
         // set number of evaluations in status bar
-        updateStatusMessage(data.size());
+        updateStatusMessage(this.evaluations.length);
 
         this.adapter = new EvaluationsAdapter(this, this.evaluations);
         this.listView.setAdapter(this.adapter);
@@ -165,7 +165,7 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
     }
 
     private void updateStatusMessage( final int numEvaluations ) {
-        final TextView msgView = (TextView)findViewById(R.id.statusBarMessage);
+        final TextView msgView = (TextView)findViewById(R.id.status_bar_message);
         msgView.setText(getString(R.string.number_of_evaluations, numEvaluations));
     }
 

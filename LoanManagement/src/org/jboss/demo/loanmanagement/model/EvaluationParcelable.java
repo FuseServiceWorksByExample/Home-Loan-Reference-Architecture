@@ -12,8 +12,10 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import org.jboss.demo.loanmanagement.Util;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * A representation of an {@link Evaluation} that can be passed into an intent extra.
@@ -21,7 +23,7 @@ import android.os.Parcelable;
 public final class EvaluationParcelable implements Parcelable {
 
     /**
-     * An intent key whose value is a list of available evaluations.
+     * An intent key whose value is a list of available application evaluations.
      */
     public static final String EVALUATIONS = "evaluations"; //$NON-NLS-1$
 
@@ -67,7 +69,7 @@ public final class EvaluationParcelable implements Parcelable {
         final float rate = in.readFloat();
         this.evaluation.setRate(rate);
 
-        final int insuranceCost = in.readInt();
+        final float insuranceCost = in.readFloat();
         this.evaluation.setInsuranceCost(insuranceCost);
 
         final String explanation = in.readString();
@@ -99,16 +101,24 @@ public final class EvaluationParcelable implements Parcelable {
     public void writeToParcel( final Parcel dest,
                                final int flags ) {
         dest.writeInt(this.evaluation.getSsn());
-        dest.writeString(this.evaluation.getApplicant());
+
+        String name = this.evaluation.getApplicant();
+
+        if (TextUtils.isEmpty(name)) {
+            name = Util.EMPTY_STRING;
+        }
+
+        dest.writeString(name);
+
         dest.writeInt(this.evaluation.getCreditScore());
         dest.writeFloat(this.evaluation.getRate());
-        dest.writeInt(this.evaluation.getInsuranceCost());
+        dest.writeFloat(this.evaluation.getInsuranceCost());
         dest.writeByte((byte)(this.evaluation.isApproved() ? 1 : 0));
 
         String explanation = this.evaluation.getExplanation();
 
-        if ((explanation == null) || explanation.isEmpty()) {
-            explanation = ""; //$NON-NLS-1$
+        if (TextUtils.isEmpty(explanation)) {
+            explanation = Util.EMPTY_STRING;
         }
 
         dest.writeString(explanation);

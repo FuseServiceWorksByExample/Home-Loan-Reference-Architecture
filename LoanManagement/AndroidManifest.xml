@@ -33,6 +33,10 @@
             android:name="org.jboss.demo.loanmanagement.EvaluationsScreen"
             android:label="@string/Evaluations" >
         </activity>
+        <activity
+            android:name="org.jboss.demo.loanmanagement.StatusesScreen"
+            android:label="@string/Statuses" >
+        </activity>
     </application>
 
 </manifest>

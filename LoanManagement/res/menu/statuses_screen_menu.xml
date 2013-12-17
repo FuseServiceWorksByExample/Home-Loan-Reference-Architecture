@@ -1,0 +1,32 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_sort"
+        android:icon="@drawable/ic_sort"
+        android:showAsAction="ifRoom"
+        android:title="@string/item_sort">
+        <menu>
+            <group android:checkableBehavior="single" >
+                <item
+                    android:id="@+id/action_sort_by_ssn"
+                    android:title="@string/item_sort_by_ssn"/>
+                <item
+                    android:id="@+id/action_sort_by_name"
+                    android:title="@string/item_sort_by_name"/>
+                <item
+                    android:id="@+id/action_sort_by_status"
+                    android:title="@string/item_sort_by_status"/>
+                <item
+                    android:id="@+id/action_sort_by_rate"
+                    android:title="@string/item_sort_by_rate"/>
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_refresh"
+        android:onClick="handleRefresh"
+        android:showAsAction="ifRoom"
+        android:title="@string/item_refresh"/>
+
+</menu>

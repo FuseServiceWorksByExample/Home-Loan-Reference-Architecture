@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Loan Management</string>
+    <string name="application_dialog_title">New Application</string>
+    <string name="Approve">Approve</string>
+    <string name="empty_evaluations_message">There are no available application evaluations.</string>
+    <string name="empty_statuses_message">There are no available application statuses.</string>
+    <string name="evaluate_dialog_title">Evaluate</string>
+    <string name="Evaluations">Evaluations</string>
+    <string name="evaluations_request_dialog_title">Evaluations Request</string>
+    <string name="evaluations_request_dialog_msg">Obtaining available application evaluations&#8230;</string>
+    <string name="go_image_description">Go to current selection image</string>
+    <string name="header_applicant">Applicant</string>
+    <string name="header_rate">Rate</string>
+    <string name="header_ssn">SSN</string>
+    <string name="header_status">Status</string>
+    <string name="hint_evaluation_explanation">* reason for approval decision</string>
+    <string name="hint_evaluation_insurance_cost">* insurance charges</string>
+    <string name="hint_evaluation_interest_rate">* interest rate</string>
+    <string name="item_application_evaluations">Application Evaluations</string>
+    <string name="item_application_evaluations_description">A list of available application evaluations</string>
+    <string name="item_application_statuses">Application Statuses</string>
+    <string name="item_application_statuses_description">A list of available application statuses</string>
+    <string name="item_help">Help</string>
+    <string name="item_help_description">Information on using the Home Loan app </string>
+    <string name="item_new_application">New Application</string>
+    <string name="item_new_application_description">Create a new home loan application</string>
+    <string name="item_refresh">Refresh</string>
+    <string name="item_separator">, </string>
+    <string name="item_sort">Sort</string>
+    <string name="item_sort_by_name">By Name</string>
+    <string name="item_sort_by_rate">By Rate</string>
+    <string name="item_sort_by_ssn">By SSN</string>
+    <string name="item_sort_by_status">By Status</string>
+    <string name="label_applicant">Applicant:</string>
+    <string name="label_credit_score">Credit Score:</string>
+    <string name="label_explanation">Explanation:</string>
+    <string name="label_insurance_cost">Insurance Cost:</string>
+    <string name="label_rate">Rate:</string>
+    <string name="label_ssn">SSN:</string>
+    <string name="number_of_evaluations">%1$s available evaluations</string>
+    <string name="number_of_statuses">%1$s available statuses</string>
+    <string name="Reject">Reject</string>
+    <string name="splash_screen_image_description">Loan Management splash screen image</string>
+    <string name="status_bar_image_description">Loan Management status bar image</string>
+    <string name="Statuses">Statuses</string>
+    <string name="statuses_request_dialog_title">Statuses Request</string>
+    <string name="statuses_request_dialog_msg">Obtaining available application statuses&#8230;</string>
+
+</resources>

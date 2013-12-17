@@ -1,0 +1,89 @@
+/*
+ * Copyright (c) 2013 Ebry Dobby, LLC. All rights reserved. http://ebrydobby.com
+ */
+package org.jboss.demo.loanmanagement.command;
+
+import org.jboss.demo.loanmanagement.R;
+import org.jboss.demo.loanmanagement.Util;
+import org.jboss.demo.loanmanagement.model.ApplicationStatus;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+
+/**
+ * Command that obtains the available statuses.
+ */
+public abstract class GetStatusesCommand extends AsyncTask<Void, Void, ApplicationStatus[]> {
+
+    private final Context context;
+    private ProgressDialog dialog = null;
+    private Exception error = null;
+
+    /**
+     * @param commandContext the app context (cannot be <code>null</code>)
+     */
+    public GetStatusesCommand( final Context commandContext ) {
+        this.context = commandContext;
+    }
+
+    /**
+     * @see android.os.AsyncTask#doInBackground(Params[])
+     */
+    @Override
+    protected ApplicationStatus[] doInBackground( final Void... newParams ) {
+        try {
+            // TODO make call to get statuses
+            Thread.sleep(5000);
+            return new ApplicationStatus[] {new ApplicationStatus(111111111, "Johnny Marr", 5.0f, "PENDING"),
+                                            new ApplicationStatus(333333333, "Evan Dando", 3.5f, "APPROVED"),
+                                            new ApplicationStatus(222222222, "Joe Strummer", 2.5f, "REJECTED"),
+                                            new ApplicationStatus(444444444, "Steven Morrissey", 8.0f, "PENDING")};
+        } catch (final InterruptedException ignore) {
+            // user canceled
+        } catch (final Exception e) {
+            this.error = e;
+            Log.e(GetStatusesCommand.class.getSimpleName(), this.context.getString(R.string.err_get_statuses_command),
+                  this.error);
+        }
+
+        return ApplicationStatus.NO_STATUSES;
+    }
+
+    /**
+     * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+     */
+    @Override
+    protected void onPostExecute( final ApplicationStatus[] statuses ) {
+        if (this.dialog != null) {
+            this.dialog.dismiss();
+        }
+
+        if (this.error == null) {
+            process(statuses);
+        } else {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+            builder.setTitle(R.string.err_dialog_title)
+                   .setIcon(R.drawable.ic_home)
+                   .setMessage(this.context.getString(R.string.err_get_statuses_command,
+                                                      this.error.getLocalizedMessage()))
+                   .setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.ok, null).show();
+        }
+    }
+
+    /**
+     * @see android.os.AsyncTask#onPreExecute()
+     */
+    @Override
+    protected void onPreExecute() {
+        this.dialog =
+                        Util.createProgressDialog(this.context,
+                                                  this.context.getString(R.string.statuses_request_dialog_title),
+                                                  this.context.getString(R.string.statuses_request_dialog_msg));
+        this.dialog.show();
+    }
+
+    protected abstract void process( ApplicationStatus[] statuses );
+
+}

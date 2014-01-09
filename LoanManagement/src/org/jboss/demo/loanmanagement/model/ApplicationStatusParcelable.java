@@ -62,7 +62,7 @@ public final class ApplicationStatusParcelable implements Parcelable {
     ApplicationStatusParcelable( final Parcel in ) {
         final int ssn = in.readInt();
         final String name = in.readString();
-        final float rate = in.readFloat();
+        final double rate = in.readDouble();
         final String status = in.readString();
 
         this.appStatus = new ApplicationStatus(ssn, name, rate, status);
@@ -101,7 +101,7 @@ public final class ApplicationStatusParcelable implements Parcelable {
             dest.writeString(name);
         }
 
-        dest.writeFloat(this.appStatus.getRate());
+        dest.writeDouble(this.appStatus.getRate());
 
         { // application status
             String status = this.appStatus.getStatus();

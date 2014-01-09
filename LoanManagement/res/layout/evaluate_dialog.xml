@@ -65,56 +65,38 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+    <!-- Divider -->
 
-        <TextView
-            android:id="@+id/lblRate"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray"
+        android:gravity="center"
+        android:inputType="none"
+        android:maxHeight="2dp"
+        android:textIsSelectable="false" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/btnApprove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:text="@string/label_rate"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:text="@string/Approve" />
 
-        <EditText
-            android:id="@+id/editRate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/hint_evaluation_interest_rate"
-            android:inputType="numberDecimal"
-            android:textSize="14sp" >
-
-            <requestFocus />
-        </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/lblInsuranceRate"
+        <RadioButton
+            android:id="@+id/btnReject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:text="@string/label_insurance_cost"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/editInsuranceCost"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/hint_evaluation_insurance_cost"
-            android:inputType="numberDecimal"
-            android:textSize="14sp" />
-    </LinearLayout>
+            android:text="@string/Reject" />
+    </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -138,28 +120,58 @@
             android:inputType="textMultiLine"
             android:lines="@integer/expanation_num_lines"
             android:maxLength="256"
+            android:maxLines="@integer/expanation_num_lines"
+            android:minLines="@integer/expanation_num_lines"
             android:textSize="14sp" />
     </LinearLayout>
 
-    <RadioGroup
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
-        <RadioButton
-            android:id="@+id/btnApprove"
+        <TextView
+            android:id="@+id/lblRate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:text="@string/Approve" />
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:text="@string/label_rate"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
-        <RadioButton
-            android:id="@+id/btnReject"
+        <EditText
+            android:id="@+id/editRate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/hint_evaluation_interest_rate"
+            android:inputType="numberDecimal"
+            android:textSize="14sp" >
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lblInsuranceCost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Reject" />
-    </RadioGroup>
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:text="@string/label_insurance_cost"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editInsuranceCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/hint_evaluation_insurance_cost"
+            android:inputType="numberDecimal"
+            android:textSize="14sp" />
+    </LinearLayout>
 
 </LinearLayout>

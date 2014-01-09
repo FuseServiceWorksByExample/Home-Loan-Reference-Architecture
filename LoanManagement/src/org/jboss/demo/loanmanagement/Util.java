@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.InputFilter;
 import android.text.Spanned;
 
@@ -24,17 +25,19 @@ import android.text.Spanned;
  */
 public final class Util {
 
+    private static InputFilter _currencyFilter = null;
+
     /**
      * A data regex pattern.
      */
-    public static final String DATE_PATTER = "[0-1]?[0-9]/[0-3]?[0-9]/[12][0-9][0-9][0-9]"; //$NON-NLS-1$
+    public static final String DATE_PATTERN = "[0-1]?[0-9]/[0-3]?[0-9]/[12][0-9][0-9][0-9]"; //$NON-NLS-1$
 
     /**
      * An empty string constant.
      */
     public static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
-    private static InputFilter _currencyFilter = null;
+    private static final String PREFS_NAME = "loanmanagement"; //$NON-NLS-1$
 
     /**
      * @param context the app context (cannot be <code>null</code>)
@@ -87,6 +90,15 @@ public final class Util {
     }
 
     /**
+     * @param ssn the SSN being formatted
+     * @return the formatted SSN with all characters but the last 4 being masked (never <code>null</code>)
+     */
+    public static String formatSsnWithMask( final int ssn ) {
+        final StringBuilder builder = new StringBuilder(Integer.toString(ssn));
+        return builder.replace(0, 5, "*****").insert(5, '-').insert(3, '-').toString(); //$NON-NLS-1$
+    }
+
+    /**
      * @return a currency input filter (never <code>null</code>)
      */
     public static InputFilter getCurrencyFilter() {
@@ -95,6 +107,24 @@ public final class Util {
         }
 
         return _currencyFilter;
+    }
+
+    /**
+     * @param context the context whose preferences editor is being requested (cannot be <code>null</code>)
+     * @return the preferences editor (never <code>null</code>)
+     */
+    public static SharedPreferences.Editor getPreferenceEditor( final Context context ) {
+        return getPreferences(context).edit();
+    }
+
+    /**
+     * This can be used when just querying the preferences.
+     * 
+     * @param context the context whose preferences is being requested (cannot be <code>null</code>)
+     * @return the preferences (never <code>null</code>)
+     */
+    public static SharedPreferences getPreferences( final Context context ) {
+        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
     /**
@@ -128,6 +158,43 @@ public final class Util {
 
             return dest.subSequence(dstart, dend);
         }
+    }
+
+    /**
+     * Constants associated with preferences.
+     */
+    public interface Prefs {
+
+        /**
+         * The preference for sorting application evaluations.
+         */
+        String EVALUATION_SORTER = "evaluation.sorter"; //$NON-NLS-1$
+
+        /**
+         * A value that indicates the data should be sorted by name.
+         */
+        String SORT_BY_NAME = "sort_by_name"; //$NON-NLS-1$
+
+        /**
+         * A value that indicates the data should be sorted by rate.
+         */
+        String SORT_BY_RATE = "sort_by_rate"; //$NON-NLS-1$
+
+        /**
+         * A value that indicates the data should be sorted by SSN.
+         */
+        String SORT_BY_SSN = "sort_by_ssn"; //$NON-NLS-1$
+
+        /**
+         * A value that indicates the data should be sorted by status.
+         */
+        String SORT_BY_STATUS = "sort_by_status"; //$NON-NLS-1$
+
+        /**
+         * The preference for sorting application statuses.
+         */
+        String STATUS_SORTER = "status.sorter"; //$NON-NLS-1$
+
     }
 
 }

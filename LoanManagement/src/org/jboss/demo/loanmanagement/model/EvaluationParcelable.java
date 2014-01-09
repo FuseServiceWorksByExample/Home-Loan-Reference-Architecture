@@ -66,10 +66,10 @@ public final class EvaluationParcelable implements Parcelable {
 
         this.evaluation = new Evaluation(ssn, name, creditScore);
 
-        final float rate = in.readFloat();
+        final double rate = in.readDouble();
         this.evaluation.setRate(rate);
 
-        final float insuranceCost = in.readFloat();
+        final double insuranceCost = in.readDouble();
         this.evaluation.setInsuranceCost(insuranceCost);
 
         final String explanation = in.readString();
@@ -111,8 +111,8 @@ public final class EvaluationParcelable implements Parcelable {
         dest.writeString(name);
 
         dest.writeInt(this.evaluation.getCreditScore());
-        dest.writeFloat(this.evaluation.getRate());
-        dest.writeFloat(this.evaluation.getInsuranceCost());
+        dest.writeDouble(this.evaluation.getRate());
+        dest.writeDouble(this.evaluation.getInsuranceCost());
         dest.writeByte((byte)(this.evaluation.isApproved() ? 1 : 0));
 
         String explanation = this.evaluation.getExplanation();

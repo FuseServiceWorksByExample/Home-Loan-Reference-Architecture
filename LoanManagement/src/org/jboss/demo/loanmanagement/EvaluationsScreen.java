@@ -13,6 +13,7 @@
 package org.jboss.demo.loanmanagement;
 
 import java.util.ArrayList;
+import org.jboss.demo.loanmanagement.Util.Prefs;
 import org.jboss.demo.loanmanagement.command.GetEvaluationsCommand;
 import org.jboss.demo.loanmanagement.model.Evaluation;
 import org.jboss.demo.loanmanagement.model.EvaluationParcelable;
@@ -36,7 +37,6 @@ import android.widget.TextView;
 public final class EvaluationsScreen extends Activity implements OnItemClickListener {
 
     private EvaluationsAdapter adapter;
-    private Evaluation[] evaluations;
     private ListView listView;
 
     /**
@@ -71,7 +71,7 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
 
         this.listView = (ListView)findViewById(R.id.evaluations_screen_list);
 
-        { // view when no plates are visible
+        { // view when there are no available evaluations
             final View emptyListView = findViewById(R.id.empty_evaluations_item);
             this.listView.setEmptyView(emptyListView);
         }
@@ -79,22 +79,23 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
         // load evaluations
         final ArrayList<EvaluationParcelable> data =
                         getIntent().getExtras().getParcelableArrayList(EvaluationParcelable.EVALUATIONS);
+        Evaluation[] evaluations;
 
         if ((data == null) || data.isEmpty()) {
-            this.evaluations = Evaluation.NO_EVALUATIONS;
+            evaluations = Evaluation.NO_EVALUATIONS;
         } else {
-            this.evaluations = new Evaluation[data.size()];
+            evaluations = new Evaluation[data.size()];
             int i = 0;
 
             for (final EvaluationParcelable parcelable : data) {
-                this.evaluations[i++] = parcelable.getEvaluation();
+                evaluations[i++] = parcelable.getEvaluation();
             }
         }
 
         // set number of evaluations in status bar
-        updateStatusMessage(this.evaluations.length);
+        updateStatusMessage(evaluations.length);
 
-        this.adapter = new EvaluationsAdapter(this, this.evaluations);
+        this.adapter = new EvaluationsAdapter(this, evaluations);
         this.listView.setAdapter(this.adapter);
         this.listView.setOnItemClickListener(this);
     }
@@ -109,9 +110,16 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
         final MenuItem sortItem = optionsMenu.findItem(R.id.menu_sort);
         final SubMenu sortMenu = sortItem.getSubMenu();
 
-        // TODO this needs to be a preference
-        final MenuItem sortBySsnItem = sortMenu.findItem(R.id.action_sort_by_ssn);
-        sortBySsnItem.setChecked(true);
+        // find out which sort to turn on
+        final String sorterId = this.adapter.getSorterId();
+
+        if (Prefs.SORT_BY_NAME.equals(sorterId)) {
+            final MenuItem sortByNameItem = sortMenu.findItem(R.id.action_sort_by_name);
+            sortByNameItem.setChecked(true);
+        } else {
+            final MenuItem sortBySsnItem = sortMenu.findItem(R.id.action_sort_by_ssn);
+            sortBySsnItem.setChecked(true);
+        }
 
         return true; // show menu and action bar items
     }
@@ -125,7 +133,7 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
                              final View view,
                              final int position,
                              final long id ) {
-        final Evaluation selected = this.evaluations[position];
+        final Evaluation selected = this.adapter.getEvaluation(position);
         final FragmentManager fragMgr = getFragmentManager();
 
         final EvaluationDialog dialog = new EvaluationDialog();
@@ -142,13 +150,13 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
 
         if (selectedItemId == R.id.action_sort_by_name) {
             selectedItem.setChecked(true);
-            this.adapter.setSortBySsn(false);
+            this.adapter.setSorter(Prefs.SORT_BY_NAME);
             return true;
         }
 
         if (selectedItemId == R.id.action_sort_by_ssn) {
             selectedItem.setChecked(true);
-            this.adapter.setSortBySsn(true);
+            this.adapter.setSorter(Prefs.SORT_BY_SSN);
             return true;
         }
 
@@ -156,12 +164,9 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
     }
 
     protected void setEvaluations( final Evaluation[] newEvaluations ) {
-        final boolean sortBySsn = this.adapter.isSortBySsn();
-        this.evaluations = newEvaluations;
-        updateStatusMessage(this.evaluations.length);
-        this.adapter = new EvaluationsAdapter(this, this.evaluations);
-        this.adapter.setSortBySsn(sortBySsn);
-        this.listView.setAdapter(this.adapter);
+        final Evaluation[] evaluations = ((newEvaluations == null) ? Evaluation.NO_EVALUATIONS : newEvaluations);
+        this.adapter = new EvaluationsAdapter(this, evaluations);
+        updateStatusMessage(evaluations.length);
     }
 
     private void updateStatusMessage( final int numEvaluations ) {

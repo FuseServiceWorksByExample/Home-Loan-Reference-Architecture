@@ -70,8 +70,12 @@ public abstract class Asset {
      */
     public void setAmount( final double newAmount ) {
         if ((this.amount == null) || (this.amount.doubleValue() != newAmount)) {
-            this.amount = new BigDecimal(newAmount);
-            this.amount.setScale(2, RoundingMode.HALF_EVEN);
+            if (newAmount == 0) {
+                this.amount = null;
+            } else {
+                this.amount = new BigDecimal(newAmount);
+                this.amount.setScale(2, RoundingMode.HALF_EVEN);
+            }
         }
     }
 

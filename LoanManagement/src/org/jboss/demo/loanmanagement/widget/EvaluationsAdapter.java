@@ -12,10 +12,13 @@
  */
 package org.jboss.demo.loanmanagement.widget;
 
+import java.util.Comparator;
 import org.jboss.demo.loanmanagement.R;
 import org.jboss.demo.loanmanagement.Util;
+import org.jboss.demo.loanmanagement.Util.Prefs;
 import org.jboss.demo.loanmanagement.model.Evaluation;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +26,52 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
- * The available applicaiton evaluations screen list adapter.
+ * The available application evaluations screen list adapter.
  */
 public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
 
-    private boolean sortBySsn = true;
+    private static final String DEFAULT_SORTER_ID = Prefs.SORT_BY_SSN;
+
+    private Comparator<Evaluation> sorter;
 
     /**
-     * @param screen the evaluations screen (cannot be <code>null</code>)
-     * @param items the available evaluations (cannot be <code>null</code>)
+     * @param context the evaluations screen (cannot be <code>null</code>)
+     * @param appEvaluations the available evaluations (cannot be <code>null</code>)
      */
-    public EvaluationsAdapter( final Context screen,
-                               final Evaluation[] items ) {
-        super(screen, R.layout.evaluations_screen, items);
-        sort(Evaluation.SSN_SORTER);
+    public EvaluationsAdapter( final Context context,
+                               final Evaluation[] appEvaluations ) {
+        super(context, R.layout.evaluations_screen, appEvaluations);
+
+        // setup sorter
+        final String sortBy = Util.getPreferences(context).getString(Util.Prefs.EVALUATION_SORTER, DEFAULT_SORTER_ID);
+
+        if (Prefs.SORT_BY_NAME.equals(sortBy)) {
+            this.sorter = Evaluation.NAME_SORTER;
+        } else {
+            this.sorter = Evaluation.SSN_SORTER;
+        }
+    }
+
+    /**
+     * @param index the index of the evaluation being requested
+     * @return the evaluation
+     * @throws IndexOutOfBoundsException if the index is invalid
+     */
+    public Evaluation getEvaluation( final int index ) {
+        return getItem(index);
+    }
+
+    /**
+     * @return the sorter identifier
+     * @see Prefs#SORT_BY_NAME
+     * @see Prefs#SORT_BY_SSN
+     */
+    public String getSorterId() {
+        if (this.sorter == Evaluation.NAME_SORTER) {
+            return Prefs.SORT_BY_NAME;
+        }
+
+        return Prefs.SORT_BY_SSN;
     }
 
     /**
@@ -51,45 +86,70 @@ public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
         ItemHolder holder;
 
         if (null == view) {
-            itemView = inflater.inflate(R.layout.evaluations_list_row, parent, false);
+            itemView = inflater.inflate(R.layout.evaluation_item, parent, false);
             holder = new ItemHolder();
-            holder.firstView = (TextView)itemView.findViewById(R.id.text1);
-            holder.secondView = (TextView)itemView.findViewById(R.id.text2);
+            holder.nameView = (TextView)itemView.findViewById(R.id.app_eval_name);
+            holder.ssnView = (TextView)itemView.findViewById(R.id.app_eval_ssn);
             itemView.setTag(holder);
         } else {
             holder = (ItemHolder)view.getTag();
         }
 
         final Evaluation evaluation = getItem(position);
-        final String ssn = Util.formatSsn(evaluation.getSsn());
+        holder.nameView.setText(evaluation.getApplicant());
 
-        holder.firstView.setText(this.sortBySsn ? ssn : evaluation.getApplicant());
-        holder.secondView.setText(this.sortBySsn ? evaluation.getApplicant() : ssn);
+        { // ssn
+            final int ssn = evaluation.getSsn();
+
+            if (Evaluation.SSN_NOT_SET != ssn) {
+                holder.ssnView.setText(Util.formatSsnWithMask(ssn));
+            }
+        }
 
         return itemView;
     }
 
     /**
-     * @return <code>true</code> if being sorted by SSN
+     * @param newEvaluations the available application evaluations (can be <code>null</code>)
      */
-    public boolean isSortBySsn() {
-        return this.sortBySsn;
+    public void setEvaluations( final Evaluation[] newEvaluations ) {
+        clear();
+        addAll(newEvaluations);
+        sort(this.sorter);
     }
 
     /**
-     * @param newSortBySsn <code>true</code> if sorting by SSN is desired
+     * @param sorterId the identifier of the new sorter (can be <code>null</code> if default sorter should be used)
+     * @see Evaluation#NAME_SORTER
+     * @see Evaluation#SSN_SORTER
      */
-    public void setSortBySsn( final boolean newSortBySsn ) {
-        if (this.sortBySsn != newSortBySsn) {
-            this.sortBySsn = newSortBySsn;
-            sort(this.sortBySsn ? Evaluation.SSN_SORTER : Evaluation.NAME_SORTER);
+    public void setSorter( final String sorterId ) {
+        String newId = sorterId;
+        Comparator<Evaluation> evaluationSorter = null;
+
+        if (TextUtils.isEmpty(newId)) {
+            newId = DEFAULT_SORTER_ID;
+        }
+
+        if (Prefs.SORT_BY_NAME.equals(newId) && (this.sorter != Evaluation.NAME_SORTER)) {
+            evaluationSorter = Evaluation.NAME_SORTER;
+        } else if (Prefs.SORT_BY_SSN.equals(newId) && (this.sorter != Evaluation.SSN_SORTER)) {
+            evaluationSorter = Evaluation.SSN_SORTER;
+        }
+
+        if (evaluationSorter != null) {
+            this.sorter = evaluationSorter;
+            sort(this.sorter);
+
+            // save new preference value
+            Util.getPreferenceEditor(getContext()).putString(Prefs.EVALUATION_SORTER, newId).apply();
         }
     }
 
     class ItemHolder {
 
-        TextView firstView;
-        TextView secondView;
+        TextView nameView;
+        TextView ssnView;
 
     }
 

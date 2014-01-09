@@ -38,9 +38,14 @@ public final class EvaluationDialog extends DialogFragment implements
                                                           DialogInterface.OnShowListener,
                                                           View.OnClickListener {
 
-    private AlertDialog dialog;
     private Evaluation copy;
+    private AlertDialog dialog;
+    private TextView lblInsuraceCost;
+
+    private TextView lblRate;
     private Evaluation original;
+    private TextView txtInsuraceCost;
+    private TextView txtRate;
 
     /**
      * @return the evaluation represented by the dialog
@@ -49,13 +54,17 @@ public final class EvaluationDialog extends DialogFragment implements
         return this.copy;
     }
 
-    /**
-     * Method required by the onClick XML attribute in layout.
-     * 
-     * @param view the radio button
-     */
-    public void handleApproveSelected( final View view ) {
+    private void handleApproveSelected() {
         this.copy.setApproved(true);
+
+        this.lblRate.setVisibility(View.VISIBLE);
+        this.txtRate.setText(Double.toString(this.copy.getInsuranceCost()));
+        this.txtRate.setVisibility(View.VISIBLE);
+
+        this.lblInsuraceCost.setVisibility(View.VISIBLE);
+        this.txtInsuraceCost.setText(Double.toString(this.copy.getInsuranceCost()));
+        this.txtInsuraceCost.setVisibility(View.VISIBLE);
+
         updateState();
     }
 
@@ -66,9 +75,9 @@ public final class EvaluationDialog extends DialogFragment implements
 
     protected void handleInsuranceCostChanged( final String newInsuranceCost ) {
         if (TextUtils.isEmpty(newInsuranceCost)) {
-            this.copy.setInsuranceCost(Evaluation.NOT_SET);
+            this.copy.setInsuranceCost(0);
         } else {
-            this.copy.setInsuranceCost(Float.parseFloat(newInsuranceCost));
+            this.copy.setInsuranceCost(Double.parseDouble(newInsuranceCost));
         }
 
         updateState();
@@ -76,21 +85,23 @@ public final class EvaluationDialog extends DialogFragment implements
 
     protected void handleRateChanged( final String newRate ) {
         if (TextUtils.isEmpty(newRate)) {
-            this.copy.setRate(Evaluation.NOT_SET);
+            this.copy.setRate(0);
         } else {
-            this.copy.setRate(Float.parseFloat(newRate));
+            this.copy.setRate(Double.parseDouble(newRate));
         }
 
         updateState();
     }
 
-    /**
-     * Method required by the onClick XML attribute in layout.
-     * 
-     * @param view the radio button
-     */
-    public void handleRejectSelected( final View view ) {
+    private void handleRejectSelected() {
         this.copy.setApproved(false);
+
+        this.lblRate.setVisibility(View.INVISIBLE);
+        this.txtRate.setVisibility(View.INVISIBLE);
+        this.lblInsuraceCost.setVisibility(View.INVISIBLE);
+        this.txtInsuraceCost.setVisibility(View.INVISIBLE);
+        this.txtInsuraceCost.getParent().requestLayout();
+
         updateState();
     }
 
@@ -115,9 +126,9 @@ public final class EvaluationDialog extends DialogFragment implements
     @Override
     public void onClick( final View view ) {
         if (R.id.btnApprove == view.getId()) {
-            this.copy.setApproved(true);
+            handleApproveSelected();
         } else if (R.id.btnReject == view.getId()) {
-            this.copy.setApproved(false);
+            handleRejectSelected();
         }
 
         updateState();
@@ -133,7 +144,7 @@ public final class EvaluationDialog extends DialogFragment implements
 
         { // SSN
             final TextView txtView = (TextView)view.findViewById(R.id.txtSsn);
-            txtView.setText(Util.formatSsn(this.copy.getSsn()));
+            txtView.setText(Util.formatSsnWithMask(this.copy.getSsn()));
         }
 
         { // name
@@ -171,8 +182,9 @@ public final class EvaluationDialog extends DialogFragment implements
         }
 
         { // interest rate
-            final TextView txtView = (TextView)view.findViewById(R.id.editRate);
-            txtView.addTextChangedListener(new TextWatcherAdapter() {
+            this.lblRate = (TextView)view.findViewById(R.id.lblRate);
+            this.txtRate = (TextView)view.findViewById(R.id.editRate);
+            this.txtRate.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**
                  * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
@@ -185,8 +197,9 @@ public final class EvaluationDialog extends DialogFragment implements
         }
 
         { // insurance cost
-            final TextView textView = (TextView)view.findViewById(R.id.editInsuranceCost);
-            textView.addTextChangedListener(new TextWatcherAdapter() {
+            this.lblInsuraceCost = (TextView)view.findViewById(R.id.lblInsuranceCost);
+            this.txtInsuraceCost = (TextView)view.findViewById(R.id.editInsuranceCost);
+            this.txtInsuraceCost.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**
                  * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
@@ -227,6 +240,12 @@ public final class EvaluationDialog extends DialogFragment implements
      */
     @Override
     public void onShow( final DialogInterface dialogInterface ) {
+        if (this.copy.isApproved()) {
+            handleApproveSelected();
+        } else {
+            handleRejectSelected();
+        }
+
         updateState();
     }
 

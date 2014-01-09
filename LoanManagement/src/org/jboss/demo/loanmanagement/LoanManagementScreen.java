@@ -19,7 +19,6 @@ import org.jboss.demo.loanmanagement.model.ApplicationStatus;
 import org.jboss.demo.loanmanagement.model.ApplicationStatusParcelable;
 import org.jboss.demo.loanmanagement.model.Evaluation;
 import org.jboss.demo.loanmanagement.model.EvaluationParcelable;
-import org.jboss.demo.loanmanagement.widget.LoanManagementAdapter;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -32,22 +31,76 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * The Loan Management main screen.
  */
-public final class LoanManagementScreen extends Activity implements OnItemClickListener {
+public final class LoanManagementScreen extends Activity {
 
     Context getContext() {
         return this;
     }
 
-    private void handleEvaluationsSelected() {
+    /**
+     * @see android.app.Activity#onCreate(android.os.Bundle)
+     */
+    @Override
+    protected void onCreate( final Bundle savedInstanceState ) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.loan_management_screen);
+
+        // set version in status bar
+        final TextView msg = (TextView)findViewById(R.id.status_bar_message);
+        final PackageManager pkgMgr = getPackageManager();
+        final ApplicationInfo appInfo = getApplicationInfo();
+
+        try {
+            final PackageInfo pkgInfo = pkgMgr.getPackageInfo(getPackageName(), 0);
+            msg.setText(pkgMgr.getApplicationLabel(appInfo) + " " + pkgInfo.versionName); //$NON-NLS-1$
+        } catch (final NameNotFoundException e) {
+            Log.e(LoanManagementScreen.class.getSimpleName(), e.getLocalizedMessage(), e);
+            finish();
+        }
+    }
+
+    /**
+     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+     */
+    @Override
+    public boolean onCreateOptionsMenu( final Menu menu ) {
+        getMenuInflater().inflate(R.menu.main_screen_menu, menu);
+        return true; // show menu and action bar items
+    }
+
+    /**
+     * Method required by the <code>onClick</code> XML attribute.
+     * 
+     * @param view the view that was selected
+     */
+    public void onHelpSelected( final View view ) {
+        Log.d(LoanManagementScreen.class.getSimpleName(), "Help selected"); //$NON-NLS-1$
+    }
+
+    /**
+     * Method required by the <code>onClick</code> XML attribute.
+     * 
+     * @param view the view that was selected
+     */
+    public void onNewApplicationSelected( final View view ) {
+        Log.d(LoanManagementScreen.class.getSimpleName(), "New Application selected"); //$NON-NLS-1$
+
+        final FragmentManager fragMgr = getFragmentManager();
+        final ApplicationDialog dialog = new ApplicationDialog();
+        dialog.show(fragMgr, ApplicationDialog.class.getSimpleName());
+    }
+
+    /**
+     * Method required by the <code>onClick</code> XML attribute.
+     * 
+     * @param view the view that was selected
+     */
+    public void onViewApplicationEvaluations( final View view ) {
         Log.d(LoanManagementScreen.class.getSimpleName(), "Application Evaluations selected"); //$NON-NLS-1$
 
         final GetEvaluationsCommand command = new GetEvaluationsCommand(this) {
@@ -81,21 +134,12 @@ public final class LoanManagementScreen extends Activity implements OnItemClickL
         command.execute((Void[])null);
     }
 
-    private void handleHelpSelected() {
-        Log.d(LoanManagementScreen.class.getSimpleName(), "Help selected"); //$NON-NLS-1$
-        // TODO Auto-generated method stub
-        Toast.makeText(this, "Not implemented", Toast.LENGTH_SHORT).show();
-    }
-
-    private void handleNewApplicationSelected() {
-        Log.d(LoanManagementScreen.class.getSimpleName(), "New Application selected"); //$NON-NLS-1$
-
-        final FragmentManager fragMgr = getFragmentManager();
-        final ApplicationDialog dialog = new ApplicationDialog();
-        dialog.show(fragMgr, ApplicationDialog.class.getSimpleName());
-    }
-
-    private void handleStatusesSelected() {
+    /**
+     * Method required by the <code>onClick</code> XML attribute.
+     * 
+     * @param view the view that was selected
+     */
+    public void onViewApplicationStatusesSelected( final View view ) {
         Log.d(LoanManagementScreen.class.getSimpleName(), "Application Statuses selected"); //$NON-NLS-1$
 
         final GetStatusesCommand command = new GetStatusesCommand(this) {
@@ -127,78 +171,6 @@ public final class LoanManagementScreen extends Activity implements OnItemClickL
         };
 
         command.execute((Void[])null);
-    }
-
-    /**
-     * @see android.app.Activity#onCreate(android.os.Bundle)
-     */
-    @Override
-    protected void onCreate( final Bundle savedInstanceState ) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.loan_management_screen);
-
-        // add items to list. make sure order is same as in item click listener
-        final String[][] items =
-                        new String[][] {
-                                        {getString(R.string.item_new_application),
-                                         getString(R.string.item_new_application_description)},
-                                        {getString(R.string.item_application_statuses),
-                                         getString(R.string.item_application_statuses_description)},
-                                        {getString(R.string.item_application_evaluations),
-                                         getString(R.string.item_application_evaluations_description)},
-                                        {getString(R.string.item_help), getString(R.string.item_help_description)}};
-        final ListView listView = (ListView)findViewById(R.id.mainScreenList);
-        listView.setAdapter(new LoanManagementAdapter(this, items));
-        listView.setOnItemClickListener(this);
-
-        // set version in status bar
-        final TextView msg = (TextView)findViewById(R.id.status_bar_message);
-        final PackageManager pkgMgr = getPackageManager();
-        final ApplicationInfo appInfo = getApplicationInfo();
-
-        try {
-            final PackageInfo pkgInfo = pkgMgr.getPackageInfo(getPackageName(), 0);
-            msg.setText(pkgMgr.getApplicationLabel(appInfo) + " " + pkgInfo.versionName); //$NON-NLS-1$
-        } catch (final NameNotFoundException e) {
-            Log.e(LoanManagementScreen.class.getSimpleName(), e.getLocalizedMessage(), e);
-            finish();
-        }
-    }
-
-    /**
-     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-     */
-    @Override
-    public boolean onCreateOptionsMenu( final Menu menu ) {
-        getMenuInflater().inflate(R.menu.main_screen_menu, menu);
-        return true; // show menu and action bar items
-    }
-
-    /**
-     * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View,
-     *      int, long)
-     */
-    @Override
-    public void onItemClick( final AdapterView<?> parent,
-                             final View view,
-                             final int position,
-                             final long id ) {
-        switch (position) {
-            case 0:
-                handleNewApplicationSelected();
-                break;
-            case 1:
-                handleStatusesSelected();
-                break;
-            case 2:
-                handleEvaluationsSelected();
-                break;
-            case 3:
-                handleHelpSelected();
-                break;
-            default:
-                // TODO handle this
-        }
     }
 
 }

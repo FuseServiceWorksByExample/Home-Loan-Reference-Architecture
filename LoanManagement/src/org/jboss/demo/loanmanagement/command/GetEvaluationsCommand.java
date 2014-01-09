@@ -44,7 +44,7 @@ public abstract class GetEvaluationsCommand extends AsyncTask<Void, Void, Evalua
     protected Evaluation[] doInBackground( final Void... newParams ) {
         try {
             // TODO make call to get evaluations
-            Thread.sleep(5000);
+            Thread.sleep(2000);
             return new Evaluation[] {new Evaluation(111111111, "Johnny Marr", 560),
                                      new Evaluation(333333333, "Evan Dando", 410),
                                      new Evaluation(222222222, "Joe Strummer", 890)};

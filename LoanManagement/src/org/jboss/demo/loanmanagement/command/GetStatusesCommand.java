@@ -44,7 +44,7 @@ public abstract class GetStatusesCommand extends AsyncTask<Void, Void, Applicati
     protected ApplicationStatus[] doInBackground( final Void... newParams ) {
         try {
             // TODO make call to get statuses
-            Thread.sleep(5000);
+            Thread.sleep(2000);
             return new ApplicationStatus[] {new ApplicationStatus(111111111, "Johnny Marr", 5.0f, "PENDING"),
                                             new ApplicationStatus(333333333, "Evan Dando", 3.5f, "APPROVED"),
                                             new ApplicationStatus(222222222, "Joe Strummer", 2.5f, "REJECTED"),

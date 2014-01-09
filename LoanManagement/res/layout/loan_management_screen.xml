@@ -4,14 +4,93 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ListView
-        android:id="@+id/mainScreenList"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_weight="1"
-        android:background="@drawable/home"
-        android:cacheColorHint="@android:color/transparent" >
-    </ListView>
+        android:orientation="vertical" >
+
+        <LinearLayout
+            style="@android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/newApplication"
+                style="@android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="7dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_border"
+                android:drawableTop="@drawable/ic_new_application"
+                android:onClick="onNewApplicationSelected"
+                android:paddingTop="10dp"
+                android:text="@string/item_new_application" />
+
+            <Button
+                android:id="@+id/viewApplicationStatuses"
+                style="@android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_border"
+                android:drawableTop="@drawable/ic_statuses"
+                android:onClick="onViewApplicationStatusesSelected"
+                android:paddingTop="10dp"
+                android:text="@string/item_application_statuses" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@android:attr/buttonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/viewApplicationEvaluations"
+                style="@android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="7dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_border"
+                android:drawableTop="@drawable/ic_evaluations"
+                android:onClick="onViewApplicationEvaluations"
+                android:paddingTop="10dp"
+                android:text="@string/item_application_evaluations" />
+
+            <Button
+                android:id="@+id/viewHelp"
+                style="@android:attr/buttonBarButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_border"
+                android:drawableTop="@drawable/ic_help"
+                android:enabled="false"
+                android:onClick="onHelpSelected"
+                android:paddingTop="10dp"
+                android:text="@string/item_help" />
+        </LinearLayout>
+    </LinearLayout>
 
     <include layout="@layout/status_bar" />
 

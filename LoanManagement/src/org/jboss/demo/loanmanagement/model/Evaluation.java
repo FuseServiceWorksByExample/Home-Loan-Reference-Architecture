@@ -12,8 +12,12 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import org.jboss.demo.loanmanagement.Util;
 
 /**
  * A home loan evaluation model object.
@@ -46,9 +50,9 @@ public final class Evaluation {
     public static final ArrayList<EvaluationParcelable> NO_EVALUATIONS_LIST = new ArrayList<EvaluationParcelable>(0);
 
     /**
-     * The value when a rate has not been set.
+     * A value indicating the SSN has not be set.
      */
-    public static final float NOT_SET = -1.0f;
+    public static final int SSN_NOT_SET = -1;
 
     /**
      * Sorts evaluations by SSN.
@@ -78,13 +82,13 @@ public final class Evaluation {
         return copy;
     }
 
-    private final int ssn;
     private final String applicant;
-    private final int creditScore;
-    private float rate = NOT_SET;
-    private float insuranceCost = NOT_SET;
-    private String explanation;
     private boolean approved;
+    private final int creditScore;
+    private String explanation;
+    private BigDecimal insuranceCost;
+    private BigDecimal rate;
+    private final int ssn;
 
     /**
      * @param evaluatonSsn the applicant's SSN
@@ -97,6 +101,23 @@ public final class Evaluation {
         this.applicant = evaluationApplicant;
         this.ssn = evaluatonSsn;
         this.creditScore = evaluationCreditScore;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals( final Object obj ) {
+        if ((obj == null) || !getClass().equals(obj.getClass())) {
+            return false;
+        }
+
+        final Evaluation that = (Evaluation)obj;
+        return (Util.equals(this.ssn, that.ssn) && Util.equals(this.applicant, that.applicant)
+                        && Util.equals(this.creditScore, that.creditScore)
+                        && Util.equals(this.rate, that.rate)
+                        && Util.equals(this.insuranceCost, that.insuranceCost)
+                        && Util.equals(this.explanation, that.explanation) && Util.equals(this.approved, that.approved));
     }
 
     /**
@@ -123,15 +144,23 @@ public final class Evaluation {
     /**
      * @return the insurance cost
      */
-    public float getInsuranceCost() {
-        return this.insuranceCost;
+    public double getInsuranceCost() {
+        if (this.insuranceCost == null) {
+            return 0;
+        }
+
+        return this.insuranceCost.doubleValue();
     }
 
     /**
-     * @return the loan rate or {@link #NOT_SET} if rate has not been set
+     * @return the loan rate
      */
-    public float getRate() {
-        return this.rate;
+    public double getRate() {
+        if (this.rate == null) {
+            return 0;
+        }
+
+        return this.rate.doubleValue();
     }
 
     /**
@@ -139,6 +168,17 @@ public final class Evaluation {
      */
     public int getSsn() {
         return this.ssn;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new Object[] {this.ssn, this.applicant, this.creditScore, this.rate, this.insuranceCost,
+                                             this.explanation, this.approved
+
+        });
     }
 
     /**
@@ -153,6 +193,11 @@ public final class Evaluation {
      */
     public void setApproved( final boolean newApproved ) {
         this.approved = newApproved;
+
+        if (!this.approved) {
+            setInsuranceCost(0);
+            setRate(0);
+        }
     }
 
     /**
@@ -165,15 +210,29 @@ public final class Evaluation {
     /**
      * @param newInsuranceCost the new value for the insurance cost
      */
-    public void setInsuranceCost( final float newInsuranceCost ) {
-        this.insuranceCost = newInsuranceCost;
+    public void setInsuranceCost( final double newInsuranceCost ) {
+        if ((this.insuranceCost == null) || (this.insuranceCost.doubleValue() != newInsuranceCost)) {
+            if (newInsuranceCost == 0) {
+                this.insuranceCost = null;
+            } else {
+                this.insuranceCost = new BigDecimal(newInsuranceCost);
+                this.insuranceCost.setScale(2, RoundingMode.HALF_EVEN);
+            }
+        }
     }
 
     /**
      * @param newRate the new value for the loan rate
      */
-    public void setRate( final float newRate ) {
-        this.rate = newRate;
+    public void setRate( final double newRate ) {
+        if ((this.rate == null) || (this.rate.doubleValue() != newRate)) {
+            if (newRate == 0) {
+                this.rate = null;
+            } else {
+                this.rate = new BigDecimal(newRate);
+                this.rate.setScale(4, RoundingMode.HALF_EVEN);
+            }
+        }
     }
 
 }

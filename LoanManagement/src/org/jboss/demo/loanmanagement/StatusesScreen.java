@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2013-2014 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -13,12 +13,14 @@
 package org.jboss.demo.loanmanagement;
 
 import java.util.ArrayList;
+import org.jboss.demo.loanmanagement.Util.Prefs;
 import org.jboss.demo.loanmanagement.command.GetStatusesCommand;
 import org.jboss.demo.loanmanagement.model.ApplicationStatus;
 import org.jboss.demo.loanmanagement.model.ApplicationStatusParcelable;
 import org.jboss.demo.loanmanagement.widget.StatusesAdapter;
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -93,6 +95,9 @@ public final class StatusesScreen extends Activity {
 
         this.adapter = new StatusesAdapter(this, statuses);
         this.listView.setAdapter(this.adapter);
+
+        // add up arrow
+        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -105,9 +110,22 @@ public final class StatusesScreen extends Activity {
         final MenuItem sortItem = optionsMenu.findItem(R.id.menu_sort);
         final SubMenu sortMenu = sortItem.getSubMenu();
 
-        // TODO this needs to be a preference
-        final MenuItem sortByNameItem = sortMenu.findItem(R.id.action_sort_by_name);
-        sortByNameItem.setChecked(true);
+        // find out which sort to turn on
+        final String sorterId = this.adapter.getSorterId();
+
+        if (Prefs.SORT_BY_NAME.equals(sorterId)) {
+            final MenuItem item = sortMenu.findItem(R.id.action_sort_by_name);
+            item.setChecked(true);
+        } else if (Prefs.SORT_BY_SSN.equals(sorterId)) {
+            final MenuItem item = sortMenu.findItem(R.id.action_sort_by_ssn);
+            item.setChecked(true);
+        } else if (Prefs.SORT_BY_RATE.equals(sorterId)) {
+            final MenuItem item = sortMenu.findItem(R.id.action_sort_by_rate);
+            item.setChecked(true);
+        } else {
+            final MenuItem item = sortMenu.findItem(R.id.action_sort_by_status);
+            item.setChecked(true);
+        }
 
         return true; // show menu and action bar items
     }
@@ -121,25 +139,30 @@ public final class StatusesScreen extends Activity {
 
         if (selectedItemId == R.id.action_sort_by_name) {
             selectedItem.setChecked(true);
-            this.adapter.setSorter(ApplicationStatus.NAME_SORTER);
+            this.adapter.setSorter(Prefs.SORT_BY_NAME);
             return true;
         }
 
         if (selectedItemId == R.id.action_sort_by_ssn) {
             selectedItem.setChecked(true);
-            this.adapter.setSorter(ApplicationStatus.SSN_SORTER);
+            this.adapter.setSorter(Prefs.SORT_BY_SSN);
             return true;
         }
 
         if (selectedItemId == R.id.action_sort_by_rate) {
             selectedItem.setChecked(true);
-            this.adapter.setSorter(ApplicationStatus.RATE_SORTER);
+            this.adapter.setSorter(Prefs.SORT_BY_RATE);
             return true;
         }
 
         if (selectedItemId == R.id.action_sort_by_status) {
             selectedItem.setChecked(true);
-            this.adapter.setSorter(ApplicationStatus.STATUS_SORTER);
+            this.adapter.setSorter(Prefs.SORT_BY_STATUS);
+            return true;
+        }
+
+        if (selectedItemId == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
             return true;
         }
 

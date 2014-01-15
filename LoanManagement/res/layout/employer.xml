@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/panel_margin"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/employer_scroller_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_employer_name"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_employer_name" />
+
+            <EditText
+                android:id="@+id/txt_employer_name"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_business_type"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_business_type" />
+
+            <EditText
+                android:id="@+id/txt_business_type"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/chk_self_employed"
+            style="@style/loanmanagement.CheckBox"
+            android:text="@string/chk_self_employed" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_business_phone"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_business_phone" />
+
+            <EditText
+                android:id="@+id/txt_business_phone"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone" />
+        </LinearLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/address" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_from_date"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_job_from_date" />
+
+            <EditText
+                android:id="@+id/txt_hazard_insurance"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/employer_date_format"
+                android:inputType="date" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_to_date"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_job_to_date" />
+
+            <EditText
+                android:id="@+id/txt_to_date"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/employer_date_format"
+                android:inputType="date" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_job_position"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_job_position" />
+
+            <EditText
+                android:id="@+id/txt_job_position"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_job_title"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_job_title" />
+
+            <EditText
+                android:id="@+id/txt_job_title"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_monthly_income"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_monthly_income" />
+
+            <EditText
+                android:id="@+id/txt_monthly_income"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

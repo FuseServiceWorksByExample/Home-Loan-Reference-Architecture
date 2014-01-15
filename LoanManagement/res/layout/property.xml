@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/panel_margin"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_property_type"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_property_type" />
+
+        <Spinner
+            android:id="@+id/cbx_property_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/enum_property_type" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_num_units"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_number_of_units" />
+
+        <EditText
+            android:id="@+id/txt_num_units"
+            style="@style/loanmanagement.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_year_built"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_year_built" />
+
+        <EditText
+            android:id="@+id/txt_year_built"
+            style="@style/loanmanagement.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <include layout="@layout/address" />
+
+</LinearLayout>

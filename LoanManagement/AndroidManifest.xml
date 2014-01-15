@@ -5,8 +5,8 @@
     android:versionName="2.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="18" />
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
 
     <application
         android:allowBackup="true"
@@ -30,12 +30,22 @@
             android:label="@string/app_name" >
         </activity>
         <activity
+            android:name="org.jboss.demo.loanmanagement.ApplicationScreen"
+            android:label="@string/item_new_application" >
+        </activity>
+        <activity
             android:name="org.jboss.demo.loanmanagement.EvaluationsScreen"
             android:label="@string/Evaluations" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.jboss.demo.loanmanagement.LoanManagementScreen" />
         </activity>
         <activity
             android:name="org.jboss.demo.loanmanagement.StatusesScreen"
             android:label="@string/Statuses" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.jboss.demo.loanmanagement.LoanManagementScreen" />
         </activity>
     </application>
 

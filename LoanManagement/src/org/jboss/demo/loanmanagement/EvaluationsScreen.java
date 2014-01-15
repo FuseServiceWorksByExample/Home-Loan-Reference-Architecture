@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2013-2014 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -21,6 +21,7 @@ import org.jboss.demo.loanmanagement.widget.EvaluationsAdapter;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -98,6 +99,9 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
         this.adapter = new EvaluationsAdapter(this, evaluations);
         this.listView.setAdapter(this.adapter);
         this.listView.setOnItemClickListener(this);
+
+        // add up arrow
+        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -157,6 +161,11 @@ public final class EvaluationsScreen extends Activity implements OnItemClickList
         if (selectedItemId == R.id.action_sort_by_ssn) {
             selectedItem.setChecked(true);
             this.adapter.setSorter(Prefs.SORT_BY_SSN);
+            return true;
+        }
+
+        if (selectedItemId == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
             return true;
         }
 

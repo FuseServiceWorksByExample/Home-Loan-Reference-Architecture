@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/panel_margin"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/lbl_completed_by"
+        style="@style/loanmanagement.TopLabel"
+        android:text="@string/label_completed_by" />
+
+    <RadioGroup
+        android:id="@+id/grp_completed_by"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/btn_jointly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/btn_jointly" />
+
+        <RadioButton
+            android:id="@+id/btn_not_jointly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_not_jointly" />
+    </RadioGroup>
+
+    <include layout="@layout/housing_expense" />
+
+</LinearLayout>

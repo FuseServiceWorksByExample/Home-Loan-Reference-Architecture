@@ -11,18 +11,14 @@
 
         <TextView
             android:id="@+id/lblSsn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingRight="@dimen/label_padding_right"
-            android:text="@string/label_ssn"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            style="@style/loanmanagement.LeftLabel"
+            android:text="@string/label_ssn" />
 
         <TextView
             android:id="@+id/txtSsn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp" />
+            android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
     <LinearLayout
@@ -31,18 +27,16 @@
 
         <TextView
             android:id="@+id/lblApplicant"
+            style="@style/loanmanagement.LeftLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="@dimen/label_padding_right"
-            android:text="@string/label_applicant"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:text="@string/label_applicant" />
 
         <TextView
             android:id="@+id/txtApplicant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp" />
+            android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
     <LinearLayout
@@ -51,18 +45,16 @@
 
         <TextView
             android:id="@+id/lblCreditScore"
+            style="@style/loanmanagement.LeftLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="@dimen/label_padding_right"
-            android:text="@string/label_credit_score"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:text="@string/label_credit_score" />
 
         <TextView
             android:id="@+id/txtCreditScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp" />
+            android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
     <!-- Divider -->
@@ -105,24 +97,21 @@
 
         <TextView
             android:id="@+id/lblExplanation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_explanation"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            style="@style/loanmanagement.TopLabel"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/label_explanation" />
 
         <EditText
             android:id="@+id/editExplanation"
+            style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:hint="@string/hint_evaluation_explanation"
             android:inputType="textMultiLine"
             android:lines="@integer/expanation_num_lines"
             android:maxLength="256"
             android:maxLines="@integer/expanation_num_lines"
-            android:minLines="@integer/expanation_num_lines"
-            android:textSize="14sp" />
+            android:minLines="@integer/expanation_num_lines" />
     </LinearLayout>
 
     <LinearLayout
@@ -132,21 +121,16 @@
 
         <TextView
             android:id="@+id/lblRate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:text="@string/label_rate"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_rate" />
 
         <EditText
             android:id="@+id/editRate"
+            style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:hint="@string/hint_evaluation_interest_rate"
-            android:inputType="numberDecimal"
-            android:textSize="14sp" >
+            android:inputType="numberDecimal" >
         </EditText>
     </LinearLayout>
 
@@ -157,21 +141,16 @@
 
         <TextView
             android:id="@+id/lblInsuranceCost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:text="@string/label_insurance_cost"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_insurance_cost" />
 
         <EditText
             android:id="@+id/editInsuranceCost"
+            style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:hint="@string/hint_evaluation_insurance_cost"
-            android:inputType="numberDecimal"
-            android:textSize="14sp" />
+            android:inputType="numberDecimal" />
     </LinearLayout>
 
 </LinearLayout>

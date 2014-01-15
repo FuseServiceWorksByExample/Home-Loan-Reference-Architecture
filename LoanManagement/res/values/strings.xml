@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="enum_property_type">
+        <item>Primary_Residence</item>
+        <item>Secondary_Residence</item>
+        <item>Investment</item>
+    </string-array>
+    <string-array name="enum_titled">
+        <item>Solely_By_Yourself</item>
+        <item>Jointly_With_Your_Spouse</item>
+        <item>Jointly_With_Another_Person</item>
+        <item>Not_Specified</item>
+    </string-array>
+
     <string name="app_name">Loan Management</string>
     <string name="app_status_approved">APPROVED</string>
     <string name="app_status_pending">PENDING</string>
     <string name="app_status_rejected">REJECTED</string>
-    <string name="application_dialog_title">New Application</string>
     <string name="Approve">Approve</string>
+    <string name="btn_jointly">Jointly</string>
+    <string name="btn_not_jointly">Not Jointly</string>
+    <string name="chk_any_judgements">Any judgements</string>
+    <string name="chk_borrowed_down_payment">Borrowed down payment</string>
+    <string name="chk_co_maker_note">Co-maker note</string>
+    <string name="chk_declared_bankruptcy">Declared bankruptcy</string>
+    <string name="chk_delinquent">Have been delinquent on another loan</string>
+    <string name="chk_lawsuit">Have been involved in a lawsuit</string>
+    <string name="chk_obligated_on_any_loan">Obligated on another loan</string>
+    <string name="chk_obligated_to_pay_alimony">Obligated to pay alimony</string>
+    <string name="chk_ownership_interest">Ownership interest</string>
+    <string name="chk_permanent_resident">Permanent resident</string>
+    <string name="chk_property_foreclosed">Have foreclosed on property</string>
+    <string name="chk_primary_residence">Primary resident</string>
+    <string name="chk_self_employed">Self employed</string>
+    <string name="chk_us_citizen">U.S. citizen</string>
+    <string name="employer_date_format">DD/MM/YYYY</string>
     <string name="empty_evaluations_message">There are no available application evaluations.</string>
     <string name="empty_statuses_message">There are no available application statuses.</string>
     <string name="evaluate_dialog_title">Evaluate</string>
@@ -32,13 +60,41 @@
     <string name="item_sort_by_rate">By Rate</string>
     <string name="item_sort_by_ssn">By SSN</string>
     <string name="item_sort_by_status">By Status</string>
+    <string name="label_account_number">Account #:</string>
+    <string name="label_addr_line_1">Address (Line 1):</string>
+    <string name="label_addr_line_2">Address (Line 2):</string>
     <string name="label_applicant">Applicant:</string>
+    <string name="label_asset_amount">Amount:</string>
+    <string name="label_asset_description">Description:</string>
+    <string name="label_association_dues">Amount:</string>
+    <string name="label_business_phone">Phone:</string>
+    <string name="label_business_type">Business Type:</string>
+    <string name="label_city">City:</string>
+    <string name="label_completed_by">Completed:</string>
+    <string name="label_county">County:</string>
     <string name="label_credit_score">Credit Score:</string>
+    <string name="label_employer_name">Employer Name:</string>
     <string name="label_explanation">Explanation:</string>
+    <string name="label_first_mortgage">First Mortgage:</string>
+    <string name="label_hazard_insurance">Hazard Insurance:</string>
     <string name="label_insurance_cost">Insurance Cost:</string>
+    <string name="label_job_position">Position:</string>
+    <string name="label_job_from_date">From:</string>
+    <string name="label_job_title">Title:</string>
+    <string name="label_job_to_date">To:</string>
+    <string name="label_monthly_income">Monthly Income:</string>
+    <string name="label_number_of_units">Number Of Units:</string>
+    <string name="label_other_housing_expenses">Other Housing Expenses:</string>
+    <string name="label_property_type">Property Type:</string>
     <string name="label_rate">Rate:</string>
+    <string name="label_real_estate_taxes">Real Estate Taxes:</string>
+    <string name="label_rent">Rent:</string>
     <string name="label_ssn">SSN:</string>
+    <string name="label_state">State:</string>
+    <string name="label_titled">Titled:</string>
+    <string name="label_year_built">Year Built:</string>
     <string name="loan_rate">%1$s APR</string>
+    <string name="label_zipcode">Zipcode:</string>
     <string name="msg_no_available_statuses">No available application statuses</string>
     <string name="number_of_evaluations">%1$s available evaluations</string>
     <string name="number_of_statuses">%1$s available statuses</string>

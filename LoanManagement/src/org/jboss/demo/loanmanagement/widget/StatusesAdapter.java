@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2013-2014 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -16,8 +16,11 @@ import java.util.Arrays;
 import java.util.Comparator;
 import org.jboss.demo.loanmanagement.R;
 import org.jboss.demo.loanmanagement.Util;
+import org.jboss.demo.loanmanagement.Util.Prefs;
 import org.jboss.demo.loanmanagement.model.ApplicationStatus;
+import org.jboss.demo.loanmanagement.model.Evaluation;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,17 +33,51 @@ import android.widget.TextView;
  */
 public final class StatusesAdapter extends ArrayAdapter<ApplicationStatus> {
 
-    private Comparator<ApplicationStatus> sorter = ApplicationStatus.NAME_SORTER;
-    private ApplicationStatus[] statuses;
+    private static final String DEFAULT_SORTER_ID = Prefs.SORT_BY_SSN;
+
+    private Comparator<ApplicationStatus> sorter;
 
     /**
-     * @param screen the statuses screen (cannot be <code>null</code>)
+     * @param context the statuses screen (cannot be <code>null</code>)
      * @param appStatuses the statuses (cannot be <code>null</code> or empty)
      */
-    public StatusesAdapter( final Context screen,
+    public StatusesAdapter( final Context context,
                             final ApplicationStatus[] appStatuses ) {
-        super(screen, R.layout.statuses_screen, appStatuses);
-        this.statuses = ((appStatuses == null) ? ApplicationStatus.NO_STATUSES : appStatuses);
+        super(context, R.layout.statuses_screen, appStatuses);
+
+        // setup sorter
+        final String sortBy = Util.getPreferences(context).getString(Util.Prefs.STATUS_SORTER, DEFAULT_SORTER_ID);
+
+        if (Prefs.SORT_BY_NAME.equals(sortBy)) {
+            this.sorter = ApplicationStatus.NAME_SORTER;
+        } else if (Prefs.SORT_BY_SSN.equals(sortBy)) {
+            this.sorter = ApplicationStatus.SSN_SORTER;
+        } else if (Prefs.SORT_BY_RATE.equals(sortBy)) {
+            this.sorter = ApplicationStatus.RATE_SORTER;
+        } else {
+            this.sorter = ApplicationStatus.STATUS_SORTER;
+        }
+    }
+
+    /**
+     * @return the sorter identifier
+     * @see Prefs#SORT_BY_NAME
+     * @see Prefs#SORT_BY_SSN
+     */
+    public String getSorterId() {
+        if (this.sorter == ApplicationStatus.NAME_SORTER) {
+            return Prefs.SORT_BY_NAME;
+        }
+
+        if (this.sorter == ApplicationStatus.SSN_SORTER) {
+            return Prefs.SORT_BY_SSN;
+        }
+
+        if (this.sorter == ApplicationStatus.RATE_SORTER) {
+            return Prefs.SORT_BY_RATE;
+        }
+
+        return Prefs.SORT_BY_STATUS;
     }
 
     /**
@@ -117,17 +154,36 @@ public final class StatusesAdapter extends ArrayAdapter<ApplicationStatus> {
     }
 
     /**
-     * @param statusSorter the new sorter (can be <code>null</code>)
+     * @param sorterId the identifier of the new sorter (can be <code>null</code> if default sorter should be used)
+     * @see ApplicationStatus#NAME_SORTER
+     * @see ApplicationStatus#RATE_SORTER
+     * @see ApplicationStatus#SSN_SORTER
+     * @see ApplicationStatus#STATUS_SORTER
      */
-    public void setSorter( final Comparator<ApplicationStatus> statusSorter ) {
-        if (this.sorter != statusSorter) {
-            if (statusSorter == null) {
-                this.sorter = ApplicationStatus.NAME_SORTER;
-            } else {
-                this.sorter = statusSorter;
-            }
+    public void setSorter( final String sorterId ) {
+        String newId = sorterId;
+        Comparator<ApplicationStatus> statusSorter = null;
 
-            sort();
+        if (TextUtils.isEmpty(newId)) {
+            newId = DEFAULT_SORTER_ID;
+        }
+
+        if (Prefs.SORT_BY_NAME.equals(newId) && (this.sorter != ApplicationStatus.NAME_SORTER)) {
+            statusSorter = ApplicationStatus.NAME_SORTER;
+        } else if (Prefs.SORT_BY_SSN.equals(newId) && (this.sorter != ApplicationStatus.SSN_SORTER)) {
+            statusSorter = ApplicationStatus.SSN_SORTER;
+        } else if (Prefs.SORT_BY_SSN.equals(newId) && (this.sorter != ApplicationStatus.RATE_SORTER)) {
+            statusSorter = ApplicationStatus.RATE_SORTER;
+        } else {
+            statusSorter = ApplicationStatus.STATUS_SORTER;
+        }
+
+        if (statusSorter != null) {
+            this.sorter = statusSorter;
+            sort(this.sorter);
+
+            // save new preference value
+            Util.getPreferenceEditor(getContext()).putString(Prefs.STATUS_SORTER, newId).apply();
         }
     }
 
@@ -135,13 +191,9 @@ public final class StatusesAdapter extends ArrayAdapter<ApplicationStatus> {
      * @param newStatuses the available application statuses (can be <code>null</code>)
      */
     public void setStatuses( final ApplicationStatus[] newStatuses ) {
-        this.statuses = ((newStatuses == null) ? ApplicationStatus.NO_STATUSES : newStatuses);
-        sort();
-    }
-
-    private void sort() {
-        Arrays.sort(this.statuses, this.sorter);
-        notifyDataSetChanged();
+        clear();
+        addAll(newStatuses);
+        sort(this.sorter);
     }
 
     class ItemHolder {

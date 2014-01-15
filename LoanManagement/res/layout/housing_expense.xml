@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/panel_margin"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_any_judgements"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_first_mortgage" />
+
+        <EditText
+            android:id="@+id/txt_first_mortgage"
+            style="@style/loanmanagement.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_borrowed_down_payment"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_hazard_insurance" />
+
+        <EditText
+            android:id="@+id/txt_hazard_insurance"
+            style="@style/loanmanagement.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_co_maker_note"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_association_dues" />
+
+        <EditText
+            android:id="@+id/txt_association_dues"
+            style="@style/loanmanagement.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_declared_bankruptcy"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_other_housing_expenses" />
+
+        <EditText
+            android:id="@+id/txt_other_housing_expense"
+            style="@style/loanmanagement.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_delinquent"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_real_estate_taxes" />
+
+        <EditText
+            android:id="@+id/txt_real_estate_taxes"
+            style="@style/loanmanagement.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_lawsuit"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_rent" />
+
+        <EditText
+            android:id="@+id/txt_rent"
+            style="@style/loanmanagement.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" >
+        </EditText>
+    </LinearLayout>
+
+</LinearLayout>

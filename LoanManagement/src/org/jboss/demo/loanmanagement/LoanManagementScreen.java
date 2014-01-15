@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2013-2014 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -20,7 +20,6 @@ import org.jboss.demo.loanmanagement.model.ApplicationStatusParcelable;
 import org.jboss.demo.loanmanagement.model.Evaluation;
 import org.jboss.demo.loanmanagement.model.EvaluationParcelable;
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -90,9 +89,8 @@ public final class LoanManagementScreen extends Activity {
     public void onNewApplicationSelected( final View view ) {
         Log.d(LoanManagementScreen.class.getSimpleName(), "New Application selected"); //$NON-NLS-1$
 
-        final FragmentManager fragMgr = getFragmentManager();
-        final ApplicationDialog dialog = new ApplicationDialog();
-        dialog.show(fragMgr, ApplicationDialog.class.getSimpleName());
+        final Intent intent = new Intent(getContext(), ApplicationScreen.class);
+        startActivity(intent);
     }
 
     /**

@@ -22,7 +22,7 @@
     </style>
 
     <style name="loanmanagement.EditText" parent="@android:style/Widget.EditText">
-        <item name="android:background">@drawable/text_field_border</item>
+        <item name="android:background">@drawable/edit_text_selector</item>
         <item name="android:inputType">text</item>
         <item name="android:textColor">@color/gray40</item>
         <item name="android:layout_margin">4dp</item>

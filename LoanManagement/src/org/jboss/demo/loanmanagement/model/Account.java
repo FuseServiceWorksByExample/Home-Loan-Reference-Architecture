@@ -55,6 +55,10 @@ public final class Account extends Asset {
             return false;
         }
 
+        if (this == obj) {
+            return true;
+        }
+
         final Account that = (Account)obj;
         return (Util.equals(this.number, that.number) && Util.equals(this.address, that.address));
     }

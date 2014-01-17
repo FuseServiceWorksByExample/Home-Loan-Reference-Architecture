@@ -63,6 +63,10 @@ public final class HousingExpense {
             return false;
         }
 
+        if (this == obj) {
+            return true;
+        }
+
         final HousingExpense that = (HousingExpense)obj;
         return (Util.equals(this.firstMortgage, that.firstMortgage) && Util.equals(this.hazardInsurance,
                                                                                    that.hazardInsurance)

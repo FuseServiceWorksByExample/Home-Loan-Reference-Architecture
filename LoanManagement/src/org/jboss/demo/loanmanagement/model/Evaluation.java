@@ -112,6 +112,10 @@ public final class Evaluation {
             return false;
         }
 
+        if (this == obj) {
+            return true;
+        }
+
         final Evaluation that = (Evaluation)obj;
         return (Util.equals(this.ssn, that.ssn) && Util.equals(this.applicant, that.applicant)
                         && Util.equals(this.creditScore, that.creditScore)

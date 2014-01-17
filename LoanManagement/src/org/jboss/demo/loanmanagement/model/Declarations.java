@@ -83,6 +83,10 @@ public final class Declarations {
             return false;
         }
 
+        if (this == obj) {
+            return true;
+        }
+
         final Declarations that = (Declarations)obj;
         return ((this.anyJudgments == that.anyJudgments) && (this.borrowedDownPayment == that.borrowedDownPayment)
                         && (this.coMakerNote == that.coMakerNote)

@@ -71,6 +71,10 @@ public final class Employer {
             return false;
         }
 
+        if (this == obj) {
+            return true;
+        }
+
         final Employer that = (Employer)obj;
         return Util.equals(this.address, that.address) && Util.equals(this.businessType, that.businessType)
                         && Util.equals(this.from, that.from)

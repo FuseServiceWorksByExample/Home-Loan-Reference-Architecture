@@ -53,6 +53,10 @@ public class Address {
             return false;
         }
 
+        if (this == obj) {
+            return true;
+        }
+
         final Address that = (Address)obj;
         return TextUtils.equals(this.line1, that.line1) && TextUtils.equals(this.line2, that.line2)
                         && TextUtils.equals(this.city, that.city)

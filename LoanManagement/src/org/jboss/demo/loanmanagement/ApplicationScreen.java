@@ -36,7 +36,6 @@ public class ApplicationScreen extends Activity {
 
         this.applicationEditor = (ExpandableListView)findViewById(R.id.application_expandable_list);
         final Application loanApplication = new Application();
-        loanApplication.setDescription("blah blah blah");
         this.adapter = new ApplicationAdapter(this, this.applicationEditor, loanApplication);
         this.applicationEditor.setAdapter(this.adapter);
     }

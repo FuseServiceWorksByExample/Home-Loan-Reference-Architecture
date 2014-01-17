@@ -35,6 +35,10 @@ public abstract class Asset {
             return false;
         }
 
+        if (this == obj) {
+            return true;
+        }
+
         final Asset that = (Asset)obj;
         return (Util.equals(this.amount, that.amount) && Util.equals(this.description, that.description));
     }

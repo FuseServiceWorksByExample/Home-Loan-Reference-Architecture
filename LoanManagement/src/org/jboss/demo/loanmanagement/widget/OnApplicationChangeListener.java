@@ -21,8 +21,10 @@ import org.jboss.demo.loanmanagement.model.Property;
 import android.text.Editable;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Listens for changes to UI widgets and modifies the {@link Application} model object.
@@ -65,7 +67,21 @@ public final class OnApplicationChangeListener {
      * @param view the borrowers view of the application screen (cannot be <code>null</code>)
      */
     public void setupBorrowersViewListeners( final View view ) {
-        // TODO implement
+        if (this.application.getBorrowers().isEmpty()) {
+            final ImageButton btn = (ImageButton)view.findViewById(R.id.img_add_borrower);
+            btn.setOnClickListener(new View.OnClickListener() {
+
+                /**
+                 * @see android.view.View.OnClickListener#onClick(android.view.View)
+                 */
+                @Override
+                public void onClick( final View btnAddBorrower ) {
+                    Toast.makeText(btnAddBorrower.getContext(), "Add Borrower clicked", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // TODO implement
+        }
     }
 
     /**

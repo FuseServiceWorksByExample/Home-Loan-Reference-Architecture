@@ -23,6 +23,11 @@ import org.jboss.demo.loanmanagement.Util;
 public final class HousingExpense {
 
     /**
+     * The housing expense types.
+     */
+    public static final String[] HOUSING_EXPENSE_TYPES = new String[] {"Present", "Proposed"}; //$NON-NLS-1$ //$NON-NLS-2$ 
+
+    /**
      * @param original the housing expense being copied (cannot be <code>null</code>)
      * @return the copy (never <code>null</code>)
      */
@@ -47,8 +52,7 @@ public final class HousingExpense {
     private BigDecimal otherMortgage;
     private BigDecimal realEstateTaxes;
     private BigDecimal rent;
-
-    private Type type;
+    private String type;
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
@@ -147,9 +151,9 @@ public final class HousingExpense {
     }
 
     /**
-     * @return the type of housing expense (can be <code>null</code>)
+     * @return the type of housing expense (can be <code>null</code> or empty)
      */
-    public Type getType() {
+    public String getType() {
         return this.type;
     }
 
@@ -261,43 +265,12 @@ public final class HousingExpense {
     }
 
     /**
-     * @param newType the type (can be <code>null</code>)
+     * @param newType the type (can be <code>null</code> or empty)
      */
-    public void setType( final Type newType ) {
-        if (this.type != newType) {
+    public void setType( final String newType ) {
+        if (!Util.equals(this.type, newType)) {
             this.type = newType;
         }
-    }
-
-    /**
-     * The housing expense type.
-     */
-    public enum Type {
-
-        /**
-         * A present housing expense.
-         */
-        PRESENT("Present"), //$NON-NLS-1$
-
-        /**
-         * A proposed housing expense.
-         */
-        PROPOSED("Proposed"); //$NON-NLS-1$
-
-        private final String value;
-
-        private Type( final String enumValue ) {
-            this.value = enumValue;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
     }
 
 }

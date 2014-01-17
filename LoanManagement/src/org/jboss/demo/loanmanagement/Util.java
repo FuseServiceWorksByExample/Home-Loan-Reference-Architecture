@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 
 /**
  * Loan management app utilities.
@@ -38,6 +39,20 @@ public final class Util {
     public static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
     private static final String PREFS_NAME = "loanmanagement"; //$NON-NLS-1$
+
+    /**
+     * @param original the source array (cannot be <code>null</code>)
+     * @return the array copy (never <code>null</code>)
+     */
+    public static int[] copy( final int[] original ) {
+        final int[] copy = new int[original.length];
+
+        for (int i = 0; i < original.length; ++i) {
+            copy[i] = original[i];
+        }
+
+        return copy;
+    }
 
     /**
      * @param context the app context (cannot be <code>null</code>)
@@ -125,6 +140,34 @@ public final class Util {
      */
     public static SharedPreferences getPreferences( final Context context ) {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+    }
+
+    /**
+     * @param text the text being parsed (if <code>null</code> or empty the value will be zero)
+     * @return the double value
+     * @throws NumberFormatException if text cannot be parsed as a double value
+     */
+    public static double parseDouble( final String text ) {
+        if (TextUtils.isEmpty(text)) {
+            return 0;
+        }
+
+        return Double.parseDouble(text);
+
+    }
+
+    /**
+     * @param text the text being parsed (if <code>null</code> or empty the value will be zero)
+     * @return the double value
+     * @throws NumberFormatException if text cannot be parsed as an integer value
+     */
+    public static int parseInt( final String text ) {
+        if (TextUtils.isEmpty(text)) {
+            return 0;
+        }
+
+        return Integer.parseInt(text);
+
     }
 
     /**

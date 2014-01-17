@@ -38,15 +38,15 @@ public final class Employer {
         final Employer copy = new Employer();
 
         copy.setAddress(Address.copy(original.getAddress()));
-        copy.setBusinessType(original.getBusinessType());
-        copy.setFromDate(original.getFromDate());
+        copy.setBusinessType(original.businessType);
+        copy.setFromDate(original.from);
         copy.setMonthlyIncome(original.getMonthlyIncome());
-        copy.setName(original.getName());
-        copy.setPhone(original.getPhone());
-        copy.setPosition(original.getPosition());
-        copy.setSelfEmployed(original.isSelfEmployed());
-        copy.setTitle(original.getTitle());
-        copy.setToDate(original.getToDate());
+        copy.setName(original.name);
+        copy.setPhone(original.phone);
+        copy.setPosition(original.position);
+        copy.setSelfEmployed(original.selfEmployed);
+        copy.setTitle(original.title);
+        copy.setToDate(original.to);
 
         return copy;
     }

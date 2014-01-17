@@ -25,6 +25,11 @@ import org.jboss.demo.loanmanagement.Util;
 public final class BorrowerAddress extends Address {
 
     /**
+     * The address types.
+     */
+    public static final String[] ADDRESS_TYPES = new String[] {"Own", "Rent", "Not_Specified"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+
+    /**
      * An empty collection of borrower addresses.
      */
     static List<BorrowerAddress> NONE = Collections.emptyList();
@@ -43,13 +48,13 @@ public final class BorrowerAddress extends Address {
         copy.setPostalCode(original.getPostalCode());
         copy.setState(original.getState());
         copy.setNumYears(original.getNumYears());
-        copy.setType(original.getType());
+        copy.setType(original.type);
 
         return copy;
     }
 
-    private Type type = Type.NOT_SPECIFIED;
     private BigDecimal numYears; // xx.xx
+    private String type;
 
     /**
      * @see org.jboss.demo.loanmanagement.model.Address#equals(java.lang.Object)
@@ -76,9 +81,9 @@ public final class BorrowerAddress extends Address {
     }
 
     /**
-     * @return the type (never <code>null</code>)
+     * @return the type (can be <code>null</code> or empty)
      */
-    public Type getType() {
+    public String getType() {
         return this.type;
     }
 
@@ -103,46 +108,10 @@ public final class BorrowerAddress extends Address {
     /**
      * @param newType the new value for the type (can be <code>null</code>)
      */
-    public void setType( final Type newType ) {
-        if (this.type != newType) {
-            this.type = ((newType == null) ? Type.NOT_SPECIFIED : newType);
+    public void setType( final String newType ) {
+        if (!Util.equals(this.type, newType)) {
+            this.type = newType;
         }
-    }
-
-    /**
-     * The type of the borrower's address.
-     */
-    public enum Type {
-
-        /**
-         * The borrower owns the property at this address.
-         */
-        OWN("Own"), //$NON-NLS-1$
-
-        /**
-         * The borrower is renting the property at this address.
-         */
-        RENT("Rent"), //$NON-NLS-1$
-
-        /**
-         * The property at this address has an unspecified type.
-         */
-        NOT_SPECIFIED("Not_Specified"); //$NON-NLS-1$
-
-        private final String value;
-
-        private Type( final String enumValue ) {
-            this.value = enumValue;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
     }
 
 }

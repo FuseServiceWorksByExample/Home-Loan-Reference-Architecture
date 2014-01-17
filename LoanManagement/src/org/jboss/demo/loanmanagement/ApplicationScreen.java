@@ -12,11 +12,15 @@
  */
 package org.jboss.demo.loanmanagement;
 
+import org.jboss.demo.loanmanagement.model.Application;
 import org.jboss.demo.loanmanagement.widget.ApplicationAdapter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ExpandableListView;
 
+/**
+ * The loan application editor screen.
+ */
 public class ApplicationScreen extends Activity {
 
     private ApplicationAdapter adapter;
@@ -31,7 +35,9 @@ public class ApplicationScreen extends Activity {
         setContentView(R.layout.application);
 
         this.applicationEditor = (ExpandableListView)findViewById(R.id.application_expandable_list);
-        this.adapter = new ApplicationAdapter(this, this.applicationEditor);
+        final Application loanApplication = new Application();
+        loanApplication.setDescription("blah blah blah");
+        this.adapter = new ApplicationAdapter(this, this.applicationEditor, loanApplication);
         this.applicationEditor.setAdapter(this.adapter);
     }
 

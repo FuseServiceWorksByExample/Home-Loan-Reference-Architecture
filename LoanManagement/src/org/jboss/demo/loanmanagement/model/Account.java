@@ -37,14 +37,14 @@ public final class Account extends Asset {
 
         copy.setAmount(original.getAmount());
         copy.setDescription(original.getDescription());
-        copy.setNumber(original.getNumber());
+        copy.setNumber(original.number);
         copy.setAddress(Address.copy(original.getAddress()));
 
         return copy;
     }
 
-    private String number; // max 100
     private Address address;
+    private String number; // max 100
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)

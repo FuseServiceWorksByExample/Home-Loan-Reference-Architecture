@@ -27,12 +27,12 @@ public class Address {
     public static Address copy( final Address original ) {
         final Address copy = new Address();
 
-        copy.setCity(original.getCity());
-        copy.setCounty(original.getCounty());
-        copy.setLine1(original.getLine1());
-        copy.setLine2(original.getLine2());
-        copy.setPostalCode(original.getPostalCode());
-        copy.setState(original.getState());
+        copy.setCity(original.city);
+        copy.setCounty(original.county);
+        copy.setLine1(original.line1);
+        copy.setLine2(original.line2);
+        copy.setPostalCode(original.postalCode);
+        copy.setState(original.state);
 
         return copy;
     }

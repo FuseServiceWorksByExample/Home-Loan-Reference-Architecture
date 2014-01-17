@@ -23,13 +23,18 @@ import org.jboss.demo.loanmanagement.Util;
 public final class AssetsAndLiabilities {
 
     /**
+     * Indicates who was present when the assets and liabilities were declared.
+     */
+    public static final String[] COMPLETED_BY = new String[] {"Jointly", "Not_Jointly"}; //$NON-NLS-1$ //$NON-NLS-2$
+
+    /**
      * @param original the assets and liabilities being copied (cannot be <code>null</code>)
      * @return the copy (never <code>null</code>)
      */
     public static AssetsAndLiabilities copy( final AssetsAndLiabilities original ) {
         final AssetsAndLiabilities copy = new AssetsAndLiabilities();
 
-        copy.setCompletedType(original.getCompletedType());
+        copy.setCompletedType(original.completedType);
         copy.setHousingExpense(HousingExpense.copy(original.getHousingExpense()));
 
         // accounts
@@ -58,8 +63,8 @@ public final class AssetsAndLiabilities {
 
     private List<Account> accounts = null;
     private List<Automobile> autos = null;
-    private CompletedType completedType = null;
     private List<CashDeposit> cashDeposits = null;
+    private String completedType = null;
     private HousingExpense housingExpense = null;
 
     /**
@@ -159,7 +164,7 @@ public final class AssetsAndLiabilities {
     /**
      * @return the completed type (can be <code>null</code>)
      */
-    public CompletedType getCompletedType() {
+    public String getCompletedType() {
         return this.completedType;
     }
 
@@ -182,8 +187,8 @@ public final class AssetsAndLiabilities {
     /**
      * @param newCompletedType the new value for the completed type (can be <code>null</code>)
      */
-    public void setCompletedType( final CompletedType newCompletedType ) {
-        if (this.completedType != newCompletedType) {
+    public void setCompletedType( final String newCompletedType ) {
+        if (!Util.equals(this.completedType, newCompletedType)) {
             this.completedType = newCompletedType;
         }
     }
@@ -199,37 +204,6 @@ public final class AssetsAndLiabilities {
         } else if ((newHousingExpense == null) || !this.housingExpense.equals(newHousingExpense)) {
             this.housingExpense = newHousingExpense;
         }
-    }
-
-    /**
-     * Indicates who was present when the assets and liabilities were declared.
-     */
-    public enum CompletedType {
-
-        /**
-         * The assets and liabilities were completed jointly.
-         */
-        JOINTLY("Jointly"), //$NON-NLS-1$
-
-        /**
-         * The assets and liabilities were <em>not</em> completed jointly.
-         */
-        NOT_JOINTLY("Not_Jointly"); //$NON-NLS-1$
-
-        private final String value;
-
-        private CompletedType( final String enumValue ) {
-            this.value = enumValue;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
     }
 
 }

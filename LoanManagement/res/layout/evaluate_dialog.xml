@@ -129,7 +129,7 @@
             style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_evaluation_interest_rate"
+            android:hint="@string/hint_interest_rate"
             android:inputType="numberDecimal" >
         </EditText>
     </LinearLayout>
@@ -149,7 +149,7 @@
             style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_evaluation_insurance_cost"
+            android:hint="@string/hint_dollar_amount"
             android:inputType="numberDecimal" />
     </LinearLayout>
 

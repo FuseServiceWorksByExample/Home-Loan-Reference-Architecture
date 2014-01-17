@@ -68,6 +68,13 @@ public final class AssetsAndLiabilities {
     private HousingExpense housingExpense = null;
 
     /**
+     * Constructs assets and liabilities with default values.
+     */
+    public AssetsAndLiabilities() {
+        this.housingExpense = new HousingExpense();
+    }
+
+    /**
      * @param newAccount the account being added (cannot be <code>null</code>)
      */
     public void addAccount( final Account newAccount ) {
@@ -119,6 +126,10 @@ public final class AssetsAndLiabilities {
     public boolean equals( final Object obj ) {
         if ((obj == null) || !getClass().equals(obj.getClass())) {
             return false;
+        }
+
+        if (this == obj) {
+            return true;
         }
 
         final AssetsAndLiabilities that = (AssetsAndLiabilities)obj;

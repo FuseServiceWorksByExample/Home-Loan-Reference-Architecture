@@ -114,7 +114,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                 result = this.inflater.inflate(R.layout.loan, viewGroup, false);
                 this.listener.setupLoanViewListeners(result);
             } else if (BORROWERS_INDEX == groupIndex) {
-                result = this.inflater.inflate(R.layout.declarations, viewGroup, false);
+                result = this.inflater.inflate(R.layout.borrowers, viewGroup, false);
                 this.listener.setupBorrowersViewListeners(result);
             } else if (HOUSING_EXPENSE_INDEX == groupIndex) {
                 result = this.inflater.inflate(R.layout.housing_expense, viewGroup, false);

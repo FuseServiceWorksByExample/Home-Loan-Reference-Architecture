@@ -69,6 +69,10 @@ public final class Employment {
             return false;
         }
 
+        if (this == obj) {
+            return true;
+        }
+
         final Employment that = (Employment)obj;
         return (Util.equals(this.employers, that.employers) && Util.equals(this.yearsInProfession,
                                                                            that.yearsInProfession));
@@ -102,6 +106,19 @@ public final class Employment {
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {this.employers, this.yearsInProfession});
+    }
+
+    /**
+     * @param removeEmployer the employer being removed (cannot be <code>null</code>)
+     */
+    public void removeEmployer( final Employer removeEmployer ) {
+        if (removeEmployer == null) {
+            throw new NullPointerException();
+        }
+
+        if (this.employers != null) {
+            this.employers.remove(removeEmployer);
+        }
     }
 
     /**

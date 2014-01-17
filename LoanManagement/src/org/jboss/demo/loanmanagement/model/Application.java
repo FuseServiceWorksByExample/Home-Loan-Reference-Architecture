@@ -76,12 +76,25 @@ public final class Application {
     private String type;
 
     /**
+     * Constructs an application with default values.
+     */
+    public Application() {
+        this.assetsAndLiabilities = new AssetsAndLiabilities();
+        this.housingExpense = new HousingExpense();
+        this.property = new Property();
+    }
+
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals( final Object obj ) {
         if ((obj == null) || !getClass().equals(obj.getClass())) {
             return false;
+        }
+
+        if (this == obj) {
+            return true;
         }
 
         final Application that = (Application)obj;

@@ -12,6 +12,7 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import java.util.Arrays;
 import org.jboss.demo.loanmanagement.Util;
 
 /**
@@ -46,6 +47,31 @@ public final class Property {
     private int yearBuilt;
 
     /**
+     * Constructs a property with default values.
+     */
+    public Property() {
+        this.address = new Address();
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals( final Object obj ) {
+        if ((obj == null) || !getClass().equals(obj.getClass())) {
+            return false;
+        }
+
+        if (this == obj) {
+            return true;
+        }
+
+        final Property that = (Property)obj;
+        return (Util.equals(this.address, that.address) && Util.equals(this.numUnits, that.numUnits)
+                        && Util.equals(this.type, that.type) && Util.equals(this.yearBuilt, that.yearBuilt));
+    }
+
+    /**
      * @return the address
      */
     public Address getAddress() {
@@ -71,6 +97,14 @@ public final class Property {
      */
     public int getYearBuilt() {
         return this.yearBuilt;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new Object[] {this.address, this.numUnits, this.type, this.yearBuilt});
     }
 
     /**

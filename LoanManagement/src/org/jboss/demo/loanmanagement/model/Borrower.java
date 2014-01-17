@@ -121,6 +121,10 @@ public final class Borrower {
             return false;
         }
 
+        if (this == obj) {
+            return true;
+        }
+
         final Borrower that = (Borrower)obj;
         return (Util.equals(this.addresses, that.addresses) && Util.equals(this.declarations, that.declarations)
                         && Util.equals(this.dependents, that.dependents)

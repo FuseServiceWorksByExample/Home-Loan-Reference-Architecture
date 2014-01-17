@@ -86,6 +86,7 @@
     <string name="chk_self_employed">Self employed</string>
     <string name="chk_us_citizen">U.S. citizen</string>
     <string name="employer_date_format">DD/MM/YYYY</string>
+    <string name="empty_borrowers_message">There are no borrowers for this loan application.</string>
     <string name="empty_evaluations_message">There are no available application evaluations.</string>
     <string name="empty_statuses_message">There are no available application statuses.</string>
     <string name="evaluate_dialog_title">Evaluate</string>

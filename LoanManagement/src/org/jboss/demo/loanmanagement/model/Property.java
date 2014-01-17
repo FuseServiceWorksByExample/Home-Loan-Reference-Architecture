@@ -19,10 +19,31 @@ import org.jboss.demo.loanmanagement.Util;
  */
 public final class Property {
 
+    /**
+     * The types of property.
+     */
+    public static final String[] PROPERTY_TYPES =
+                    new String[] {"Primary_Residence", "Secondary_Residence", "Investment"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+
+    /**
+     * @param original the property being copied (cannot be <code>null</code>)
+     * @return the copy (never <code>null</code>)
+     */
+    public static Property copy( final Property original ) {
+        final Property copy = new Property();
+
+        copy.setAddress(Address.copy(original.address));
+        copy.setNumUnits(original.numUnits);
+        copy.setYearBuilt(original.yearBuilt);
+        copy.setType(original.type);
+
+        return copy;
+    }
+
     private Address address;
     private int numUnits = 1;
-    private int yearBuilt = 0;
-    private Type type = null;
+    private String type;
+    private int yearBuilt;
 
     /**
      * @return the address
@@ -39,9 +60,9 @@ public final class Property {
     }
 
     /**
-     * @return the type
+     * @return the type (can be <code>null</code> or empty)
      */
-    public Type getType() {
+    public String getType() {
         return this.type;
     }
 
@@ -73,8 +94,8 @@ public final class Property {
     /**
      * @param newType the new value for the type (can be <code>null</code>)
      */
-    public void setType( final Type newType ) {
-        if (this.type != newType) {
+    public void setType( final String newType ) {
+        if (!Util.equals(this.type, newType)) {
             this.type = newType;
         }
     }
@@ -86,42 +107,6 @@ public final class Property {
         if (this.yearBuilt != newYearBuilt) {
             this.yearBuilt = newYearBuilt;
         }
-    }
-
-    /**
-     * The property type.
-     */
-    public enum Type {
-
-        /**
-         * A primary residence property.
-         */
-        PRIMARY_RESIDENCE("Primary_Residence"), //$NON-NLS-1$
-
-        /**
-         * A secondary residence property.
-         */
-        SECONDARY_RESIDENCE("Secondary_Residence"), //$NON-NLS-1$
-
-        /**
-         * An investment property.
-         */
-        INVESTMENT("Investment"); //$NON-NLS-1$
-
-        private final String value;
-
-        private Type( final String enumValue ) {
-            this.value = enumValue;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
     }
 
 }

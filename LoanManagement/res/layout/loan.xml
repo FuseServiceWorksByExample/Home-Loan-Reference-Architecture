@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/loan_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/panel_margin"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/loan_scroller_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_loan_type"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_loan_type" />
+
+            <Spinner
+                android:id="@+id/cbx_loan_type"
+                style="loanmanagement.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/enum_loan_type" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_description"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_description" />
+
+            <EditText
+                android:id="@+id/txt_description"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_loan_amount"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_loan_amount" />
+
+            <EditText
+                android:id="@+id/txt_loan_amount"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_dollar_amount"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_interest_rate"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_interest_rate" />
+
+            <EditText
+                android:id="@+id/txt_interest_rate"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_interest_rate"
+                android:inputType="numberDecimal" >
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_loan_months"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_loan_months" />
+
+            <EditText
+                android:id="@+id/txt_loan_months"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_amortization_type"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_amortization_type" />
+
+            <Spinner
+                android:id="@+id/cbx_amortization_type"
+                style="loanmanagement.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/enum_amortization_type" />
+        </LinearLayout>
+
+        <include layout="@layout/property" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_purchase_type"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_purchase_type" />
+
+            <Spinner
+                android:id="@+id/cbx_purchase_type"
+                style="loanmanagement.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/enum_purchase_type" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_down_payment_source"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_down_payment_source" />
+
+            <EditText
+                android:id="@+id/txt_down_payment_source"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

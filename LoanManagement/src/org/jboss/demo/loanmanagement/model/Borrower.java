@@ -25,6 +25,16 @@ import org.jboss.demo.loanmanagement.Util;
  */
 public final class Borrower {
 
+    /**
+     * The borrowers marital status.
+     */
+    public static final String[] BORROWER_TYPE = new String[] {"Borrower", "Co_Borrower"}; //$NON-NLS-1$ //$NON-NLS-2$ 
+
+    /**
+     * The borrowers marital status.
+     */
+    public static final String[] MARITAL_STATUS = new String[] {"Married", "Not_Specified", "Separated", "Unmarried"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
     private static final int[] NO_DEP_AGES = new int[0];
 
     /**
@@ -40,17 +50,18 @@ public final class Borrower {
         final Borrower copy = new Borrower();
 
         copy.setDeclarations(Declarations.copy(original.getDeclarations()));
-        copy.setNumberOfDependents(original.getNumberOfDependents());
-        copy.setDob(original.getDob());
+        copy.setNumberOfDependents(original.dependents);
+        copy.setDependentsAges(Util.copy(original.dependentsAges));
+        copy.setDob(original.dob);
         copy.setEmploymentInformation(Employment.copy(original.getEmploymentInformation()));
-        copy.setFirstName(original.getFirstName());
-        copy.setMiddleName(original.getMiddleName());
-        copy.setLastName(original.getLastName());
-        copy.setMaritalStatus(original.getMaritalStatus());
-        copy.setPhone(original.getPhone());
-        copy.setSsn(original.getSsn());
-        copy.setTitle(original.getTitle());
-        copy.setType(original.getType());
+        copy.setFirstName(original.firstName);
+        copy.setMiddleName(original.middleName);
+        copy.setLastName(original.lastName);
+        copy.setMaritalStatus(original.maritalStatus);
+        copy.setPhone(original.phone);
+        copy.setSsn(original.ssn);
+        copy.setTitle(original.title);
+        copy.setType(original.type);
         copy.setYearsSchool(original.getYearsSchool());
 
         // addresses
@@ -77,13 +88,13 @@ public final class Borrower {
     private String dob; // xx/xx/xxxx
     private Employment employmentInformation;
     private String firstName; // max length 50
-    private String middleName; // max length 50
     private String lastName; // max length 50
-    private MaritalStatus maritalStatus = MaritalStatus.NOT_SPECIFIED;
+    private String maritalStatus;
+    private String middleName; // max length 50
     private String phone; // max length 20;
     private String ssn; // max length 50;
     private String title; // optional, max length 50
-    private Type type;
+    private String type;
     private BigDecimal yearsSchool; // xx.xx
 
     /**
@@ -184,13 +195,9 @@ public final class Borrower {
     }
 
     /**
-     * @return the marital status (never <code>null</code>)
+     * @return the marital status (can be <code>null</code> or empty)
      */
-    public MaritalStatus getMaritalStatus() {
-        if (this.maritalStatus == null) {
-            return MaritalStatus.NOT_SPECIFIED;
-        }
-
+    public String getMaritalStatus() {
         return this.maritalStatus;
     }
 
@@ -230,9 +237,9 @@ public final class Borrower {
     }
 
     /**
-     * @return the type (can be <code>null</code>)
+     * @return the type (can be <code>null</code> or empty)
      */
-    public Type getType() {
+    public String getType() {
         return this.type;
     }
 
@@ -319,13 +326,9 @@ public final class Borrower {
     /**
      * @param newMaritalStatus the new value for the maritalStatus
      */
-    public void setMaritalStatus( final MaritalStatus newMaritalStatus ) {
+    public void setMaritalStatus( final String newMaritalStatus ) {
         if (!Util.equals(this.maritalStatus, newMaritalStatus)) {
-            if (newMaritalStatus == null) {
-                this.maritalStatus = MaritalStatus.NOT_SPECIFIED;
-            } else {
-                this.maritalStatus = newMaritalStatus;
-            }
+            this.maritalStatus = newMaritalStatus;
         }
     }
 
@@ -377,7 +380,7 @@ public final class Borrower {
     /**
      * @param newType the new value for the type
      */
-    public void setType( final Type newType ) {
+    public void setType( final String newType ) {
         if (!Util.equals(this.type, newType)) {
             this.type = newType;
         }
@@ -391,78 +394,6 @@ public final class Borrower {
             this.yearsSchool = new BigDecimal(newYearsSchool);
             this.yearsSchool.setScale(2, RoundingMode.HALF_EVEN);
         }
-    }
-
-    /**
-     * The borrower's marital status.
-     */
-    public enum MaritalStatus {
-
-        /**
-         * The borrower is married.
-         */
-        MARRIED("Married"), //$NON-NLS-1$
-
-        /**
-         * The borrower is not married.
-         */
-        UNMARRIED("Unmarried"), //$NON-NLS-1$
-
-        /**
-         * The borrower is separated.
-         */
-        SEPARATED("Separated"), //$NON-NLS-1$
-
-        /**
-         * The borrower's marital status is not known.
-         */
-        NOT_SPECIFIED("Not_Specified"); //$NON-NLS-1$
-
-        private final String value;
-
-        private MaritalStatus( final String enumValue ) {
-            this.value = enumValue;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
-    }
-
-    /**
-     * The type of borrower.
-     */
-    public enum Type {
-
-        /**
-         * The principal borrower.
-         */
-        BORROWER("Borrower"), //$NON-NLS-1$
-
-        /**
-         * A co-borrower.
-         */
-        CO_BORROWER("Co_Borrower"); //$NON-NLS-1$
-
-        private final String value;
-
-        private Type( final String enumValue ) {
-            this.value = enumValue;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
     }
 
 }

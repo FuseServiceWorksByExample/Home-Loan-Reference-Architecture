@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/assets_liabilities_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/panel_margin"
@@ -29,7 +30,5 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_not_jointly" />
     </RadioGroup>
-
-    <include layout="@layout/housing_expense" />
 
 </LinearLayout>

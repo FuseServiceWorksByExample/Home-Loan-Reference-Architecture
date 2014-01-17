@@ -21,27 +21,39 @@ import org.jboss.demo.loanmanagement.Util;
 public final class Declarations {
 
     /**
+     * The types of property.
+     */
+    public static final String[] PROPERTY_TYPES =
+                    new String[] {"Principal_Residence", "Second_Home", "Investment_Property", "Not_Specified"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ 
+
+    /**
+     * The names on the title.
+     */
+    public static final String[] TITLED_BY_TYPES = new String[] {"Solely_By_Yourself", "Jointly_With_Your_Spouse", //$NON-NLS-1$ //$NON-NLS-2$
+                                                                 "Jointly_With_Another_Person", "Not_Specified"}; //$NON-NLS-1$ //$NON-NLS-2$
+
+    /**
      * @param original the declarations being copied (cannot be <code>null</code>)
      * @return the copy (never <code>null</code>)
      */
     public static Declarations copy( final Declarations original ) {
         final Declarations copy = new Declarations();
 
-        copy.setAnyJudgments(original.isAnyJudgments());
-        copy.setBorrowedDownPayment(original.isBorrowedDownPayment());
-        copy.setCoMakerNote(original.isCoMakerNote());
-        copy.setDeclaredBankrupt(original.isDeclaredBankrupt());
-        copy.setDelinquent(original.isDelinquent());
-        copy.setLawsuit(original.isLawsuit());
-        copy.setObligatedOnAnyLoan(original.isObligatedOnAnyLoan());
-        copy.setObligatedToPayAlimony(original.isObligatedToPayAlimony());
-        copy.setOwnershipInterest(original.isOwnershipInterest());
-        copy.setPermanentResident(original.isPermanentResident());
-        copy.setPrimaryResidence(original.isPrimaryResidence());
-        copy.setPropertyForeclosed(original.isPropertyForeclosed());
-        copy.setUsCitizen(original.isUsCitizen());
-        copy.setPropertyType(original.getPropertyType());
-        copy.setTitled(original.getTitled());
+        copy.setAnyJudgments(original.anyJudgments);
+        copy.setBorrowedDownPayment(original.borrowedDownPayment);
+        copy.setCoMakerNote(original.coMakerNote);
+        copy.setDeclaredBankrupt(original.declaredBankrupt);
+        copy.setDelinquent(original.delinquent);
+        copy.setLawsuit(original.lawsuit);
+        copy.setObligatedOnAnyLoan(original.obligatedOnAnyLoan);
+        copy.setObligatedToPayAlimony(original.obligatedToPayAlimony);
+        copy.setOwnershipInterest(original.ownershipInterest);
+        copy.setPermanentResident(original.permanentResident);
+        copy.setPrimaryResidence(original.primaryResidence);
+        copy.setPropertyForeclosed(original.propertyForeclosed);
+        copy.setUsCitizen(original.usCitizen);
+        copy.setPropertyType(original.propertyType);
+        copy.setTitled(original.titled);
 
         return copy;
     }
@@ -58,9 +70,9 @@ public final class Declarations {
     private boolean permanentResident;
     private boolean primaryResidence;
     private boolean propertyForeclosed;
+    private String propertyType;
+    private String titled;
     private boolean usCitizen;
-    private PropertyType propertyType = PropertyType.NOT_SPECIFIED;
-    private Titled titled = Titled.NOT_SPECIFIED;
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
@@ -88,16 +100,16 @@ public final class Declarations {
     }
 
     /**
-     * @return the property type (never <code>null</code>)
+     * @return the property type (can be <code>null</code> or empty)
      */
-    public PropertyType getPropertyType() {
+    public String getPropertyType() {
         return this.propertyType;
     }
 
     /**
-     * @return the titled (never <code>null</code>)
+     * @return the titled (can be <code>null</code> or empty)
      */
-    public Titled getTitled() {
+    public String getTitled() {
         return this.titled;
     }
 
@@ -315,18 +327,18 @@ public final class Declarations {
     /**
      * @param newPropertyType the new value for the property type (can be <code>null</code>)
      */
-    public void setPropertyType( final PropertyType newPropertyType ) {
-        if (this.propertyType != newPropertyType) {
-            this.propertyType = ((newPropertyType == null) ? PropertyType.NOT_SPECIFIED : newPropertyType);
+    public void setPropertyType( final String newPropertyType ) {
+        if (!Util.equals(this.propertyType, newPropertyType)) {
+            this.propertyType = newPropertyType;
         }
     }
 
     /**
      * @param newTitled the new value for the titled (can be <code>null</code>)
      */
-    public void setTitled( final Titled newTitled ) {
-        if (this.titled != newTitled) {
-            this.titled = ((newTitled == null) ? Titled.NOT_SPECIFIED : newTitled);
+    public void setTitled( final String newTitled ) {
+        if (!Util.equals(this.titled, newTitled)) {
+            this.titled = newTitled;
         }
     }
 
@@ -337,88 +349,6 @@ public final class Declarations {
         if (this.usCitizen != newUsCitizen) {
             this.usCitizen = newUsCitizen;
         }
-    }
-
-    /**
-     * The declarations property type.
-     */
-    public enum PropertyType {
-
-        /**
-         * Declares the property will be a principal residence.
-         */
-        PRINCIPAL_RESIDENCE("Principal_Residence"), //$NON-NLS-1$
-
-        /**
-         * Declares the property will be a second home.
-         */
-        SECOND_HOME("Second_Home"), //$NON-NLS-1$
-
-        /**
-         * Declares the property is an investment.
-         */
-        INVESTMENT("Investment_Property"), //$NON-NLS-1$
-
-        /**
-         * Has not declared the property type.
-         */
-        NOT_SPECIFIED("Not_Specified"); //$NON-NLS-1$
-
-        private final String value;
-
-        private PropertyType( final String enumValue ) {
-            this.value = enumValue;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
-    }
-
-    /**
-     * The individuals whose names will be on the property title.
-     */
-    public enum Titled {
-
-        /**
-         * Property titled by an individual.
-         */
-        SOLELY_BY_YOURSELF("Solely_By_Yourself"), //$NON-NLS-1$
-
-        /**
-         * Property titled jointly with spouse.
-         */
-        JOINTLY_WITH_SPOUSE("Jointly_With_Your_Spouse"), //$NON-NLS-1$
-
-        /**
-         * Property titled with someone other than a spouse.
-         */
-        JOINTLY_WITH_NON_SPOUSE("Jointly_With_Another_Person"), //$NON-NLS-1$
-
-        /**
-         * Has not declared the property title.
-         */
-        NOT_SPECIFIED("Not_Specified"); //$NON-NLS-1$
-
-        private final String value;
-
-        private Titled( final String enumValue ) {
-            this.value = enumValue;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
     }
 
 }

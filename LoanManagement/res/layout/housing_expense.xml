@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/housing_expense_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/panel_margin"
@@ -11,7 +12,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/lbl_any_judgements"
+            android:id="@+id/lbl_first_mortgage"
             style="@style/loanmanagement.TopLabel"
             android:text="@string/label_first_mortgage" />
 
@@ -20,6 +21,7 @@
             style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/hint_dollar_amount"
             android:inputType="numberDecimal" />
     </LinearLayout>
 
@@ -29,7 +31,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/lbl_borrowed_down_payment"
+            android:id="@+id/lbl_hazard_insurance"
             style="@style/loanmanagement.TopLabel"
             android:text="@string/label_hazard_insurance" />
 
@@ -38,6 +40,7 @@
             style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/hint_dollar_amount"
             android:inputType="numberDecimal" />
     </LinearLayout>
 
@@ -47,7 +50,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/lbl_co_maker_note"
+            android:id="@+id/lbl_association_dues"
             style="@style/loanmanagement.TopLabel"
             android:text="@string/label_association_dues" />
 
@@ -56,6 +59,7 @@
             style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/hint_dollar_amount"
             android:inputType="numberDecimal" />
     </LinearLayout>
 
@@ -65,7 +69,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/lbl_declared_bankruptcy"
+            android:id="@+id/lbl_other_housing_expenses"
             style="@style/loanmanagement.TopLabel"
             android:text="@string/label_other_housing_expenses" />
 
@@ -74,6 +78,7 @@
             style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/hint_dollar_amount"
             android:inputType="numberDecimal" />
     </LinearLayout>
 
@@ -83,7 +88,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/lbl_delinquent"
+            android:id="@+id/lbl_real_estate_taxes"
             style="@style/loanmanagement.TopLabel"
             android:text="@string/label_real_estate_taxes" />
 
@@ -92,6 +97,7 @@
             style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/hint_dollar_amount"
             android:inputType="numberDecimal" />
     </LinearLayout>
 
@@ -101,7 +107,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/lbl_lawsuit"
+            android:id="@+id/lbl_rent"
             style="@style/loanmanagement.TopLabel"
             android:text="@string/label_rent" />
 
@@ -110,6 +116,7 @@
             style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/hint_dollar_amount"
             android:inputType="numberDecimal" >
         </EditText>
     </LinearLayout>

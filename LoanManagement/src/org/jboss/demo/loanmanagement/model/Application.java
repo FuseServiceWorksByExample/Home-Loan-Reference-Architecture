@@ -24,29 +24,45 @@ import org.jboss.demo.loanmanagement.Util;
 public final class Application {
 
     /**
+     * The loan amortization types.
+     */
+    public static final String[] AMORTIZATION_TYPES = new String[] {"Fixed_Rate", "GPM", "ARM", "Other"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+
+    /**
+     * The loan types.
+     */
+    public static final String[] LOAN_TYPES = new String[] {"Conventional", "FHA", "VA", "FmHA", "Other"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+
+    /**
+     * The loan purchase types.
+     */
+    public static final String[] PURCHASE_TYPES = new String[] {"Purchase", "Refinance", "Construction", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                                                "Construction_Permanent", "Other"}; //$NON-NLS-1$ //$NON-NLS-2$
+
+    /**
      * @param original the application being copied (cannot be <code>null</code>)
      * @return the copy (never <code>null</code>)
      */
     public static Application copy( final Application original ) {
         final Application copy = new Application();
 
-        copy.setAmoritizationType(original.getAmoritizationType());
-        copy.setAmount(original.getAmount());
+        copy.setAmortizationType(original.amortizationType);
+        copy.setLoanAmount(original.getAmount());
         copy.setAssetsAndLiabilities(AssetsAndLiabilities.copy(original.getAssetsAndLiabilities()));
         copy.setBorrowers(original.getBorrowers());
-        copy.setDescription(original.getDescription());
-        copy.setDownPaymentSource(original.getDownPaymentSource());
-        copy.setHousingExpense(original.getHousingExpense());
-        copy.setNumMonths(original.getNumMonths());
-        copy.setProperty(original.getProperty());
-        copy.setPurchaseType(original.getPurchaseType());
-        copy.setRate(original.getRate());
-        copy.setType(original.getType());
+        copy.setDescription(original.description);
+        copy.setDownPaymentSource(original.downPaymentSource);
+        copy.setHousingExpense(HousingExpense.copy(original.getHousingExpense()));
+        copy.setNumberOfMonths(original.numMonths);
+        copy.setProperty(Property.copy(original.getProperty()));
+        copy.setPurchaseType(original.purchaseType);
+        copy.setInterestRate(original.getRate());
+        copy.setType(original.type);
 
         return copy;
     }
 
-    private AmortizationType amoritizationType;
+    private String amortizationType;
     private BigDecimal amount; // n.xx
     private AssetsAndLiabilities assetsAndLiabilities;
     private List<Borrower> borrowers; // need at least one
@@ -55,9 +71,9 @@ public final class Application {
     private HousingExpense housingExpense;
     private int numMonths = 0; // positive
     private Property property;
-    private PurchaseType purchaseType;
+    private String purchaseType;
     private BigDecimal rate; // n.xxxx
-    private Type type;
+    private String type;
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
@@ -69,7 +85,7 @@ public final class Application {
         }
 
         final Application that = (Application)obj;
-        return (Util.equals(this.amoritizationType, that.amoritizationType) && Util.equals(this.amount, that.amount)
+        return (Util.equals(this.amortizationType, that.amortizationType) && Util.equals(this.amount, that.amount)
                         && Util.equals(this.assetsAndLiabilities, that.assetsAndLiabilities)
                         && Util.equals(this.borrowers, that.borrowers)
                         && Util.equals(this.description, that.description)
@@ -82,10 +98,10 @@ public final class Application {
     }
 
     /**
-     * @return the amortization type (can be <code>null</code>)
+     * @return the amortization type (can be <code>null</code> or empty)
      */
-    public AmortizationType getAmoritizationType() {
-        return this.amoritizationType;
+    public String getAmoritizationType() {
+        return this.amortizationType;
     }
 
     /**
@@ -153,9 +169,9 @@ public final class Application {
     }
 
     /**
-     * @return the purchase type (can be <code>null</code>)
+     * @return the purchase type (can be <code>null</code> or empty)
      */
-    public PurchaseType getPurchaseType() {
+    public String getPurchaseType() {
         return this.purchaseType;
     }
 
@@ -171,9 +187,9 @@ public final class Application {
     }
 
     /**
-     * @return the type (can be <code>null</code>)
+     * @return the type (can be <code>null</code> or empty)
      */
-    public Type getType() {
+    public String getType() {
         return this.type;
     }
 
@@ -182,28 +198,18 @@ public final class Application {
      */
     @Override
     public int hashCode() {
-        return Arrays.hashCode(new Object[] {this.amoritizationType, this.amount, this.assetsAndLiabilities,
+        return Arrays.hashCode(new Object[] {this.amortizationType, this.amount, this.assetsAndLiabilities,
                                              this.borrowers, this.description, this.downPaymentSource,
                                              this.housingExpense, this.numMonths, this.property, this.purchaseType,
                                              this.rate, this.type});
     }
 
     /**
-     * @param newAmoritizationType the new value for the amoritizationType
+     * @param newAmortizationType the new value for the amortizationType
      */
-    public void setAmoritizationType( final AmortizationType newAmoritizationType ) {
-        if (!Util.equals(this.amoritizationType, newAmoritizationType)) {
-            this.amoritizationType = newAmoritizationType;
-        }
-    }
-
-    /**
-     * @param newAmount the new value for the amount
-     */
-    public void setAmount( final double newAmount ) {
-        if ((this.amount == null) || (this.amount.doubleValue() != newAmount)) {
-            this.amount = new BigDecimal(newAmount);
-            this.amount.setScale(2, RoundingMode.HALF_EVEN);
+    public void setAmortizationType( final String newAmortizationType ) {
+        if (!Util.equals(this.amortizationType, newAmortizationType)) {
+            this.amortizationType = newAmortizationType;
         }
     }
 
@@ -257,9 +263,29 @@ public final class Application {
     }
 
     /**
+     * @param newRate the new value for the loan interest rate
+     */
+    public void setInterestRate( final double newRate ) {
+        if ((this.rate == null) || (this.rate.doubleValue() != newRate)) {
+            this.rate = new BigDecimal(newRate);
+            this.rate.setScale(2, RoundingMode.HALF_EVEN);
+        }
+    }
+
+    /**
+     * @param newAmount the new value for the loan amount
+     */
+    public void setLoanAmount( final double newAmount ) {
+        if ((this.amount == null) || (this.amount.doubleValue() != newAmount)) {
+            this.amount = new BigDecimal(newAmount);
+            this.amount.setScale(2, RoundingMode.HALF_EVEN);
+        }
+    }
+
+    /**
      * @param newNumMonths the new value for the numMonths
      */
-    public void setNumMonths( final int newNumMonths ) {
+    public void setNumberOfMonths( final int newNumMonths ) {
         if (this.numMonths != newNumMonths) {
             this.numMonths = newNumMonths;
         }
@@ -277,162 +303,19 @@ public final class Application {
     /**
      * @param newPurchaseType the new value for the purchaseType
      */
-    public void setPurchaseType( final PurchaseType newPurchaseType ) {
+    public void setPurchaseType( final String newPurchaseType ) {
         if (!Util.equals(this.purchaseType, newPurchaseType)) {
             this.purchaseType = newPurchaseType;
         }
     }
 
     /**
-     * @param newRate the new value for the rate
-     */
-    public void setRate( final double newRate ) {
-        if ((this.rate == null) || (this.rate.doubleValue() != newRate)) {
-            this.rate = new BigDecimal(newRate);
-            this.rate.setScale(2, RoundingMode.HALF_EVEN);
-        }
-    }
-
-    /**
      * @param newType the new value for the type
      */
-    public void setType( final Type newType ) {
+    public void setType( final String newType ) {
         if (!Util.equals(this.type, newType)) {
             this.type = newType;
         }
-    }
-
-    /**
-     * The loan financing type.
-     */
-    public enum AmortizationType {
-
-        /**
-         * A fixed rate loan.
-         */
-        FIXED_RATE("Fixed_Rate"), //$NON-NLS-1$
-
-        /**
-         * A graduated payment loan.
-         */
-        GPM("GPM"), //$NON-NLS-1$
-
-        /**
-         * A miscellaneous type of loan.
-         */
-        OTHER("Other"), //$NON-NLS-1$
-
-        /**
-         * An adjustable rate loan.
-         */
-        ARM("ARM"); //$NON-NLS-1$
-
-        private final String value;
-
-        private AmortizationType( final String enumValue ) {
-            this.value = enumValue;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
-    }
-
-    /**
-     * The purchase type.
-     */
-    public enum PurchaseType {
-
-        /**
-         * An application to purchase a property.
-         */
-        PURCHASE("Purchase"), //$NON-NLS-1$
-
-        /**
-         * An application to refinance a property.
-         */
-        REFINANCE("Refinance"), //$NON-NLS-1$
-
-        /**
-         * An application for construction.
-         */
-        CONSTRUCTION("Construction"), //$NON-NLS-1$
-
-        /**
-         * An application for construction of a permanent structure property.
-         */
-        CONSTRUCTION_PERMANENT("Construction_Permanent"), //$NON-NLS-1$
-
-        /**
-         * An application for a miscellaneous purchase type.
-         */
-        OTHER("Other"); //$NON-NLS-1$
-
-        private final String value;
-
-        private PurchaseType( final String enumValue ) {
-            this.value = enumValue;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
-    }
-
-    /**
-     * The type of application.
-     */
-    public enum Type {
-
-        /**
-         * A conventional loan application.
-         */
-        CONVENTIONAL("Conventional"), //$NON-NLS-1$
-
-        /**
-         * An FHA loan application.
-         */
-        FHA("FHA"), //$NON-NLS-1$
-
-        /**
-         * A VA loan application.
-         */
-        VA("VA"), //$NON-NLS-1$
-
-        /**
-         * An FmHA loan application.
-         */
-        FMHA("FmHA"), //$NON-NLS-1$
-
-        /**
-         * The loan application does not have a common financing type.
-         */
-        OTHER("Other"); //$NON-NLS-1$
-
-        private final String value;
-
-        private Type( final String enumValue ) {
-            this.value = enumValue;
-        }
-
-        /**
-         * @see java.lang.Enum#toString()
-         */
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
     }
 
 }

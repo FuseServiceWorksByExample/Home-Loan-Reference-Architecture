@@ -27,24 +27,31 @@ import android.widget.TextView;
  */
 public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
-    private static final int ADDRESS_INDEX = 0;
-    private static final String[] GROUPS = new String[] {"Address", "Housing Expense"};
-    private static final int HOUSING_EXPENSE_INDEX = 1;
+    private static final int ASSETS_INDEX = 3;
+    private static final int BORROWERS_INDEX = 1;
+    private static final int[] GROUPS = new int[] {R.string.Loan, R.string.Borrowers, R.string.HousingExpense,
+                                                   R.string.AssetsAndLiabilities};
+    private static final int HOUSING_EXPENSE_INDEX = 2;
+    private static final int LOAN_INDEX = 0;
 
     private final Application application;
     private final ExpandableListView expandableListView;
     private final LayoutInflater inflater;
     private int lastExpandedGroupIndex;
+    private final OnApplicationChangeListener listener;
 
     /**
      * @param context the home loan main screen (cannot be <code>null</code>)
      * @param view the expandable list view (cannot be <code>null</code>)
+     * @param loanApplication the application being edited
      */
     public ApplicationAdapter( final Context context,
-                               final ExpandableListView view ) {
+                               final ExpandableListView view,
+                               final Application loanApplication ) {
         this.inflater = LayoutInflater.from(context);
         this.expandableListView = view;
-        this.application = new Application();
+        this.application = loanApplication;
+        this.listener = new OnApplicationChangeListener(this.application);
     }
 
     /**
@@ -69,9 +76,25 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
      * @see android.widget.ExpandableListAdapter#getChildrenCount(int)
      */
     @Override
-    public int getChildrenCount( final int newGroupPosition ) {
-        // TODO Auto-generated method stub
-        return 0;
+    public int getChildrenCount( final int groupIndex ) {
+        return 1;
+    }
+
+    /**
+     * @see android.widget.BaseExpandableListAdapter#getChildType(int, int)
+     */
+    @Override
+    public int getChildType( final int groupIndex,
+                             final int childIndex ) {
+        return groupIndex;
+    }
+
+    /**
+     * @see android.widget.BaseExpandableListAdapter#getChildTypeCount()
+     */
+    @Override
+    public int getChildTypeCount() {
+        return GROUPS.length;
     }
 
     /**
@@ -87,12 +110,19 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         View result = view;
 
         if (view == null) {
-            if (ADDRESS_INDEX == groupIndex) {
-                result = this.inflater.inflate(R.layout.address, viewGroup, false);
+            if (LOAN_INDEX == groupIndex) {
+                result = this.inflater.inflate(R.layout.loan, viewGroup, false);
+                this.listener.setupLoanViewListeners(result);
+            } else if (BORROWERS_INDEX == groupIndex) {
+                result = this.inflater.inflate(R.layout.declarations, viewGroup, false);
+                this.listener.setupBorrowersViewListeners(result);
             } else if (HOUSING_EXPENSE_INDEX == groupIndex) {
                 result = this.inflater.inflate(R.layout.housing_expense, viewGroup, false);
+                this.listener.setupHousingExpenseViewListeners(result);
             } else {
-                result = this.inflater.inflate(R.layout.declarations, viewGroup, false);
+                // assets
+                result = this.inflater.inflate(R.layout.assets_liabilities, viewGroup, false);
+                this.listener.setupAssetsAndLiabilitiesViewListeners(result);
             }
         }
 

@@ -23,8 +23,12 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <include layout="@layout/asset" />
+    <include
+        layout="@layout/asset"
+        android:background="@color/included_layout_background" />
 
-    <include layout="@layout/address" />
+    <include
+        layout="@layout/address"
+        android:background="@color/included_layout_background" />
 
 </LinearLayout>

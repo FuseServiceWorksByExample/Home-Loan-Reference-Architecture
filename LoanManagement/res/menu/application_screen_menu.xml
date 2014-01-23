@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_send_application"
+        android:icon="@drawable/ic_send"
+        android:onClick="handleProcess"
+        android:showAsAction="ifRoom"
+        android:title="@string/item_send_application"/>
+
+</menu>

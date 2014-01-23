@@ -77,6 +77,7 @@ public final class LoanManagementScreen extends Activity {
      * 
      * @param view the view that was selected
      */
+    @SuppressWarnings( "static-method" )
     public void onHelpSelected( final View view ) {
         Log.d(LoanManagementScreen.class.getSimpleName(), "Help selected"); //$NON-NLS-1$
     }

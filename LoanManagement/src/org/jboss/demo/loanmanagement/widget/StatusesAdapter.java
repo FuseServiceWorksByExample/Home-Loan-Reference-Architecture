@@ -12,13 +12,11 @@
  */
 package org.jboss.demo.loanmanagement.widget;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import org.jboss.demo.loanmanagement.R;
 import org.jboss.demo.loanmanagement.Util;
 import org.jboss.demo.loanmanagement.Util.Prefs;
 import org.jboss.demo.loanmanagement.model.ApplicationStatus;
-import org.jboss.demo.loanmanagement.model.Evaluation;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;

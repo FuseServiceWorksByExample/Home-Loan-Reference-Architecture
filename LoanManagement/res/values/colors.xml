@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="included_layout_background">#D1D5D6</color>
     <color name="gray40">#666666</color>
     <color name="slategray3">#9FB6CD</color>
 

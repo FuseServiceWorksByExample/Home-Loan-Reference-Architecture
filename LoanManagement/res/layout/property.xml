@@ -63,6 +63,8 @@
             android:inputType="number" />
     </LinearLayout>
 
-    <include layout="@layout/address" />
+    <include
+        layout="@layout/address"
+        android:background="@color/included_layout_background" />
 
 </LinearLayout>

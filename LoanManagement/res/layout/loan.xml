@@ -122,7 +122,9 @@
                 android:entries="@array/enum_amortization_type" />
         </LinearLayout>
 
-        <include layout="@layout/property" />
+        <include
+            layout="@layout/property"
+            android:background="@color/included_layout_background" />
 
         <LinearLayout
             android:layout_width="match_parent"

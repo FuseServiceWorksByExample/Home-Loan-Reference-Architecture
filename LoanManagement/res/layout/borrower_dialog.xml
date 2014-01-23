@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/panel_margin"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/declarations_scroller_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/btn_borrower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="@string/Borrower" />
+
+            <RadioButton
+                android:id="@+id/btn_co_borrower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/CoBorrower" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_title"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_title" />
+
+            <EditText
+                android:id="@+id/txt_title"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_first_name"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_first_name" />
+
+            <EditText
+                android:id="@+id/txt_first_name"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_middle_name"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_middle_name" />
+
+            <EditText
+                android:id="@+id/txt_middle_name"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_last_name"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_last_name" />
+
+            <EditText
+                android:id="@+id/txt_last_name"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_ssn"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_ssn" />
+
+            <EditText
+                android:id="@+id/txt_ssn"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_dob"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_dob" />
+
+            <EditText
+                android:id="@+id/txt_dob"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_date"
+                android:inputType="date" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/lbl_marital_status"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_marital_status" />
+
+            <Spinner
+                android:id="@+id/cbx_marital_status"
+                style="loanmanagement.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/enum_marital_status" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_phone"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_phone" />
+
+            <EditText
+                android:id="@+id/txt_phone"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_years_in_school"
+                style="@style/loanmanagement.TopLabel"
+                android:text="@string/label_years_in_school" />
+
+            <EditText
+                android:id="@+id/txt_years_in_school"
+                style="@style/loanmanagement.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <include
+            layout="@layout/business_address"
+            android:background="@color/included_layout_background" />
+
+        <include
+            layout="@layout/declarations"
+            android:background="@color/included_layout_background" />
+    </LinearLayout>
+
+</ScrollView>

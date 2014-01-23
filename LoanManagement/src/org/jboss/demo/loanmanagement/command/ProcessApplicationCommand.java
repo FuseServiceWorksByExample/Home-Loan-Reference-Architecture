@@ -14,7 +14,7 @@ package org.jboss.demo.loanmanagement.command;
 
 import org.jboss.demo.loanmanagement.R;
 import org.jboss.demo.loanmanagement.Util;
-import org.jboss.demo.loanmanagement.model.ApplicationStatus;
+import org.jboss.demo.loanmanagement.model.Application;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -22,9 +22,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 /**
- * Command that obtains the available statuses.
+ * Command that processes the loan application.
  */
-public abstract class GetStatusesCommand extends AsyncTask<Void, Void, ApplicationStatus[]> {
+public final class ProcessApplicationCommand extends AsyncTask<Application, Void, Application> {
 
     private final Context context;
     private ProgressDialog dialog = null;
@@ -33,7 +33,7 @@ public abstract class GetStatusesCommand extends AsyncTask<Void, Void, Applicati
     /**
      * @param commandContext the app context (cannot be <code>null</code>)
      */
-    public GetStatusesCommand( final Context commandContext ) {
+    public ProcessApplicationCommand( final Context commandContext ) {
         this.context = commandContext;
     }
 
@@ -42,41 +42,41 @@ public abstract class GetStatusesCommand extends AsyncTask<Void, Void, Applicati
      */
     @SuppressWarnings( "javadoc" )
     @Override
-    protected ApplicationStatus[] doInBackground( final Void... newParams ) {
+    protected Application doInBackground( final Application... loanApplications ) {
         try {
-            // TODO make call to get statuses
+            // TODO make call to process application
             Thread.sleep(2000);
-            return new ApplicationStatus[] {new ApplicationStatus(111111111, "Johnny Marr", 5.0f, "PENDING"),
-                                            new ApplicationStatus(333333333, "Evan Dando", 3.5f, "APPROVED"),
-                                            new ApplicationStatus(222222222, "Joe Strummer", 2.5f, "REJECTED"),
-                                            new ApplicationStatus(444444444, "Steven Morrissey", 8.0f, "PENDING")};
+            return loanApplications[0];
         } catch (final InterruptedException ignore) {
             // user canceled
         } catch (final Exception e) {
             this.error = e;
-            Log.e(GetStatusesCommand.class.getSimpleName(), this.context.getString(R.string.err_get_statuses_command),
-                  this.error);
+            Log.e(ProcessApplicationCommand.class.getSimpleName(),
+                  this.context.getString(R.string.err_process_application_command), this.error);
         }
 
-        return ApplicationStatus.NO_STATUSES;
+        return null;
     }
 
     /**
      * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
      */
     @Override
-    protected void onPostExecute( final ApplicationStatus[] statuses ) {
+    protected void onPostExecute( final Application application ) {
         if (this.dialog != null) {
             this.dialog.dismiss();
         }
 
         if (this.error == null) {
-            process(statuses);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+            builder.setIcon(R.drawable.ic_home)
+                   .setMessage(this.context.getString(R.string.application_processed_successfully))
+                   .setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.ok, null).show();
         } else {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
             builder.setTitle(R.string.err_dialog_title)
                    .setIcon(R.drawable.ic_home)
-                   .setMessage(this.context.getString(R.string.err_get_statuses_command,
+                   .setMessage(this.context.getString(R.string.err_process_application_command,
                                                       this.error.getLocalizedMessage()))
                    .setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.ok, null).show();
         }
@@ -89,11 +89,9 @@ public abstract class GetStatusesCommand extends AsyncTask<Void, Void, Applicati
     protected void onPreExecute() {
         this.dialog =
                         Util.createProgressDialog(this.context,
-                                                  this.context.getString(R.string.statuses_request_dialog_title),
-                                                  this.context.getString(R.string.statuses_request_dialog_msg));
+                                                  this.context.getString(R.string.process_application_dialog_title),
+                                                  this.context.getString(R.string.process_application_dialog_msg));
         this.dialog.show();
     }
-
-    protected abstract void process( ApplicationStatus[] statuses );
 
 }

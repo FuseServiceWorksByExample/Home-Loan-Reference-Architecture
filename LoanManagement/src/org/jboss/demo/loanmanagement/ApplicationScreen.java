@@ -12,19 +12,36 @@
  */
 package org.jboss.demo.loanmanagement;
 
+import org.jboss.demo.loanmanagement.command.ProcessApplicationCommand;
 import org.jboss.demo.loanmanagement.model.Application;
 import org.jboss.demo.loanmanagement.widget.ApplicationAdapter;
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ExpandableListView;
 
 /**
  * The loan application editor screen.
  */
-public class ApplicationScreen extends Activity {
+public final class ApplicationScreen extends Activity {
 
     private ApplicationAdapter adapter;
+    private Application application;
     private ExpandableListView applicationEditor;
+
+    /**
+     * Required by the <code>onClick</code> attribute in the XML file.
+     * 
+     * @param item the item for the refresh action (never <code>null</code>)
+     */
+    public void handleProcess( final MenuItem item ) {
+        Log.d(ApplicationScreen.class.getSimpleName(), "handleProcess called"); //$NON-NLS-1$
+
+        final ProcessApplicationCommand command = new ProcessApplicationCommand(this);
+        command.execute(this.application);
+    }
 
     /**
      * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -35,9 +52,18 @@ public class ApplicationScreen extends Activity {
         setContentView(R.layout.application);
 
         this.applicationEditor = (ExpandableListView)findViewById(R.id.application_expandable_list);
-        final Application loanApplication = new Application();
-        this.adapter = new ApplicationAdapter(this, this.applicationEditor, loanApplication);
+        this.application = new Application();
+        this.adapter = new ApplicationAdapter(this, this.applicationEditor, this.application);
         this.applicationEditor.setAdapter(this.adapter);
+    }
+
+    /**
+     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+     */
+    @Override
+    public boolean onCreateOptionsMenu( final Menu optionsMenu ) {
+        getMenuInflater().inflate(R.menu.application_screen_menu, optionsMenu);
+        return true;
     }
 
 }

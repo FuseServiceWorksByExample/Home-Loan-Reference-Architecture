@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Address Type -->
+    <string name="Own">Own</string>
+    <string name="Rent">Rent</string>
+    <string name="NotSpecified">Not Specified</string>
+
     <string-array name="enum_address_type">
-        <item>Own</item>
-        <item>Rent</item>
-        <item>Not Specified</item>
+        <item>@string/Own</item>
+        <item>@string/Rent</item>
+        <item>@string/NotSpecified</item>
     </string-array>
     <string-array name="enum_amortization_type">
         <item>Fixed Rate</item>
@@ -12,9 +17,14 @@
         <item>Adjustable Rate Mortgage (ARM)</item>
         <item>Other</item>
     </string-array>
+
+    <!-- Borrower Type -->
+    <string name="Borrower">Borrower</string>
+    <string name="CoBorrower">Co-Borrower</string>
+
     <string-array name="enum_borrower_type">
-        <item>Borrower</item>
-        <item>Co-Borrower</item>
+        <item>@string/Borrower</item>
+        <item>@string/CoBorrower</item>
     </string-array>
     <string-array name="enum_completed_by">
         <item>Jointly</item>
@@ -37,11 +47,17 @@
         <item>Farmers Home Administration (FmHA)</item>
         <item>Other</item>
     </string-array>
+
+    <!-- Borrower Type -->
+    <string name="Married">Married</string>
+    <string name="NotMarried">Not Married</string>
+    <string name="Separated">Separated</string>
+
     <string-array name="enum_marital_status">
-        <item>Married</item>
-        <item>Not Specified</item>
-        <item>Separated</item>
-        <item>Not Married</item>
+        <item>@string/Married</item>
+        <item>@string/NotMarried</item>
+        <item>@string/Separated</item>
+        <item>@string/NotSpecified</item>
     </string-array>
     <string-array name="enum_property_type">
         <item>Primary Residence</item>
@@ -66,8 +82,10 @@
     <string name="app_status_approved">APPROVED</string>
     <string name="app_status_pending">PENDING</string>
     <string name="app_status_rejected">REJECTED</string>
+    <string name="application_processed_successfully">Loan application was processed successfully!</string>
     <string name="Approve">Approve</string>
     <string name="AssetsAndLiabilities">Assets And Liabilities</string>
+    <string name="borrower_dialog_title">Borrower</string>
     <string name="Borrowers">Borrowers</string>
     <string name="btn_jointly">Jointly</string>
     <string name="btn_not_jointly">Not Jointly</string>
@@ -85,7 +103,6 @@
     <string name="chk_primary_residence">Primary resident</string>
     <string name="chk_self_employed">Self employed</string>
     <string name="chk_us_citizen">U.S. citizen</string>
-    <string name="employer_date_format">DD/MM/YYYY</string>
     <string name="empty_borrowers_message">There are no borrowers for this loan application.</string>
     <string name="empty_evaluations_message">There are no available application evaluations.</string>
     <string name="empty_statuses_message">There are no available application statuses.</string>
@@ -95,6 +112,7 @@
     <string name="evaluations_request_dialog_msg">Obtaining available application evaluations&#8230;</string>
     <string name="go_image_description">Go to current selection image</string>
     <string name="HousingExpense">Housing Expense</string>
+    <string name="hint_date">MM/DD/YYYY</string>
     <string name="hint_dollar_amount">0.00</string>
     <string name="hint_evaluation_explanation">Reason for approval/rejection decision</string>
     <string name="hint_interest_rate">0.0000</string>
@@ -108,6 +126,7 @@
     <string name="item_new_application">Loan\nApplication</string>
     <string name="item_new_application_description">Create a new home loan application</string>
     <string name="item_refresh">Refresh</string>
+    <string name="item_send_application">Save Application</string>
     <string name="item_separator">, </string>
     <string name="item_sort">Sort</string>
     <string name="item_sort_by_name">By Name</string>
@@ -115,6 +134,7 @@
     <string name="item_sort_by_ssn">By SSN</string>
     <string name="item_sort_by_status">By Status</string>
     <string name="label_account_number">Account #:</string>
+    <string name="label_address_type">Type:</string>
     <string name="label_amortization_type">Amortization Type:</string>
     <string name="label_addr_line_1">Address (Line 1):</string>
     <string name="label_addr_line_2">Address (Line 2):</string>
@@ -122,16 +142,17 @@
     <string name="label_asset_amount">Amount:</string>
     <string name="label_asset_description">Description:</string>
     <string name="label_association_dues">Amount:</string>
-    <string name="label_business_phone">Phone:</string>
     <string name="label_business_type">Business Type:</string>
     <string name="label_city">City:</string>
     <string name="label_completed_by">Completed:</string>
     <string name="label_county">County:</string>
     <string name="label_credit_score">Credit Score:</string>
     <string name="label_description">Description:</string>
+    <string name="label_dob">Date Of Birth:</string>
     <string name="label_down_payment_source">Source Of Down Payment:</string>
     <string name="label_employer_name">Employer Name:</string>
     <string name="label_explanation">Explanation:</string>
+    <string name="label_first_name">First Name:</string>
     <string name="label_first_mortgage">First Mortgage:</string>
     <string name="label_hazard_insurance">Hazard Insurance:</string>
     <string name="label_insurance_cost">Insurance Cost:</string>
@@ -140,12 +161,17 @@
     <string name="label_job_from_date">From:</string>
     <string name="label_job_title">Title:</string>
     <string name="label_job_to_date">To:</string>
+    <string name="label_last_name">Last Name:</string>
     <string name="label_loan_amount">Amount:</string>
     <string name="label_loan_months">Number Of Months:</string>
     <string name="label_loan_type">Type:</string>
+    <string name="label_marital_status">Marital Status:</string>
+    <string name="label_middle_name">Middle Name:</string>
     <string name="label_monthly_income">Monthly Income:</string>
     <string name="label_number_of_units">Number Of Units:</string>
+    <string name="label_number_of_years">Number Of Years:</string>
     <string name="label_other_housing_expenses">Other Housing Expenses:</string>
+    <string name="label_phone">Phone:</string>
     <string name="label_property_type">Property Type:</string>
     <string name="label_purchase_type">Purchase Type:</string>
     <string name="label_rate">Rate:</string>
@@ -153,14 +179,18 @@
     <string name="label_rent">Rent:</string>
     <string name="label_ssn">SSN:</string>
     <string name="label_state">State:</string>
+    <string name="label_title">Title:</string>
     <string name="label_titled">Titled:</string>
     <string name="label_year_built">Year Built:</string>
+    <string name="label_years_in_school">Years In School:</string>
     <string name="loan_rate">%1$s APR</string>
     <string name="label_zipcode">Zipcode:</string>
     <string name="Loan">Loan</string>
     <string name="msg_no_available_statuses">No available application statuses</string>
     <string name="number_of_evaluations">%1$s available evaluations</string>
     <string name="number_of_statuses">%1$s available statuses</string>
+    <string name="process_application_dialog_title">Send Application</string>
+    <string name="process_application_dialog_msg">Application is being processed&#8230;</string>
     <string name="Reject">Reject</string>
     <string name="splash_screen_image_description">Loan Management splash screen image</string>
     <string name="status_bar_image_description">Loan Management status bar image</string>

@@ -11,5 +11,6 @@
     <string name="err_eval_ssn">Social security number is invalid.</string>
     <string name="err_get_evaluations_command">Error obtaining application evaluations: %1$s</string>
     <string name="err_get_statuses_command">Error obtaining available application statuses: %1$s</string>
+    <string name="err_process_application_command">Error processing application: %1$s</string>
 
 </resources>

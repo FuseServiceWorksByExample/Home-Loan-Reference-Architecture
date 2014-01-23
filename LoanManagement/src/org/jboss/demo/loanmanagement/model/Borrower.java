@@ -26,14 +26,24 @@ import org.jboss.demo.loanmanagement.Util;
 public final class Borrower {
 
     /**
-     * The borrowers marital status.
+     * The {@link #BORROWER_TYPE} index for the borrower type.
+     */
+    public static final int BORROWER_INDEX = 0;
+
+    /**
+     * The borrower type.
      */
     public static final String[] BORROWER_TYPE = new String[] {"Borrower", "Co_Borrower"}; //$NON-NLS-1$ //$NON-NLS-2$ 
 
     /**
+     * The {@link #BORROWER_TYPE} index for the co-borrower type.
+     */
+    public static final int CO_BORROWER_INDEX = 1;
+
+    /**
      * The borrowers marital status.
      */
-    public static final String[] MARITAL_STATUS = new String[] {"Married", "Not_Specified", "Separated", "Unmarried"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    public static final String[] MARITAL_STATUS = new String[] {"Married", "Unmarried", "Separated", "Not_Specified"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     private static final int[] NO_DEP_AGES = new int[0];
 

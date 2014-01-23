@@ -40,6 +40,7 @@ public abstract class GetEvaluationsCommand extends AsyncTask<Void, Void, Evalua
     /**
      * @see android.os.AsyncTask#doInBackground(Params[])
      */
+    @SuppressWarnings( "javadoc" )
     @Override
     protected Evaluation[] doInBackground( final Void... newParams ) {
         try {

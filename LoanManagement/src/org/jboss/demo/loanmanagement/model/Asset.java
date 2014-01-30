@@ -12,6 +12,8 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -23,8 +25,25 @@ import android.text.TextUtils;
  */
 public abstract class Asset {
 
+    protected static final String PROPERTY_PREFIX = Asset.class.getSimpleName() + '.';
+
     private BigDecimal amount;
     private String description;
+    private final PropertyChangeSupport pcs;
+
+    /**
+     * Constructs an asset.
+     */
+    public Asset() {
+        this.pcs = new PropertyChangeSupport(this);
+    }
+
+    /**
+     * @param listener the listener registering to receive property change events (cannot be <code>null</code>)
+     */
+    public void add( final PropertyChangeListener listener ) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
@@ -41,6 +60,20 @@ public abstract class Asset {
 
         final Asset that = (Asset)obj;
         return (Util.equals(this.amount, that.amount) && Util.equals(this.description, that.description));
+    }
+
+    protected void firePropertyChange( final String name,
+                                       final Object oldValue,
+                                       final Object newValue ) {
+        if (oldValue == newValue) {
+            return;
+        }
+
+        if ((oldValue != null) && oldValue.equals(newValue)) {
+            return;
+        }
+
+        this.pcs.firePropertyChange(name, oldValue, newValue);
     }
 
     /**
@@ -70,16 +103,38 @@ public abstract class Asset {
     }
 
     /**
+     * @param listener the listener unregistering from receiving property change events (cannot be <code>null</code>)
+     */
+    public void remove( final PropertyChangeListener listener ) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    /**
      * @param newAmount the new value for the amount
      */
     public void setAmount( final double newAmount ) {
-        if ((this.amount == null) || (this.amount.doubleValue() != newAmount)) {
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.amount == null) && (newAmount != 0)) {
+            changed = true;
+            oldValue = this.amount;
+            this.amount = new BigDecimal(newAmount);
+            this.amount.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.amount != null) && (this.amount.doubleValue() != newAmount)) {
+            changed = true;
+            oldValue = this.amount;
+
             if (newAmount == 0) {
                 this.amount = null;
             } else {
                 this.amount = new BigDecimal(newAmount);
                 this.amount.setScale(2, RoundingMode.HALF_EVEN);
             }
+        }
+
+        if (changed) {
+            firePropertyChange(Properties.AMOUNT, oldValue, this.amount);
         }
     }
 
@@ -88,8 +143,27 @@ public abstract class Asset {
      */
     public void setDescription( final String newDescription ) {
         if (!TextUtils.equals(this.description, newDescription)) {
+            final Object oldValue = this.description;
             this.description = newDescription;
+            firePropertyChange(Properties.DESCRIPTION, oldValue, this.amount);
         }
+    }
+
+    /**
+     * An asset's property identifiers
+     */
+    public interface Properties {
+
+        /**
+         * The asset's amount property identifier.
+         */
+        String AMOUNT = PROPERTY_PREFIX + "amount"; //$NON-NLS-1$
+
+        /**
+         * The asset's description property identifier.
+         */
+        String DESCRIPTION = PROPERTY_PREFIX + "desription"; //$NON-NLS-1$
+
     }
 
 }

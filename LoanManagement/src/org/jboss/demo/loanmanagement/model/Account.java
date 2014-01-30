@@ -12,6 +12,9 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -21,12 +24,14 @@ import android.text.TextUtils;
 /**
  * A savings or checking account model object.
  */
-public final class Account extends Asset {
+public final class Account extends Asset implements PropertyChangeListener {
 
     /**
      * An empty collection of accounts.
      */
     static final List<Account> NONE = Collections.emptyList();
+
+    protected static final String PREFIX = Account.class.getSimpleName() + '.';
 
     /**
      * @param original the account being copied (cannot be <code>null</code>)
@@ -45,6 +50,23 @@ public final class Account extends Asset {
 
     private Address address;
     private String number; // max 100
+    private final PropertyChangeSupport pcs;
+
+    /**
+     * Constructs an account.
+     */
+    public Account() {
+        this.pcs = new PropertyChangeSupport(this);
+        super.add(this);
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.Asset#add(java.beans.PropertyChangeListener)
+     */
+    @Override
+    public final void add( final PropertyChangeListener listener ) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
@@ -61,6 +83,25 @@ public final class Account extends Asset {
 
         final Account that = (Account)obj;
         return (Util.equals(this.number, that.number) && Util.equals(this.address, that.address));
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.Asset#firePropertyChange(java.lang.String, java.lang.Object,
+     *      java.lang.Object)
+     */
+    @Override
+    protected final void firePropertyChange( final String name,
+                                             final Object oldValue,
+                                             final Object newValue ) {
+        if (oldValue == newValue) {
+            return;
+        }
+
+        if ((oldValue != null) && oldValue.equals(newValue)) {
+            return;
+        }
+
+        this.pcs.firePropertyChange(name, oldValue, newValue);
     }
 
     /**
@@ -93,11 +134,43 @@ public final class Account extends Asset {
     }
 
     /**
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    @Override
+    public void propertyChange( final PropertyChangeEvent event ) {
+        if (Asset.Properties.AMOUNT.equals(event.getPropertyName())) {
+            firePropertyChange(Properties.AMOUNT, event.getOldValue(), event.getNewValue());
+        } else if (Asset.Properties.DESCRIPTION.equals(event.getPropertyName())) {
+            firePropertyChange(Properties.NAME, event.getOldValue(), event.getNewValue());
+        } else {
+            firePropertyChange(Properties.ADDRESS, event.getOldValue(), event.getNewValue());
+        }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.Asset#remove(java.beans.PropertyChangeListener)
+     */
+    @Override
+    public final void remove( final PropertyChangeListener listener ) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    /**
      * @param newAddress the new value for the address
      */
     public void setAddress( final Address newAddress ) {
         if (!Util.equals(this.address, newAddress)) {
+            final Object oldValue = this.address;
             this.address = newAddress;
+            firePropertyChange(Properties.ADDRESS, oldValue, this.address);
+
+            if (oldValue != null) {
+                ((Address)oldValue).remove(this);
+            }
+
+            if (this.address != null) {
+                this.address.add(this);
+            }
         }
     }
 
@@ -113,8 +186,37 @@ public final class Account extends Asset {
      */
     public void setNumber( final String newNumber ) {
         if (!TextUtils.equals(this.number, newNumber)) {
+            final Object oldValue = this.number;
             this.number = newNumber;
+            firePropertyChange(Properties.NUMBER, oldValue, this.number);
         }
+    }
+
+    /**
+     * An account's property identifiers
+     */
+    public interface Properties {
+
+        /**
+         * The account's address property identifier.
+         */
+        String ADDRESS = PREFIX + "address"; //$NON-NLS-1$
+
+        /**
+         * The account's amount property identifier.
+         */
+        String AMOUNT = PREFIX + "amount"; //$NON-NLS-1$
+
+        /**
+         * The account's name and description property identifier.
+         */
+        String NAME = PREFIX + "name"; //$NON-NLS-1$
+
+        /**
+         * The account's number property identifier.
+         */
+        String NUMBER = PREFIX + "number"; //$NON-NLS-1$
+
     }
 
 }

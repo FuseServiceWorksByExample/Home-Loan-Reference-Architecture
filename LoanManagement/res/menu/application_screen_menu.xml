@@ -6,5 +6,29 @@
         android:onClick="handleProcess"
         android:showAsAction="ifRoom"
         android:title="@string/item_send_application"/>
+    <item
+        android:id="@+id/ic_jump_to"
+        android:icon="@drawable/ic_jump_to"
+        android:showAsAction="ifRoom"
+        android:title="@string/item_jump_to">
+        <menu>
+            <item
+                android:id="@+id/jump_to_loan"
+                android:onClick="onJumpToLoan"
+                android:title="@string/Loan"/>
+            <item
+                android:id="@+id/jump_to_borrowers"
+                android:onClick="onJumpToBorrowers"
+                android:title="@string/Borrowers"/>
+            <item
+                android:id="@+id/jump_to_housing_expense"
+                android:onClick="onJumpToHousingExpense"
+                android:title="@string/HousingExpense"/>
+            <item
+                android:id="@+id/jump_to_assets"
+                android:onClick="onJumpToAssets"
+                android:title="@string/AssetsAndLiabilities"/>
+        </menu>
+    </item>
 
 </menu>

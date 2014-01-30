@@ -12,6 +12,8 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ import org.jboss.demo.loanmanagement.Util;
  * Employment information model object.
  */
 public final class Employment {
+
+    protected static final String PROPERTY_PREFIX = Employment.class.getSimpleName() + '.';
 
     /**
      * @param original the employment being copied (cannot be <code>null</code>)
@@ -43,7 +47,22 @@ public final class Employment {
     }
 
     private List<Employer> employers; // max 3
+    private final PropertyChangeSupport pcs;
     private BigDecimal yearsInProfession;
+
+    /**
+     * Constructs an employment.
+     */
+    public Employment() {
+        this.pcs = new PropertyChangeSupport(this);
+    }
+
+    /**
+     * @param listener the listener registering to receive property change events (cannot be <code>null</code>)
+     */
+    public void add( final PropertyChangeListener listener ) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
 
     /**
      * @param newEmployer the employer being added (cannot be <code>null</code>)
@@ -57,7 +76,9 @@ public final class Employment {
             this.employers = new ArrayList<Employer>();
         }
 
-        this.employers.add(newEmployer);
+        if (this.employers.add(newEmployer)) {
+            firePropertyChange(Properties.EMPLOYERS, null, newEmployer);
+        }
     }
 
     /**
@@ -76,6 +97,20 @@ public final class Employment {
         final Employment that = (Employment)obj;
         return (Util.equals(this.employers, that.employers) && Util.equals(this.yearsInProfession,
                                                                            that.yearsInProfession));
+    }
+
+    private void firePropertyChange( final String name,
+                                     final Object oldValue,
+                                     final Object newValue ) {
+        if (oldValue == newValue) {
+            return;
+        }
+
+        if ((oldValue != null) && oldValue.equals(newValue)) {
+            return;
+        }
+
+        this.pcs.firePropertyChange(name, oldValue, newValue);
     }
 
     /**
@@ -109,6 +144,13 @@ public final class Employment {
     }
 
     /**
+     * @param listener the listener unregistering from receiving property change events (cannot be <code>null</code>)
+     */
+    public void remove( final PropertyChangeListener listener ) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    /**
      * @param removeEmployer the employer being removed (cannot be <code>null</code>)
      */
     public void removeEmployer( final Employer removeEmployer ) {
@@ -116,8 +158,8 @@ public final class Employment {
             throw new NullPointerException();
         }
 
-        if (this.employers != null) {
-            this.employers.remove(removeEmployer);
+        if ((this.employers != null) && this.employers.remove(removeEmployer)) {
+            firePropertyChange(Properties.EMPLOYERS, removeEmployer, null);
         }
     }
 
@@ -125,10 +167,46 @@ public final class Employment {
      * @param newYearsInProfession the new value for the years in current profession
      */
     public void setYearsInProfession( final double newYearsInProfession ) {
-        if ((this.yearsInProfession == null) || (this.yearsInProfession.doubleValue() != newYearsInProfession)) {
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.yearsInProfession == null) && (newYearsInProfession != 0)) {
+            changed = true;
+            oldValue = this.yearsInProfession;
             this.yearsInProfession = new BigDecimal(newYearsInProfession);
             this.yearsInProfession.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.yearsInProfession != null) && (this.yearsInProfession.doubleValue() != newYearsInProfession)) {
+            changed = true;
+            oldValue = this.yearsInProfession;
+
+            if (newYearsInProfession == 0) {
+                this.yearsInProfession = null;
+            } else {
+                this.yearsInProfession = new BigDecimal(newYearsInProfession);
+                this.yearsInProfession.setScale(2, RoundingMode.HALF_EVEN);
+            }
         }
+
+        if (changed) {
+            firePropertyChange(Properties.YEARS_IN_PROFESSION, oldValue, this.yearsInProfession);
+        }
+    }
+
+    /**
+     * An employment's property identifiers.
+     */
+    public interface Properties {
+
+        /**
+         * The employment's employers property identifier.
+         */
+        String EMPLOYERS = PROPERTY_PREFIX + "employers"; //$NON-NLS-1$
+
+        /**
+         * The employment's years in profession property identifier.
+         */
+        String YEARS_IN_PROFESSION = PROPERTY_PREFIX + "years_in_profession"; //$NON-NLS-1$
+
     }
 
 }

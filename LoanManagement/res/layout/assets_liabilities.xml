@@ -1,34 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/assets_liabilities_view"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/panel_margin"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/lbl_completed_by"
-        style="@style/loanmanagement.TopLabel"
-        android:text="@string/label_completed_by" />
-
-    <RadioGroup
-        android:id="@+id/grp_completed_by"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/declarations_scroller_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
-        <RadioButton
-            android:id="@+id/btn_jointly"
+        <TextView
+            android:id="@+id/lbl_completed_by"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_completed_by" />
+
+        <RadioGroup
+            android:id="@+id/grp_completed_by"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/btn_jointly" />
+            android:layout_gravity="center"
+            android:orientation="horizontal" >
 
-        <RadioButton
-            android:id="@+id/btn_not_jointly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_not_jointly" />
-    </RadioGroup>
+            <RadioButton
+                android:id="@+id/btn_jointly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/btn_jointly" />
 
-</LinearLayout>
+            <RadioButton
+                android:id="@+id/btn_not_jointly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_not_jointly" />
+        </RadioGroup>
+
+        <TabHost
+            android:id="@+id/tabhost"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+                </TabWidget>
+
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <LinearLayout
+                        android:id="@+id/tab_accounts"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" >
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/panel_margin"
+                            android:orientation="horizontal" >
+
+                            <ImageButton
+                                android:id="@+id/btn_add_account"
+                                style="@style/loanmanagement.ImageButton"
+                                android:layout_marginRight="6dp"
+                                android:contentDescription="@string/go_image_description"
+                                android:src="@drawable/ic_add" />
+
+                            <TextView
+                                android:id="@+id/txt_add_account"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/AddAccount" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/accounts_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical" >
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tab_autos"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" >
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/panel_margin"
+                            android:orientation="horizontal" >
+
+                            <ImageButton
+                                android:id="@+id/btn_add_auto"
+                                style="@style/loanmanagement.ImageButton"
+                                android:layout_marginRight="6dp"
+                                android:contentDescription="@string/go_image_description"
+                                android:src="@drawable/ic_add" />
+
+                            <TextView
+                                android:id="@+id/txt_add_auto"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/AddAuto" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/autos_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical" >
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tab_cash_deposits"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical" >
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/panel_margin"
+                            android:orientation="horizontal" >
+
+                            <ImageButton
+                                android:id="@+id/btn_add_deposit"
+                                style="@style/loanmanagement.ImageButton"
+                                android:layout_marginRight="6dp"
+                                android:contentDescription="@string/go_image_description"
+                                android:src="@drawable/ic_add" />
+
+                            <TextView
+                                android:id="@+id/txt_add_deposit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/AddDeposit" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/deposits_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical" >
+                        </LinearLayout>
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+        </TabHost>
+    </LinearLayout>
+
+</ScrollView>

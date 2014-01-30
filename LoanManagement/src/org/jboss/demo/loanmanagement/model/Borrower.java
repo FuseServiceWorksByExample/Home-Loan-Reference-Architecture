@@ -12,6 +12,9 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -23,7 +26,7 @@ import org.jboss.demo.loanmanagement.Util;
 /**
  * A borrower model object.
  */
-public final class Borrower {
+public final class Borrower implements PropertyChangeListener {
 
     /**
      * The {@link #BORROWER_TYPE} index for the borrower type.
@@ -43,7 +46,7 @@ public final class Borrower {
     /**
      * The borrowers marital status.
      */
-    public static final String[] MARITAL_STATUS = new String[] {"Married", "Unmarried", "Separated", "Not_Specified"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    public static final String[] MARITAL_TYPE = new String[] {"Married", "Unmarried", "Separated", "Not_Specified"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     private static final int[] NO_DEP_AGES = new int[0];
 
@@ -51,6 +54,8 @@ public final class Borrower {
      * An empty collection.
      */
     static final List<Borrower> NONE = Collections.emptyList();
+
+    protected static final String PROPERTY_PREFIX = Borrower.class.getSimpleName() + '.';
 
     /**
      * @param original the borrower being copied (cannot be <code>null</code>)
@@ -101,11 +106,26 @@ public final class Borrower {
     private String lastName; // max length 50
     private String maritalStatus;
     private String middleName; // max length 50
+    private BigDecimal numYearsSchool; // xx.xx
+    private final PropertyChangeSupport pcs;
     private String phone; // max length 20;
     private String ssn; // max length 50;
     private String title; // optional, max length 50
     private String type;
-    private BigDecimal yearsSchool; // xx.xx
+
+    /**
+     * Constructs a borrower.
+     */
+    public Borrower() {
+        this.pcs = new PropertyChangeSupport(this);
+    }
+
+    /**
+     * @param listener the listener registering to receive property change events (cannot be <code>null</code>)
+     */
+    public void add( final PropertyChangeListener listener ) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
 
     /**
      * @param newAddress the address being added (cannot be <code>null</code>)
@@ -119,7 +139,9 @@ public final class Borrower {
             this.addresses = new ArrayList<BorrowerAddress>();
         }
 
-        this.addresses.add(newAddress);
+        if (this.addresses.add(newAddress)) {
+            firePropertyChange(Properties.ADDRESSES, null, newAddress);
+        }
     }
 
     /**
@@ -148,7 +170,21 @@ public final class Borrower {
                         && Util.equals(this.phone, that.phone)
                         && Util.equals(this.ssn, that.ssn)
                         && Util.equals(this.title, that.title)
-                        && Util.equals(this.type, that.type) && Util.equals(this.yearsSchool, that.yearsSchool));
+                        && Util.equals(this.type, that.type) && Util.equals(this.numYearsSchool, that.numYearsSchool));
+    }
+
+    private void firePropertyChange( final String name,
+                                     final Object oldValue,
+                                     final Object newValue ) {
+        if (oldValue == newValue) {
+            return;
+        }
+
+        if ((oldValue != null) && oldValue.equals(newValue)) {
+            return;
+        }
+
+        this.pcs.firePropertyChange(name, oldValue, newValue);
     }
 
     /**
@@ -261,11 +297,11 @@ public final class Borrower {
      * @return the years in school
      */
     public double getYearsSchool() {
-        if (this.yearsSchool == null) {
+        if (this.numYearsSchool == null) {
             return 0;
         }
 
-        return this.yearsSchool.doubleValue();
+        return this.numYearsSchool.doubleValue();
     }
 
     /**
@@ -276,82 +312,148 @@ public final class Borrower {
         return Arrays.hashCode(new Object[] {this.addresses, this.declarations, this.dependents, this.dependentsAges,
                                              this.dob, this.employmentInformation, this.firstName, this.middleName,
                                              this.lastName, this.maritalStatus, this.phone, this.ssn, this.title,
-                                             this.type, this.yearsSchool});
+                                             this.type, this.numYearsSchool});
     }
 
     /**
-     * @param newDeclarations the new value for the declarations
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
-    public void setDeclarations( final Declarations newDeclarations ) {
-        if (!Util.equals(this.declarations, newDeclarations)) {
-            this.declarations = newDeclarations;
+    @Override
+    public void propertyChange( final PropertyChangeEvent event ) {
+        if (event.getSource() instanceof Declarations) {
+            firePropertyChange(Properties.DECLARATIONS, event.getOldValue(), event.getNewValue());
+        } else if (event.getSource() instanceof Employment) {
+            firePropertyChange(Properties.EMPLOYMENT_INFORMATION, event.getOldValue(), event.getNewValue());
         }
     }
 
     /**
-     * @param newDependentsAges the new value for the dependentsAges
+     * @param listener the listener unregistering from receiving property change events (cannot be <code>null</code>)
      */
-    public void setDependentsAges( final int[] newDependentsAges ) {
-        if (!Arrays.equals(this.dependentsAges, newDependentsAges)) {
-            if (newDependentsAges.length == 0) {
-                this.dependentsAges = null;
-            } else {
-                this.dependentsAges = newDependentsAges;
+    public void remove( final PropertyChangeListener listener ) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    /**
+     * @param removeAddress the borrower's address being removed (cannot be <code>null</code>)
+     */
+    public void removeAddress( final Employer removeAddress ) {
+        if (removeAddress == null) {
+            throw new NullPointerException();
+        }
+
+        if ((this.addresses != null) && this.addresses.remove(removeAddress)) {
+            firePropertyChange(Properties.ADDRESSES, removeAddress, null);
+        }
+    }
+
+    /**
+     * @param newDeclarations the new value for the declarations (can be <code>null</code>)
+     */
+    public void setDeclarations( final Declarations newDeclarations ) {
+        if (!Util.equals(this.declarations, newDeclarations)) {
+            final Declarations oldValue = this.declarations;
+            this.declarations = newDeclarations;
+            firePropertyChange(Properties.DECLARATIONS, oldValue, this.declarations);
+
+            if (oldValue != null) {
+                oldValue.remove(this);
+            }
+
+            if (this.declarations != null) {
+                this.declarations.add(this);
             }
         }
     }
 
     /**
-     * @param newDob the new value for the dob
+     * @param newDependentsAges the new value for the dependentsAges (can be <code>null</code>)
+     */
+    public void setDependentsAges( final int[] newDependentsAges ) {
+        if (!Arrays.equals(this.dependentsAges, newDependentsAges)) {
+            final Object oldValue = this.dependentsAges;
+
+            if (newDependentsAges.length == 0) {
+                this.dependentsAges = null;
+            } else {
+                this.dependentsAges = newDependentsAges;
+            }
+
+            firePropertyChange(Properties.DEPENDENTS_AGES, oldValue, this.dependentsAges);
+        }
+    }
+
+    /**
+     * @param newDob the new value for the date of birth (can be <code>null</code> or empty)
      */
     public void setDob( final String newDob ) {
         if (!Util.equals(this.dob, newDob)) {
+            final Object oldValue = this.dob;
             this.dob = newDob;
+            firePropertyChange(Properties.DECLARATIONS, oldValue, this.declarations);
         }
     }
 
     /**
-     * @param newEmploymentInformation the new value for the employmentInformation
+     * @param newEmploymentInformation the new value for the employment information (can be <code>null</code>)
      */
     public void setEmploymentInformation( final Employment newEmploymentInformation ) {
         if (!Util.equals(this.employmentInformation, newEmploymentInformation)) {
+            final Employment oldValue = this.employmentInformation;
             this.employmentInformation = newEmploymentInformation;
+            firePropertyChange(Properties.EMPLOYMENT_INFORMATION, oldValue, this.employmentInformation);
+
+            if (oldValue != null) {
+                oldValue.remove(this);
+            }
+
+            if (this.employmentInformation != null) {
+                this.employmentInformation.add(this);
+            }
         }
     }
 
     /**
-     * @param newFirstName the new value for the firstName
+     * @param newFirstName the new value for the first name (can be <code>null</code> or empty)
      */
     public void setFirstName( final String newFirstName ) {
         if (!Util.equals(this.firstName, newFirstName)) {
+            final Object oldValue = this.firstName;
             this.firstName = newFirstName;
+            firePropertyChange(Properties.FIRST_NAME, oldValue, this.firstName);
         }
     }
 
     /**
-     * @param newLastName the new value for the lastName
+     * @param newLastName the new value for the lastName (can be <code>null</code> or empty)
      */
     public void setLastName( final String newLastName ) {
         if (!Util.equals(this.lastName, newLastName)) {
+            final Object oldValue = this.lastName;
             this.lastName = newLastName;
+            firePropertyChange(Properties.LAST_NAME, oldValue, this.lastName);
         }
     }
 
     /**
-     * @param newMaritalStatus the new value for the maritalStatus
+     * @param newMaritalStatus the new value for the maritalStatus (can be <code>null</code> or empty)
      */
     public void setMaritalStatus( final String newMaritalStatus ) {
         if (!Util.equals(this.maritalStatus, newMaritalStatus)) {
+            final Object oldValue = this.maritalStatus;
             this.maritalStatus = newMaritalStatus;
+            firePropertyChange(Properties.MARITAL_STATUS, oldValue, this.maritalStatus);
         }
     }
 
     /**
-     * @param newMiddleName the new value for the middleName
+     * @param newMiddleName the new value for the middle name (can be <code>null</code> or empty)
      */
     public void setMiddleName( final String newMiddleName ) {
         if (!Util.equals(this.middleName, newMiddleName)) {
+            final Object oldValue = this.middleName;
             this.middleName = newMiddleName;
+            firePropertyChange(Properties.MIDDLE_NAME, oldValue, this.middleName);
         }
     }
 
@@ -360,43 +462,53 @@ public final class Borrower {
      */
     public void setNumberOfDependents( final int newNumberOfDependents ) {
         if (this.dependents != newNumberOfDependents) {
+            final Object oldValue = this.dependents;
             this.dependents = newNumberOfDependents;
+            firePropertyChange(Properties.NUM_DEPENDENTS, oldValue, this.dependents);
         }
     }
 
     /**
-     * @param newPhone the new value for the phone
+     * @param newPhone the new value for the phone (can be <code>null</code> or empty)
      */
     public void setPhone( final String newPhone ) {
         if (!Util.equals(this.phone, newPhone)) {
+            final Object oldValue = this.phone;
             this.phone = newPhone;
+            firePropertyChange(Properties.PHONE, oldValue, this.phone);
         }
     }
 
     /**
-     * @param newSsn the new value for the ssn
+     * @param newSsn the new value for the SSN (can be <code>null</code> or empty)
      */
     public void setSsn( final String newSsn ) {
         if (!Util.equals(this.ssn, newSsn)) {
+            final Object oldValue = this.ssn;
             this.ssn = newSsn;
+            firePropertyChange(Properties.SSN, oldValue, this.ssn);
         }
     }
 
     /**
-     * @param newTitle the new value for the title
+     * @param newTitle the new value for the title (can be <code>null</code> or empty)
      */
     public void setTitle( final String newTitle ) {
         if (!Util.equals(this.title, newTitle)) {
+            final Object oldValue = this.title;
             this.title = newTitle;
+            firePropertyChange(Properties.TITLE, oldValue, this.title);
         }
     }
 
     /**
-     * @param newType the new value for the type
+     * @param newType the new value for the type (can be <code>null</code> or empty)
      */
     public void setType( final String newType ) {
         if (!Util.equals(this.type, newType)) {
+            final Object oldValue = this.type;
             this.type = newType;
+            firePropertyChange(Properties.TYPE, oldValue, this.type);
         }
     }
 
@@ -404,10 +516,111 @@ public final class Borrower {
      * @param newYearsSchool the new value for the yearsSchool
      */
     public void setYearsSchool( final double newYearsSchool ) {
-        if ((this.yearsSchool == null) || (this.yearsSchool.doubleValue() != newYearsSchool)) {
-            this.yearsSchool = new BigDecimal(newYearsSchool);
-            this.yearsSchool.setScale(2, RoundingMode.HALF_EVEN);
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.numYearsSchool == null) && (newYearsSchool != 0)) {
+            changed = true;
+            oldValue = this.numYearsSchool;
+            this.numYearsSchool = new BigDecimal(newYearsSchool);
+            this.numYearsSchool.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.numYearsSchool != null) && (this.numYearsSchool.doubleValue() != newYearsSchool)) {
+            changed = true;
+            oldValue = this.numYearsSchool;
+
+            if (newYearsSchool == 0) {
+                this.numYearsSchool = null;
+            } else {
+                this.numYearsSchool = new BigDecimal(newYearsSchool);
+                this.numYearsSchool.setScale(2, RoundingMode.HALF_EVEN);
+            }
         }
+
+        if (changed) {
+            firePropertyChange(Properties.NUM_YEARS_SCHOOL, oldValue, this.numYearsSchool);
+        }
+    }
+
+    /**
+     * A borrower's property identifiers.
+     */
+    public interface Properties {
+
+        /**
+         * The borrower's addresses property identifier.
+         */
+        String ADDRESSES = PROPERTY_PREFIX + "addresses"; //$NON-NLS-1$
+
+        /**
+         * The borrower's date of birth property identifier.
+         */
+        String DATE_OF_BIRTH = PROPERTY_PREFIX + "date_of_birth"; //$NON-NLS-1$
+
+        /**
+         * The borrower's declarations property identifier.
+         */
+        String DECLARATIONS = PROPERTY_PREFIX + "declarations"; //$NON-NLS-1$
+
+        /**
+         * The borrower's dependent ages property identifier.
+         */
+        String DEPENDENTS_AGES = PROPERTY_PREFIX + "dependents_ages"; //$NON-NLS-1$
+
+        /**
+         * The borrower's employment information property identifier.
+         */
+        String EMPLOYMENT_INFORMATION = PROPERTY_PREFIX + "employment_information"; //$NON-NLS-1$
+
+        /**
+         * The borrower's first name property identifier.
+         */
+        String FIRST_NAME = PROPERTY_PREFIX + "first_name"; //$NON-NLS-1$
+
+        /**
+         * The borrower's last name property identifier.
+         */
+        String LAST_NAME = PROPERTY_PREFIX + "last_name"; //$NON-NLS-1$
+
+        /**
+         * The borrower's marital status property identifier.
+         */
+        String MARITAL_STATUS = PROPERTY_PREFIX + "marital_status"; //$NON-NLS-1$
+
+        /**
+         * The borrower's middle name property identifier.
+         */
+        String MIDDLE_NAME = PROPERTY_PREFIX + "middle_name"; //$NON-NLS-1$
+
+        /**
+         * The borrower's dependents property identifier.
+         */
+        String NUM_DEPENDENTS = PROPERTY_PREFIX + "num_dependents"; //$NON-NLS-1$
+
+        /**
+         * The borrower's number of years in school property identifier.
+         */
+        String NUM_YEARS_SCHOOL = PROPERTY_PREFIX + "num_years_school"; //$NON-NLS-1$
+
+        /**
+         * The borrower's phone number property identifier.
+         */
+        String PHONE = PROPERTY_PREFIX + "phone"; //$NON-NLS-1$
+
+        /**
+         * The borrower's SSN property identifier.
+         */
+        String SSN = PROPERTY_PREFIX + "ssn"; //$NON-NLS-1$
+
+        /**
+         * The borrower's title property identifier.
+         */
+        String TITLE = PROPERTY_PREFIX + "title"; //$NON-NLS-1$
+
+        /**
+         * The borrower's type property identifier.
+         */
+        String TYPE = PROPERTY_PREFIX + "type"; //$NON-NLS-1$
+
     }
 
 }

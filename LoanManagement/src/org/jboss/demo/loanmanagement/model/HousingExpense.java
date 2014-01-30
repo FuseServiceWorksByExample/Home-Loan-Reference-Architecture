@@ -12,6 +12,8 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -26,6 +28,8 @@ public final class HousingExpense {
      * The housing expense types.
      */
     public static final String[] HOUSING_EXPENSE_TYPES = new String[] {"Present", "Proposed"}; //$NON-NLS-1$ //$NON-NLS-2$ 
+
+    protected static final String PROPERTY_PREFIX = HousingExpense.class.getSimpleName() + '.';
 
     /**
      * @param original the housing expense being copied (cannot be <code>null</code>)
@@ -50,9 +54,24 @@ public final class HousingExpense {
     private BigDecimal homeOwnerAssociationDues;
     private BigDecimal other;
     private BigDecimal otherMortgage;
+    private final PropertyChangeSupport pcs;
     private BigDecimal realEstateTaxes;
     private BigDecimal rent;
     private String type;
+
+    /**
+     * Constructs a housing expense.
+     */
+    public HousingExpense() {
+        this.pcs = new PropertyChangeSupport(this);
+    }
+
+    /**
+     * @param listener the listener registering to receive property change events (cannot be <code>null</code>)
+     */
+    public void add( final PropertyChangeListener listener ) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
@@ -75,6 +94,20 @@ public final class HousingExpense {
                         && Util.equals(this.otherMortgage, that.otherMortgage)
                         && Util.equals(this.realEstateTaxes, that.realEstateTaxes)
                         && Util.equals(this.rent, that.rent) && Util.equals(this.type, that.type));
+    }
+
+    private void firePropertyChange( final String name,
+                                     final Object oldValue,
+                                     final Object newValue ) {
+        if (oldValue == newValue) {
+            return;
+        }
+
+        if ((oldValue != null) && oldValue.equals(newValue)) {
+            return;
+        }
+
+        this.pcs.firePropertyChange(name, oldValue, newValue);
     }
 
     /**
@@ -171,10 +204,28 @@ public final class HousingExpense {
     }
 
     /**
+     * @param listener the listener unregistering from receiving property change events (cannot be <code>null</code>)
+     */
+    public void remove( final PropertyChangeListener listener ) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    /**
      * @param newFirstMortgage the new value for the firstMortgage
      */
     public void setFirstMortgage( final double newFirstMortgage ) {
-        if ((this.firstMortgage == null) || (this.firstMortgage.doubleValue() != newFirstMortgage)) {
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.firstMortgage == null) && (newFirstMortgage != 0)) {
+            changed = true;
+            oldValue = this.firstMortgage;
+            this.firstMortgage = new BigDecimal(newFirstMortgage);
+            this.firstMortgage.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.firstMortgage != null) && (this.firstMortgage.doubleValue() != newFirstMortgage)) {
+            changed = true;
+            oldValue = this.firstMortgage;
+
             if (newFirstMortgage == 0) {
                 this.firstMortgage = null;
             } else {
@@ -182,13 +233,28 @@ public final class HousingExpense {
                 this.firstMortgage.setScale(2, RoundingMode.HALF_EVEN);
             }
         }
+
+        if (changed) {
+            firePropertyChange(Properties.FIRST_MORTGAGE, oldValue, this.firstMortgage);
+        }
     }
 
     /**
      * @param newHazardInsurance the new value for the hazardInsurance
      */
     public void setHazardInsurance( final double newHazardInsurance ) {
-        if ((this.hazardInsurance == null) || (this.hazardInsurance.doubleValue() != newHazardInsurance)) {
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.hazardInsurance == null) && (newHazardInsurance != 0)) {
+            changed = true;
+            oldValue = this.hazardInsurance;
+            this.hazardInsurance = new BigDecimal(newHazardInsurance);
+            this.hazardInsurance.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.hazardInsurance != null) && (this.hazardInsurance.doubleValue() != newHazardInsurance)) {
+            changed = true;
+            oldValue = this.hazardInsurance;
+
             if (newHazardInsurance == 0) {
                 this.hazardInsurance = null;
             } else {
@@ -196,13 +262,28 @@ public final class HousingExpense {
                 this.hazardInsurance.setScale(2, RoundingMode.HALF_EVEN);
             }
         }
+
+        if (changed) {
+            firePropertyChange(Properties.HAZARD_INSURANCE, oldValue, this.hazardInsurance);
+        }
     }
 
     /**
      * @param newHomeOwnerAssociationDues the new value for the homeOwnerAssociationDues
      */
     public void setHomeOwnerAssociationDues( final double newHomeOwnerAssociationDues ) {
-        if ((this.homeOwnerAssociationDues == null) || (this.homeOwnerAssociationDues.doubleValue() != newHomeOwnerAssociationDues)) {
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.homeOwnerAssociationDues == null) && (newHomeOwnerAssociationDues != 0)) {
+            changed = true;
+            oldValue = this.homeOwnerAssociationDues;
+            this.homeOwnerAssociationDues = new BigDecimal(newHomeOwnerAssociationDues);
+            this.homeOwnerAssociationDues.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.homeOwnerAssociationDues != null) && (this.homeOwnerAssociationDues.doubleValue() != newHomeOwnerAssociationDues)) {
+            changed = true;
+            oldValue = this.homeOwnerAssociationDues;
+
             if (newHomeOwnerAssociationDues == 0) {
                 this.homeOwnerAssociationDues = null;
             } else {
@@ -210,13 +291,28 @@ public final class HousingExpense {
                 this.homeOwnerAssociationDues.setScale(2, RoundingMode.HALF_EVEN);
             }
         }
+
+        if (changed) {
+            firePropertyChange(Properties.HOME_OWNER_ASSOCIATION_DUES, oldValue, this.homeOwnerAssociationDues);
+        }
     }
 
     /**
      * @param newOther the new value for the other
      */
     public void setOther( final double newOther ) {
-        if ((this.other == null) || (this.other.doubleValue() != newOther)) {
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.other == null) && (newOther != 0)) {
+            changed = true;
+            oldValue = this.other;
+            this.other = new BigDecimal(newOther);
+            this.other.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.other != null) && (this.other.doubleValue() != newOther)) {
+            changed = true;
+            oldValue = this.other;
+
             if (newOther == 0) {
                 this.other = null;
             } else {
@@ -224,13 +320,28 @@ public final class HousingExpense {
                 this.other.setScale(2, RoundingMode.HALF_EVEN);
             }
         }
+
+        if (changed) {
+            firePropertyChange(Properties.OTHER, oldValue, this.other);
+        }
     }
 
     /**
      * @param newOtherMortgage the new value for the otherMortgage
      */
     public void setOtherMortgage( final double newOtherMortgage ) {
-        if ((this.otherMortgage == null) || (this.otherMortgage.doubleValue() != newOtherMortgage)) {
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.otherMortgage == null) && (newOtherMortgage != 0)) {
+            changed = true;
+            oldValue = this.otherMortgage;
+            this.otherMortgage = new BigDecimal(newOtherMortgage);
+            this.otherMortgage.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.otherMortgage != null) && (this.otherMortgage.doubleValue() != newOtherMortgage)) {
+            changed = true;
+            oldValue = this.otherMortgage;
+
             if (newOtherMortgage == 0) {
                 this.otherMortgage = null;
             } else {
@@ -238,13 +349,28 @@ public final class HousingExpense {
                 this.otherMortgage.setScale(2, RoundingMode.HALF_EVEN);
             }
         }
+
+        if (changed) {
+            firePropertyChange(Properties.OTHER_MORTGAGE, oldValue, this.otherMortgage);
+        }
     }
 
     /**
      * @param newRealEstateTaxes the new value for the realEstateTaxes
      */
     public void setRealEstateTaxes( final double newRealEstateTaxes ) {
-        if ((this.realEstateTaxes == null) || (this.realEstateTaxes.doubleValue() != newRealEstateTaxes)) {
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.realEstateTaxes == null) && (newRealEstateTaxes != 0)) {
+            changed = true;
+            oldValue = this.realEstateTaxes;
+            this.realEstateTaxes = new BigDecimal(newRealEstateTaxes);
+            this.realEstateTaxes.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.realEstateTaxes != null) && (this.realEstateTaxes.doubleValue() != newRealEstateTaxes)) {
+            changed = true;
+            oldValue = this.realEstateTaxes;
+
             if (newRealEstateTaxes == 0) {
                 this.realEstateTaxes = null;
             } else {
@@ -252,19 +378,38 @@ public final class HousingExpense {
                 this.realEstateTaxes.setScale(2, RoundingMode.HALF_EVEN);
             }
         }
+
+        if (changed) {
+            firePropertyChange(Properties.REAL_ESTATE_TAXES, oldValue, this.realEstateTaxes);
+        }
     }
 
     /**
      * @param newRent the new value for the rent
      */
     public void setRent( final double newRent ) {
-        if ((this.rent == null) || (this.rent.doubleValue() != newRent)) {
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.rent == null) && (newRent != 0)) {
+            changed = true;
+            oldValue = this.rent;
+            this.rent = new BigDecimal(newRent);
+            this.rent.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.rent != null) && (this.rent.doubleValue() != newRent)) {
+            changed = true;
+            oldValue = this.rent;
+
             if (newRent == 0) {
                 this.rent = null;
             } else {
                 this.rent = new BigDecimal(newRent);
                 this.rent.setScale(2, RoundingMode.HALF_EVEN);
             }
+        }
+
+        if (changed) {
+            firePropertyChange(Properties.RENT, oldValue, this.rent);
         }
     }
 
@@ -273,8 +418,57 @@ public final class HousingExpense {
      */
     public void setType( final String newType ) {
         if (!Util.equals(this.type, newType)) {
+            final Object oldValue = this.type;
             this.type = newType;
+            firePropertyChange(Properties.TYPE, oldValue, this.type);
         }
+    }
+
+    /**
+     * A housing expense's property identifiers.
+     */
+    public interface Properties {
+
+        /**
+         * The housing expense's first mortgage amount property identifier.
+         */
+        String FIRST_MORTGAGE = PROPERTY_PREFIX + "first_mortgage"; //$NON-NLS-1$
+
+        /**
+         * The housing expense's hazard insurance amount property identifier.
+         */
+        String HAZARD_INSURANCE = PROPERTY_PREFIX + "hazard_insurance"; //$NON-NLS-1$
+
+        /**
+         * The housing expense's association dues amount property identifier.
+         */
+        String HOME_OWNER_ASSOCIATION_DUES = PROPERTY_PREFIX + "home_owner_association_dues"; //$NON-NLS-1$
+
+        /**
+         * The housing expense's other amount property identifier.
+         */
+        String OTHER = PROPERTY_PREFIX + "other"; //$NON-NLS-1$
+
+        /**
+         * The housing expense's other mortgage amount property identifier.
+         */
+        String OTHER_MORTGAGE = PROPERTY_PREFIX + "other_mortgage"; //$NON-NLS-1$
+
+        /**
+         * The housing expense's real estate taxes amount property identifier.
+         */
+        String REAL_ESTATE_TAXES = PROPERTY_PREFIX + "real_estate_taxes"; //$NON-NLS-1$
+
+        /**
+         * The housing expense's rent amount property identifier.
+         */
+        String RENT = PROPERTY_PREFIX + "rent"; //$NON-NLS-1$
+
+        /**
+         * The housing expense's property type property identifier.
+         */
+        String TYPE = PROPERTY_PREFIX + "type"; //$NON-NLS-1$
+
     }
 
 }

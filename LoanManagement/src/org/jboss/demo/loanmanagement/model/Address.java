@@ -12,6 +12,8 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 import android.text.TextUtils;
 
@@ -19,6 +21,8 @@ import android.text.TextUtils;
  * A borrower's address model object.
  */
 public class Address {
+
+    protected static final String PROPERTY_PREFIX = Address.class.getSimpleName() + '.';
 
     /**
      * @param original the address being copied (cannot be <code>null</code>)
@@ -41,8 +45,23 @@ public class Address {
     private String county; // max 50
     private String line1; // max 255
     private String line2; // max 255
+    private final PropertyChangeSupport pcs;
     private String postalCode; // max 20
     private String state; // max 50
+
+    /**
+     * Constructs an address.
+     */
+    public Address() {
+        this.pcs = new PropertyChangeSupport(this);
+    }
+
+    /**
+     * @param listener the listener registering to receive property change events (cannot be <code>null</code>)
+     */
+    public void add( final PropertyChangeListener listener ) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
@@ -63,6 +82,20 @@ public class Address {
                         && TextUtils.equals(this.county, that.county)
                         && TextUtils.equals(this.state, that.state)
                         && TextUtils.equals(this.postalCode, that.postalCode);
+    }
+
+    protected void firePropertyChange( final String name,
+                                       final Object oldValue,
+                                       final Object newValue ) {
+        if (oldValue == newValue) {
+            return;
+        }
+
+        if ((oldValue != null) && oldValue.equals(newValue)) {
+            return;
+        }
+
+        this.pcs.firePropertyChange(name, oldValue, newValue);
     }
 
     /**
@@ -117,11 +150,20 @@ public class Address {
     }
 
     /**
+     * @param listener the listener unregistering from receiving property change events (cannot be <code>null</code>)
+     */
+    public void remove( final PropertyChangeListener listener ) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    /**
      * @param newCity the new value for the city
      */
     public void setCity( final String newCity ) {
         if (!TextUtils.equals(this.city, newCity)) {
+            final Object oldValue = this.city;
             this.city = newCity;
+            firePropertyChange(Properties.CITY, oldValue, this.city);
         }
     }
 
@@ -130,7 +172,9 @@ public class Address {
      */
     public void setCounty( final String newCounty ) {
         if (!TextUtils.equals(this.county, newCounty)) {
+            final Object oldValue = this.county;
             this.county = newCounty;
+            firePropertyChange(Properties.COUNTY, oldValue, this.county);
         }
     }
 
@@ -139,7 +183,9 @@ public class Address {
      */
     public void setLine1( final String newLine1 ) {
         if (!TextUtils.equals(this.line1, newLine1)) {
+            final Object oldValue = this.line1;
             this.line1 = newLine1;
+            firePropertyChange(Properties.LINE_1, oldValue, this.line1);
         }
     }
 
@@ -148,7 +194,9 @@ public class Address {
      */
     public void setLine2( final String newLine2 ) {
         if (!TextUtils.equals(this.line2, newLine2)) {
+            final Object oldValue = this.line2;
             this.line2 = newLine2;
+            firePropertyChange(Properties.LINE_2, oldValue, this.line2);
         }
     }
 
@@ -157,7 +205,9 @@ public class Address {
      */
     public void setPostalCode( final String newPostalCode ) {
         if (!TextUtils.equals(this.postalCode, newPostalCode)) {
+            final Object oldValue = this.postalCode;
             this.postalCode = newPostalCode;
+            firePropertyChange(Properties.POSTAL_CODE, oldValue, this.postalCode);
         }
     }
 
@@ -166,8 +216,47 @@ public class Address {
      */
     public void setState( final String newState ) {
         if (!TextUtils.equals(this.state, newState)) {
+            final Object oldValue = this.state;
             this.state = newState;
+            firePropertyChange(Properties.STATE, oldValue, this.state);
         }
+    }
+
+    /**
+     * An address's property identifiers
+     */
+    public interface Properties {
+
+        /**
+         * The address's city property identifier.
+         */
+        String CITY = PROPERTY_PREFIX + "city"; //$NON-NLS-1$
+
+        /**
+         * The address's county property identifier.
+         */
+        String COUNTY = PROPERTY_PREFIX + "county"; //$NON-NLS-1$
+
+        /**
+         * The address's line 1 property identifier.
+         */
+        String LINE_1 = PROPERTY_PREFIX + "line_1"; //$NON-NLS-1$
+
+        /**
+         * The address's line 2 property identifier.
+         */
+        String LINE_2 = PROPERTY_PREFIX + "line_2"; //$NON-NLS-1$
+
+        /**
+         * The address's postal code (zipcode) property identifier.
+         */
+        String POSTAL_CODE = PROPERTY_PREFIX + "postal_code"; //$NON-NLS-1$
+
+        /**
+         * The address's state property identifier.
+         */
+        String STATE = PROPERTY_PREFIX + "state"; //$NON-NLS-1$
+
     }
 
 }

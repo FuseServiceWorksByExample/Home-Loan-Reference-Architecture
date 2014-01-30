@@ -12,6 +12,7 @@
  */
 package org.jboss.demo.loanmanagement;
 
+import java.text.ParseException;
 import org.jboss.demo.loanmanagement.model.Borrower;
 import org.jboss.demo.loanmanagement.model.BorrowerAddress;
 import org.jboss.demo.loanmanagement.widget.ItemSelectedAdapter;
@@ -258,7 +259,7 @@ public final class BorrowerDialog extends DialogFragment implements
                 int index = -1;
                 int i = 0;
 
-                for (final String status : Borrower.MARITAL_STATUS) {
+                for (final String status : Borrower.MARITAL_TYPE) {
                     if (status.equals(maritalStatus)) {
                         index = i;
                         break;
@@ -284,7 +285,7 @@ public final class BorrowerDialog extends DialogFragment implements
                                             final int position,
                                             final long id ) {
                     final int index = ((Spinner)spinner).getSelectedItemPosition();
-                    getBorrower().setMaritalStatus(Borrower.MARITAL_STATUS[index]);
+                    getBorrower().setMaritalStatus(Borrower.MARITAL_TYPE[index]);
                     updateState();
                 }
             });
@@ -320,8 +321,15 @@ public final class BorrowerDialog extends DialogFragment implements
                  */
                 @Override
                 public void afterTextChanged( final Editable newYearsInSchool ) {
-                    final double newValue = Util.parseDouble(newYearsInSchool.toString());
-                    getBorrower().setYearsSchool(newValue);
+                    double newValue;
+
+                    try {
+                        newValue = Util.parseDouble(newYearsInSchool.toString());
+                        getBorrower().setYearsSchool(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(getString(R.string.err_invalid_amount));
+                    }
+
                     updateState();
                 }
             });
@@ -378,8 +386,14 @@ public final class BorrowerDialog extends DialogFragment implements
                      */
                     @Override
                     public void afterTextChanged( final Editable newNumYears ) {
-                        final double newValue = Util.parseDouble(newNumYears.toString());
-                        getAddress().setNumYears(newValue);
+                        double newValue;
+
+                        try {
+                            newValue = Util.parseDouble(newNumYears.toString());
+                            getAddress().setNumYears(newValue);
+                        } catch (final ParseException e) {
+                            txtNumYears.setError(getString(R.string.err_invalid_amount));
+                        }
                         updateState();
                     }
                 });

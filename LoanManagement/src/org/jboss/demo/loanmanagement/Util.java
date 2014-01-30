@@ -12,6 +12,8 @@
  */
 package org.jboss.demo.loanmanagement;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import android.app.ProgressDialog;
@@ -145,29 +147,31 @@ public final class Util {
     /**
      * @param text the text being parsed (if <code>null</code> or empty the value will be zero)
      * @return the double value
-     * @throws NumberFormatException if text cannot be parsed as a double value
+     * @throws ParseException if text cannot be parsed as a double value
      */
-    public static double parseDouble( final String text ) {
+    public static double parseDouble( final String text ) throws ParseException {
         if (TextUtils.isEmpty(text)) {
             return 0;
         }
 
-        return Double.parseDouble(text);
-
+        final NumberFormat format = NumberFormat.getInstance();
+        final Number number = format.parse(text);
+        return number.doubleValue();
     }
 
     /**
      * @param text the text being parsed (if <code>null</code> or empty the value will be zero)
      * @return the double value
-     * @throws NumberFormatException if text cannot be parsed as an integer value
+     * @throws ParseException if text cannot be parsed as an integer value
      */
-    public static int parseInt( final String text ) {
+    public static int parseInt( final String text ) throws ParseException {
         if (TextUtils.isEmpty(text)) {
             return 0;
         }
 
-        return Integer.parseInt(text);
-
+        final NumberFormat format = NumberFormat.getInstance();
+        final Number number = format.parse(text);
+        return number.intValue();
     }
 
     /**

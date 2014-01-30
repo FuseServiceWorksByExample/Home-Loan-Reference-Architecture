@@ -78,6 +78,14 @@
         <item>Not Specified</item>
     </string-array>
 
+    <string name="Accounts">Accounts</string>
+    <string name="add_account_dialog_msg">Enter the account number, address, amount, and description for the account being added.</string>
+    <string name="add_auto_dialog_msg">Enter the amount and description for the automobile being added.</string>
+    <string name="add_deposit_dialog_msg">Enter the amount and description for the cash deposit being added.</string>
+    <string name="add_dialog_title">Add</string>
+    <string name="AddAccount">Add Account</string>
+    <string name="AddAuto">Add Automobile</string>
+    <string name="AddDeposit">Add Deposit</string>
     <string name="app_name">Loan Management</string>
     <string name="app_status_approved">APPROVED</string>
     <string name="app_status_pending">PENDING</string>
@@ -85,6 +93,7 @@
     <string name="application_processed_successfully">Loan application was processed successfully!</string>
     <string name="Approve">Approve</string>
     <string name="AssetsAndLiabilities">Assets And Liabilities</string>
+    <string name="Automobiles">Automobiles</string>
     <string name="borrower_dialog_title">Borrower</string>
     <string name="Borrowers">Borrowers</string>
     <string name="btn_jointly">Jointly</string>
@@ -103,7 +112,22 @@
     <string name="chk_primary_residence">Primary resident</string>
     <string name="chk_self_employed">Self employed</string>
     <string name="chk_us_citizen">U.S. citizen</string>
+    <string name="delete_account_msg">Are you sure you want to delete the selected account?</string>
+    <string name="delete_account_with_id_msg">Are you sure you want to delete account \'%1s\'?</string>
+    <string name="delete_auto_msg">Are you sure you want to delete the selected automobile?</string>
+    <string name="delete_auto_with_description_msg">Are you sure you want to delete auto \'%1s\'?</string>
+    <string name="delete_deposit_msg">Are you sure you want to delete the selected deposit?</string>
+    <string name="delete_deposit_with_description_msg">Are you sure you want to delete deposit \'%1s\'?</string>
+    <string name="delete_dialog_title">Delete</string>
+    <string name="Deposits">Deposits</string>
+    <string name="edit_account_dialog_msg">Update this exising account and select \'OK.\'"</string>
+    <string name="edit_auto_dialog_msg">Update this exising automobile and select \'OK.\'"</string>
+    <string name="edit_deposit_dialog_msg">Update this exising deposit and select \'OK.\'"</string>
+    <string name="edit_dialog_title">Edit</string>
+    <string name="empty_accounts_message">There are no accounts.</string>
+    <string name="empty_autos_message">There are no automobiles.</string>
     <string name="empty_borrowers_message">There are no borrowers for this loan application.</string>
+    <string name="empty_deposits_message">There are no cash deposits.</string>
     <string name="empty_evaluations_message">There are no available application evaluations.</string>
     <string name="empty_statuses_message">There are no available application statuses.</string>
     <string name="evaluate_dialog_title">Evaluate</string>
@@ -122,7 +146,8 @@
     <string name="item_application_statuses">Application\nStatuses</string>
     <string name="item_application_statuses_description">A list of available application statuses</string>
     <string name="item_help">Help\n</string>
-    <string name="item_help_description">Information on using the Home Loan app </string>
+    <string name="item_help_description">Information on using the Home Loan app</string>
+    <string name="item_jump_to">Jump</string>
     <string name="item_new_application">Loan\nApplication</string>
     <string name="item_new_application_description">Create a new home loan application</string>
     <string name="item_refresh">Refresh</string>
@@ -144,7 +169,7 @@
     <string name="label_association_dues">Amount:</string>
     <string name="label_business_type">Business Type:</string>
     <string name="label_city">City:</string>
-    <string name="label_completed_by">Completed:</string>
+    <string name="label_completed_by">Assets and Liabilities Section Completed:</string>
     <string name="label_county">County:</string>
     <string name="label_credit_score">Credit Score:</string>
     <string name="label_description">Description:</string>

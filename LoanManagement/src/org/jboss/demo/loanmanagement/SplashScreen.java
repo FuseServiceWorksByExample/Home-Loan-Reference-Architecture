@@ -22,7 +22,7 @@ import android.os.Handler;
  */
 public final class SplashScreen extends Activity {
 
-    private static final int SPLASH_DURATION = 1500;
+    private static final int SPLASH_DURATION = 1000;
 
     /**
      * @see android.app.Activity#onCreate(android.os.Bundle)

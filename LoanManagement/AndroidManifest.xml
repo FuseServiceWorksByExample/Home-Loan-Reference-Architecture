@@ -32,6 +32,9 @@
         <activity
             android:name="org.jboss.demo.loanmanagement.ApplicationScreen"
             android:label="@string/item_new_application" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.jboss.demo.loanmanagement.LoanManagementScreen" />
         </activity>
         <activity
             android:name="org.jboss.demo.loanmanagement.EvaluationsScreen"

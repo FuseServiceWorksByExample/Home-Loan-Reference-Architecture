@@ -21,6 +21,7 @@
             style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/hint_dollar_amount"
             android:inputType="numberDecimal" />
     </LinearLayout>
 

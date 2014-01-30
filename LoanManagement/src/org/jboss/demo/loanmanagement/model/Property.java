@@ -12,13 +12,18 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 import org.jboss.demo.loanmanagement.Util;
 
 /**
  * A property address model object.
  */
-public final class Property {
+public final class Property implements PropertyChangeListener {
+
+    protected static final String PROPERTY_PREFIX = Property.class.getSimpleName() + '.';
 
     /**
      * The types of property.
@@ -43,14 +48,22 @@ public final class Property {
 
     private Address address;
     private int numUnits = 1;
+    private final PropertyChangeSupport pcs;
     private String type;
     private int yearBuilt;
 
     /**
-     * Constructs a property with default values.
+     * Constructs a property.
      */
     public Property() {
-        this.address = new Address();
+        this.pcs = new PropertyChangeSupport(this);
+    }
+
+    /**
+     * @param listener the listener registering to receive property change events (cannot be <code>null</code>)
+     */
+    public void add( final PropertyChangeListener listener ) {
+        this.pcs.addPropertyChangeListener(listener);
     }
 
     /**
@@ -71,8 +84,22 @@ public final class Property {
                         && Util.equals(this.type, that.type) && Util.equals(this.yearBuilt, that.yearBuilt));
     }
 
+    private void firePropertyChange( final String propId,
+                                     final Object oldValue,
+                                     final Object newValue ) {
+        if (oldValue == newValue) {
+            return;
+        }
+
+        if ((oldValue != null) && oldValue.equals(newValue)) {
+            return;
+        }
+
+        this.pcs.firePropertyChange(propId, oldValue, newValue);
+    }
+
     /**
-     * @return the address
+     * @return the address (can be <code>null</code>)
      */
     public Address getAddress() {
         return this.address;
@@ -108,11 +135,36 @@ public final class Property {
     }
 
     /**
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    @Override
+    public void propertyChange( final PropertyChangeEvent event ) {
+        firePropertyChange(Properties.ADDRESS, event.getOldValue(), event.getNewValue());
+    }
+
+    /**
+     * @param listener the listener unregistering from receiving property change events (cannot be <code>null</code>)
+     */
+    public void remove( final PropertyChangeListener listener ) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    /**
      * @param newAddress the new value for the address (can be <code>null</code>)
      */
     public void setAddress( final Address newAddress ) {
         if (!Util.equals(this.address, newAddress)) {
+            final Object oldValue = this.address;
             this.address = newAddress;
+            firePropertyChange(Properties.ADDRESS, oldValue, this.address);
+
+            if (oldValue != null) {
+                ((Address)oldValue).remove(this);
+            }
+
+            if (this.address != null) {
+                this.address.add(this);
+            }
         }
     }
 
@@ -121,7 +173,9 @@ public final class Property {
      */
     public void setNumUnits( final int newNumUnits ) {
         if (this.numUnits != newNumUnits) {
+            final Object oldValue = this.numUnits;
             this.numUnits = newNumUnits;
+            firePropertyChange(Properties.NUM_UNITS, oldValue, this.numUnits);
         }
     }
 
@@ -130,7 +184,9 @@ public final class Property {
      */
     public void setType( final String newType ) {
         if (!Util.equals(this.type, newType)) {
+            final Object oldValue = this.type;
             this.type = newType;
+            firePropertyChange(Properties.TYPE, oldValue, this.type);
         }
     }
 
@@ -139,8 +195,37 @@ public final class Property {
      */
     public void setYearBuilt( final int newYearBuilt ) {
         if (this.yearBuilt != newYearBuilt) {
+            final Object oldValue = this.yearBuilt;
             this.yearBuilt = newYearBuilt;
+            firePropertyChange(Properties.YEAR_BUILT, oldValue, this.yearBuilt);
         }
+    }
+
+    /**
+     * A property's property identifiers
+     */
+    public interface Properties {
+
+        /**
+         * The property's address property identifier.
+         */
+        String ADDRESS = PROPERTY_PREFIX + "address"; //$NON-NLS-1$
+
+        /**
+         * The property's number of units property identifier.
+         */
+        String NUM_UNITS = PROPERTY_PREFIX + "num_units"; //$NON-NLS-1$
+
+        /**
+         * The property's type property identifier.
+         */
+        String TYPE = PROPERTY_PREFIX + "type"; //$NON-NLS-1$
+
+        /**
+         * The property's year built property identifier.
+         */
+        String YEAR_BUILT = PROPERTY_PREFIX + "year_built"; //$NON-NLS-1$
+
     }
 
 }

@@ -12,21 +12,35 @@
  */
 package org.jboss.demo.loanmanagement.widget;
 
+import java.text.ParseException;
 import org.jboss.demo.loanmanagement.R;
 import org.jboss.demo.loanmanagement.Util;
+import org.jboss.demo.loanmanagement.model.Account;
 import org.jboss.demo.loanmanagement.model.Application;
 import org.jboss.demo.loanmanagement.model.AssetsAndLiabilities;
+import org.jboss.demo.loanmanagement.model.Automobile;
+import org.jboss.demo.loanmanagement.model.CashDeposit;
 import org.jboss.demo.loanmanagement.model.HousingExpense;
 import org.jboss.demo.loanmanagement.model.Property;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 /**
@@ -34,30 +48,44 @@ import android.widget.TextView;
  */
 public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
+    private static final String ACCOUNTS_TAB_ID = "tab_accounts"; //$NON-NLS-1$
+
     /**
      * The index of the assets view in the expandable list.
      */
-    private static final int ASSETS_INDEX = 3;
+    public static final int ASSETS_INDEX = 3;
+
+    private static final String AUTOS_TAB_ID = "tab_autos"; //$NON-NLS-1$
 
     /**
      * The index of the borrowers view in the expandable list.
      */
-    private static final int BORROWERS_INDEX = 1;
+    public static final int BORROWERS_INDEX = 1;
+
+    private static final String DEPOSITS_TAB_ID = "tab_deposits"; //$NON-NLS-1$
 
     private static final int[] GROUPS = new int[] {R.string.Loan, R.string.Borrowers, R.string.HousingExpense,
                                                    R.string.AssetsAndLiabilities};
-
     /**
      * The index of the housing expense view in the expandable list.
      */
-    private static final int HOUSING_EXPENSE_INDEX = 2;
+    public static final int HOUSING_EXPENSE_INDEX = 2;
 
     /**
      * The index of the loan view in the expandable list.
      */
-    private static final int LOAN_INDEX = 0;
+    public static final int LOAN_INDEX = 0;
 
+    private ViewGroup accountsContainer;
+    private ViewGroup accountsTab;
+    private boolean accountsTabSetup = false;
     private final Application application;
+    private ViewGroup autosContainer;
+    private ViewGroup autosTab;
+    private boolean autosTabSetup = false;
+    private ViewGroup depositsContainer;
+    private ViewGroup depositsTab;
+    private boolean depositsTabSetup = false;
     private final ExpandableListView expandableListView;
     private final LayoutInflater inflater;
     private int lastExpandedGroupIndex;
@@ -161,6 +189,30 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                 result = this.inflater.inflate(R.layout.assets_liabilities, viewGroup, false);
 
                 if (!this.listenersSetup[ASSETS_INDEX]) {
+                    final TabHost tabHost = (TabHost)result.findViewById(R.id.tabhost);
+                    tabHost.setup();
+
+                    { // accounts tab
+                        final TabSpec tab = tabHost.newTabSpec(ACCOUNTS_TAB_ID);
+                        tab.setContent(R.id.tab_accounts);
+                        tab.setIndicator(tabHost.getContext().getString(R.string.Accounts));
+                        tabHost.addTab(tab);
+                    }
+
+                    { // autos tab
+                        final TabSpec tab = tabHost.newTabSpec(AUTOS_TAB_ID);
+                        tab.setContent(R.id.tab_autos);
+                        tab.setIndicator(tabHost.getContext().getString(R.string.Automobiles));
+                        tabHost.addTab(tab);
+                    }
+
+                    { // cash deposits tab
+                        final TabSpec tab = tabHost.newTabSpec(DEPOSITS_TAB_ID);
+                        tab.setContent(R.id.tab_cash_deposits);
+                        tab.setIndicator(tabHost.getContext().getString(R.string.Deposits));
+                        tabHost.addTab(tab);
+                    }
+
                     setupAssetsAndLiabilitiesViewListeners(result);
                     this.listenersSetup[ASSETS_INDEX] = true;
                 }
@@ -168,6 +220,10 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         }
 
         return result;
+    }
+
+    private Context getContext() {
+        return this.expandableListView.getContext();
     }
 
     /**
@@ -229,6 +285,327 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         return this.application.getProperty();
     }
 
+    protected void handleAddAccount() {
+        // TODO need different layout
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        final View view = this.inflater.inflate(R.layout.asset, null);
+        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
+        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
+        builder.setView(view).setTitle(R.string.add_dialog_title).setIcon(R.drawable.ic_home)
+               .setMessage(R.string.add_account_dialog_msg).setNegativeButton(android.R.string.cancel, null)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                   /**
+                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+                    */
+                   @Override
+                   public void onClick( final DialogInterface dialog,
+                                        final int which ) {
+                       final Account newAccount = new Account();
+
+                       try {
+                           newAccount.setAmount(Util.parseDouble(txtAmount.getText().toString()));
+                           newAccount.setDescription(txtDescription.getText().toString());
+                           getAssetsAndLiabilities().addAccount(newAccount);
+                       } catch (final ParseException e) {
+                           // TODO this code will not do anything as dialog is closed!!!
+                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
+                       }
+                   }
+               }).show();
+    }
+
+    protected void handleAddAuto() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        final View view = this.inflater.inflate(R.layout.asset, null);
+        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
+        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
+        builder.setView(view).setTitle(R.string.add_dialog_title).setIcon(R.drawable.ic_home)
+               .setMessage(R.string.add_auto_dialog_msg).setNegativeButton(android.R.string.cancel, null)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                   /**
+                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+                    */
+                   @Override
+                   public void onClick( final DialogInterface dialog,
+                                        final int which ) {
+                       final Automobile newAuto = new Automobile();
+
+                       try {
+                           newAuto.setAmount(Util.parseDouble(txtAmount.getText().toString()));
+                           newAuto.setDescription(txtDescription.getText().toString());
+                           getAssetsAndLiabilities().addAutomobile(newAuto);
+                       } catch (final ParseException e) {
+                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
+                       }
+                   }
+               }).show();
+    }
+
+    protected void handleAddDeposit() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        final View view = this.inflater.inflate(R.layout.asset, null);
+        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
+        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
+        builder.setView(view).setTitle(R.string.add_dialog_title).setIcon(R.drawable.ic_home)
+               .setMessage(R.string.add_deposit_dialog_msg).setNegativeButton(android.R.string.cancel, null)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                   /**
+                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+                    */
+                   @Override
+                   public void onClick( final DialogInterface dialog,
+                                        final int which ) {
+                       final CashDeposit newDeposit = new CashDeposit();
+
+                       try {
+                           newDeposit.setAmount(Util.parseDouble(txtAmount.getText().toString()));
+                           newDeposit.setDescription(txtDescription.getText().toString());
+                           getAssetsAndLiabilities().addCashDeposit(newDeposit);
+                       } catch (final ParseException e) {
+                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
+                       }
+                   }
+               }).show();
+    }
+
+    protected void handleDeleteAccount( final Account deleteAccount ) {
+        String msg = null;
+
+        if (TextUtils.isEmpty(deleteAccount.getNumber())) {
+            msg = getContext().getString(R.string.delete_account_msg);
+        } else {
+            msg = getContext().getString(R.string.delete_account_with_id_msg, deleteAccount.getNumber());
+        }
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        builder.setTitle(R.string.delete_dialog_title).setIcon(R.drawable.ic_home).setMessage(msg)
+               .setNegativeButton(android.R.string.cancel, null)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                   /**
+                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+                    */
+                   @Override
+                   public void onClick( final DialogInterface dialog,
+                                        final int which ) {
+                       getAssetsAndLiabilities().removeAccount(deleteAccount);
+                   }
+               }).show();
+    }
+
+    protected void handleDeleteAuto( final Automobile deleteAuto ) {
+        String msg = null;
+
+        if (TextUtils.isEmpty(deleteAuto.getDescription())) {
+            msg = getContext().getString(R.string.delete_auto_msg);
+        } else {
+            msg = getContext().getString(R.string.delete_auto_with_description_msg, deleteAuto.getDescription());
+        }
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        builder.setTitle(R.string.delete_dialog_title).setIcon(R.drawable.ic_home).setMessage(msg)
+               .setNegativeButton(android.R.string.cancel, null)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                   /**
+                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+                    */
+                   @Override
+                   public void onClick( final DialogInterface dialog,
+                                        final int which ) {
+                       getAssetsAndLiabilities().removeAutomobile(deleteAuto);
+                   }
+               }).show();
+    }
+
+    protected void handleDeleteDeposit( final CashDeposit deleteDeposit ) {
+        String msg = null;
+
+        if (TextUtils.isEmpty(deleteDeposit.getDescription())) {
+            msg = getContext().getString(R.string.delete_deposit_msg);
+        } else {
+            msg = getContext().getString(R.string.delete_deposit_with_description_msg, deleteDeposit.getDescription());
+        }
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        builder.setTitle(R.string.delete_dialog_title).setIcon(R.drawable.ic_home).setMessage(msg)
+               .setNegativeButton(android.R.string.cancel, null)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                   /**
+                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+                    */
+                   @Override
+                   public void onClick( final DialogInterface dialog,
+                                        final int which ) {
+                       getAssetsAndLiabilities().removeCashDeposit(deleteDeposit);
+                   }
+               }).show();
+    }
+
+    protected void handleEditAccount( final Account editAccount ) {
+        // TODO need number and address
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        final View view = this.inflater.inflate(R.layout.asset, null);
+
+        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
+        txtAmount.setText(Double.toString(editAccount.getAmount()));
+
+        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
+        txtDescription.setText(editAccount.getDescription());
+
+        builder.setView(view).setTitle(R.string.edit_dialog_title).setIcon(R.drawable.ic_home)
+               .setMessage(R.string.edit_account_dialog_msg).setNegativeButton(android.R.string.cancel, null)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                   /**
+                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+                    */
+                   @Override
+                   public void onClick( final DialogInterface dialog,
+                                        final int which ) {
+                       try {
+                           editAccount.setAmount(Util.parseDouble(txtAmount.getText().toString()));
+                           editAccount.setDescription(txtDescription.getText().toString());
+                       } catch (final ParseException e) {
+                           // TODO the dialog will be closed!!!
+                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
+                       }
+                   }
+               }).show();
+    }
+
+    protected void handleEditAuto( final Automobile editAuto ) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        final View view = this.inflater.inflate(R.layout.asset, null);
+
+        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
+        txtAmount.setText(Double.toString(editAuto.getAmount()));
+
+        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
+        txtDescription.setText(editAuto.getDescription());
+
+        builder.setView(view).setTitle(R.string.edit_dialog_title).setIcon(R.drawable.ic_home)
+               .setMessage(R.string.edit_auto_dialog_msg).setNegativeButton(android.R.string.cancel, null)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                   /**
+                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+                    */
+                   @Override
+                   public void onClick( final DialogInterface dialog,
+                                        final int which ) {
+                       try {
+                           editAuto.setAmount(Util.parseDouble(txtAmount.getText().toString()));
+                           editAuto.setDescription(txtDescription.getText().toString());
+                       } catch (final ParseException e) {
+                           // TODO fix this
+                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
+                       }
+                   }
+               }).show();
+    }
+
+    protected void handleEditDeposit( final CashDeposit editDeposit ) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        final View view = this.inflater.inflate(R.layout.asset, null);
+
+        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
+        txtAmount.setText(Double.toString(editDeposit.getAmount()));
+
+        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
+        txtDescription.setText(editDeposit.getDescription());
+
+        builder.setView(view).setTitle(R.string.edit_dialog_title).setIcon(R.drawable.ic_home)
+               .setMessage(R.string.edit_deposit_dialog_msg).setNegativeButton(android.R.string.cancel, null)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                   /**
+                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+                    */
+                   @Override
+                   public void onClick( final DialogInterface dialog,
+                                        final int which ) {
+                       try {
+                           editDeposit.setAmount(Util.parseDouble(txtAmount.getText().toString()));
+                           editDeposit.setDescription(txtDescription.getText().toString());
+                       } catch (final ParseException e) {
+                           // TODO fix this
+                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
+                       }
+                   }
+               }).show();
+    }
+
+    protected void handleTabChanged( final String tabId,
+                                     final View tabHost ) {
+        // TODO hide or disable edit and delete buttons if list is empty
+        if (ACCOUNTS_TAB_ID.equals(tabId) && !this.accountsTabSetup) {
+            this.accountsTab = (ViewGroup)tabHost.findViewById(R.id.tab_accounts);
+            this.accountsContainer = (ViewGroup)this.accountsTab.findViewById(R.id.accounts_container);
+
+            { // add account
+                final ImageButton btn = (ImageButton)tabHost.findViewById(R.id.btn_add_account);
+                btn.setOnClickListener(new OnClickListener() {
+
+                    /**
+                     * @see android.view.View.OnClickListener#onClick(android.view.View)
+                     */
+                    @Override
+                    public void onClick( final View view ) {
+                        handleAddAccount();
+                    }
+                });
+            }
+
+            refreshAccounts();
+            this.accountsTabSetup = true;
+        } else if (AUTOS_TAB_ID.equals(tabId) && !this.autosTabSetup) {
+            this.autosTab = (ViewGroup)tabHost.findViewById(R.id.tab_autos);
+            this.autosContainer = (ViewGroup)this.autosTab.findViewById(R.id.autos_container);
+
+            { // add auto
+                final ImageButton btn = (ImageButton)this.autosTab.findViewById(R.id.btn_add_auto);
+                btn.setOnClickListener(new OnClickListener() {
+
+                    /**
+                     * @see android.view.View.OnClickListener#onClick(android.view.View)
+                     */
+                    @Override
+                    public void onClick( final View view ) {
+                        handleAddAuto();
+                    }
+                });
+            }
+
+            refreshAutos();
+            this.autosTabSetup = true;
+        } else if (DEPOSITS_TAB_ID.equals(tabId) && !this.depositsTabSetup) {
+            this.depositsTab = (ViewGroup)tabHost.findViewById(R.id.tab_cash_deposits);
+            this.depositsContainer = (ViewGroup)this.depositsTab.findViewById(R.id.deposits_container);
+
+            { // add deposit
+                final ImageButton btn = (ImageButton)tabHost.findViewById(R.id.btn_add_deposit);
+                btn.setOnClickListener(new OnClickListener() {
+
+                    /**
+                     * @see android.view.View.OnClickListener#onClick(android.view.View)
+                     */
+                    @Override
+                    public void onClick( final View view ) {
+                        handleAddDeposit();
+                    }
+                });
+            }
+
+            refreshDeposits();
+            this.depositsTabSetup = true;
+        }
+    }
+
     /**
      * @see android.widget.ExpandableListAdapter#hasStableIds()
      */
@@ -260,16 +637,200 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     }
 
     /**
-     * @param view the assets and liabilities view of the application screen (cannot be <code>null</code>)
+     * Re-loads the account data from the application.
      */
-    public void setupAssetsAndLiabilitiesViewListeners( final View view ) {
-        // TODO implement
+    public void refreshAccounts() {
+        this.accountsContainer.removeAllViews();
+
+        for (final Account account : getAssetsAndLiabilities().getAccounts()) {
+            final View view = this.inflater.inflate(R.layout.readonly_asset, null);
+            this.accountsContainer.addView(view);
+
+            { // description
+                final TextView txt = (TextView)view.findViewById(R.id.txt_asset_description);
+                txt.setText(account.getDescription());
+            }
+
+            { // amount
+                final TextView txt = (TextView)view.findViewById(R.id.txt_asset_amount);
+                txt.setText(Double.toString(account.getAmount()));
+            }
+
+            { // edit account
+                final ImageButton btn = (ImageButton)view.findViewById(R.id.btn_edit);
+                btn.setOnClickListener(new OnClickListener() {
+
+                    /**
+                     * @see android.view.View.OnClickListener#onClick(android.view.View)
+                     */
+                    @Override
+                    public void onClick( final View editButton ) {
+                        handleEditAccount(account);
+                    }
+                });
+            }
+
+            { // delete account
+                final ImageButton btn = (ImageButton)view.findViewById(R.id.btn_delete);
+                btn.setOnClickListener(new OnClickListener() {
+
+                    /**
+                     * @see android.view.View.OnClickListener#onClick(android.view.View)
+                     */
+                    @Override
+                    public void onClick( final View deleteButton ) {
+                        handleDeleteAccount(account);
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * Re-loads the automobile data from the application.
+     */
+    public void refreshAutos() {
+        this.autosContainer.removeAllViews();
+
+        for (final Automobile auto : getAssetsAndLiabilities().getAutomobiles()) {
+            final View view = this.inflater.inflate(R.layout.readonly_asset, null);
+            this.autosContainer.addView(view);
+
+            { // description
+                final TextView txt = (TextView)view.findViewById(R.id.txt_asset_description);
+                txt.setText(auto.getDescription());
+            }
+
+            { // amount
+                final TextView txt = (TextView)view.findViewById(R.id.txt_asset_amount);
+                txt.setText(Double.toString(auto.getAmount()));
+            }
+
+            { // edit auto
+                final ImageButton btn = (ImageButton)view.findViewById(R.id.btn_edit);
+                btn.setOnClickListener(new OnClickListener() {
+
+                    /**
+                     * @see android.view.View.OnClickListener#onClick(android.view.View)
+                     */
+                    @Override
+                    public void onClick( final View editButton ) {
+                        handleEditAuto(auto);
+                    }
+                });
+            }
+
+            { // delete auto
+                final ImageButton btn = (ImageButton)view.findViewById(R.id.btn_delete);
+                btn.setOnClickListener(new OnClickListener() {
+
+                    /**
+                     * @see android.view.View.OnClickListener#onClick(android.view.View)
+                     */
+                    @Override
+                    public void onClick( final View deleteButton ) {
+                        handleDeleteAuto(auto);
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * Re-loads the cash deposit data from the application.
+     */
+    public void refreshDeposits() {
+        this.depositsContainer.removeAllViews();
+
+        for (final CashDeposit deposit : getAssetsAndLiabilities().getCashDeposits()) {
+            final View view = this.inflater.inflate(R.layout.readonly_asset, null);
+            this.depositsContainer.addView(view);
+
+            { // description
+                final TextView txt = (TextView)view.findViewById(R.id.txt_asset_description);
+                txt.setText(deposit.getDescription());
+            }
+
+            { // amount
+                final TextView txt = (TextView)view.findViewById(R.id.txt_asset_amount);
+                txt.setText(Double.toString(deposit.getAmount()));
+            }
+
+            { // edit deposit
+                final ImageButton btn = (ImageButton)view.findViewById(R.id.btn_edit);
+                btn.setOnClickListener(new OnClickListener() {
+
+                    /**
+                     * @see android.view.View.OnClickListener#onClick(android.view.View)
+                     */
+                    @Override
+                    public void onClick( final View editButton ) {
+                        handleEditDeposit(deposit);
+                    }
+                });
+            }
+
+            { // delete deposit
+                final ImageButton btn = (ImageButton)view.findViewById(R.id.btn_delete);
+                btn.setOnClickListener(new OnClickListener() {
+
+                    /**
+                     * @see android.view.View.OnClickListener#onClick(android.view.View)
+                     */
+                    @Override
+                    public void onClick( final View deleteButton ) {
+                        handleDeleteDeposit(deposit);
+                    }
+                });
+            }
+        }
+    }
+
+    private void setupAssetsAndLiabilitiesViewListeners( final View view ) {
+        { // completed by
+            final RadioGroup group = (RadioGroup)view.findViewById(R.id.grp_completed_by);
+            group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+                /**
+                 * @see android.widget.RadioGroup.OnCheckedChangeListener#onCheckedChanged(android.widget.RadioGroup,
+                 *      int)
+                 */
+                @Override
+                public void onCheckedChanged( final RadioGroup radioGroup,
+                                              final int btnId ) {
+                    String completedBy = null;
+
+                    if (btnId == R.id.btn_jointly) {
+                        completedBy = AssetsAndLiabilities.COMPLETED_BY[AssetsAndLiabilities.JOINTLY_INDEX];
+                    } else if (btnId == R.id.btn_jointly) {
+                        completedBy = AssetsAndLiabilities.COMPLETED_BY[AssetsAndLiabilities.NOT_JOINTLY_INDEX];
+                    }
+
+                    getAssetsAndLiabilities().setCompletedType(completedBy);
+                }
+            });
+        }
+
+        final TabHost tabHost = (TabHost)view.findViewById(R.id.tabhost);
+        tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+
+            /**
+             * @see android.widget.TabHost.OnTabChangeListener#onTabChanged(java.lang.String)
+             */
+            @Override
+            public void onTabChanged( final String tabId ) {
+                handleTabChanged(tabId, tabHost);
+            }
+        });
+
+        // call this manually since no event is generated when tabs first displayed
+        handleTabChanged(ACCOUNTS_TAB_ID, tabHost);
     }
 
     /**
      * @param view the borrowers view of the application screen (cannot be <code>null</code>)
      */
-    public void setupBorrowersViewListeners( final View view ) {
+    private void setupBorrowersViewListeners( final View view ) {
         // TODO implement
     }
 
@@ -283,8 +844,14 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                  */
                 @Override
                 public void afterTextChanged( final Editable newFirstMortgage ) {
-                    final double newValue = Util.parseDouble(newFirstMortgage.toString());
-                    getHousingExpense().setFirstMortgage(newValue);
+                    double newValue;
+
+                    try {
+                        newValue = Util.parseDouble(newFirstMortgage.toString());
+                        getHousingExpense().setFirstMortgage(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                    }
                 }
             });
         }
@@ -298,8 +865,14 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                  */
                 @Override
                 public void afterTextChanged( final Editable newHazardInsurance ) {
-                    final double newValue = Util.parseDouble(newHazardInsurance.toString());
-                    getHousingExpense().setHazardInsurance(newValue);
+                    double newValue;
+
+                    try {
+                        newValue = Util.parseDouble(newHazardInsurance.toString());
+                        getHousingExpense().setHazardInsurance(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                    }
                 }
             });
         }
@@ -313,8 +886,14 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                  */
                 @Override
                 public void afterTextChanged( final Editable newAssociationDues ) {
-                    final double newValue = Util.parseDouble(newAssociationDues.toString());
-                    getHousingExpense().setHomeOwnerAssociationDues(newValue);
+                    double newValue;
+
+                    try {
+                        newValue = Util.parseDouble(newAssociationDues.toString());
+                        getHousingExpense().setHomeOwnerAssociationDues(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                    }
                 }
             });
         }
@@ -328,8 +907,14 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                  */
                 @Override
                 public void afterTextChanged( final Editable newOther ) {
-                    final double newValue = Util.parseDouble(newOther.toString());
-                    getHousingExpense().setOther(newValue);
+                    double newValue;
+
+                    try {
+                        newValue = Util.parseDouble(newOther.toString());
+                        getHousingExpense().setOther(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                    }
                 }
             });
         }
@@ -343,8 +928,14 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                  */
                 @Override
                 public void afterTextChanged( final Editable newRealEstateTaxes ) {
-                    final double newValue = Util.parseDouble(newRealEstateTaxes.toString());
-                    getHousingExpense().setRealEstateTaxes(newValue);
+                    double newValue;
+
+                    try {
+                        newValue = Util.parseDouble(newRealEstateTaxes.toString());
+                        getHousingExpense().setRealEstateTaxes(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                    }
                 }
             });
         }
@@ -358,8 +949,13 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                  */
                 @Override
                 public void afterTextChanged( final Editable newRent ) {
-                    final double newValue = Util.parseDouble(newRent.toString());
-                    getHousingExpense().setRent(newValue);
+                    double newValue;
+                    try {
+                        newValue = Util.parseDouble(newRent.toString());
+                        getHousingExpense().setRent(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                    }
                 }
             });
         }
@@ -409,8 +1005,14 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                  */
                 @Override
                 public void afterTextChanged( final Editable newAmount ) {
-                    final double newValue = Util.parseDouble(newAmount.toString());
-                    getLoanApplication().setLoanAmount(newValue);
+                    double newValue;
+
+                    try {
+                        newValue = Util.parseDouble(newAmount.toString());
+                        getLoanApplication().setLoanAmount(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                    }
                 }
             });
         }
@@ -424,8 +1026,14 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                  */
                 @Override
                 public void afterTextChanged( final Editable newRate ) {
-                    final double newValue = Util.parseDouble(newRate.toString());
-                    getLoanApplication().setInterestRate(newValue);
+                    double newValue;
+
+                    try {
+                        newValue = Util.parseDouble(newRate.toString());
+                        getLoanApplication().setInterestRate(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                    }
                 }
             });
         }
@@ -439,8 +1047,14 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                  */
                 @Override
                 public void afterTextChanged( final Editable newNumMonths ) {
-                    final int newValue = Util.parseInt(newNumMonths.toString());
-                    getLoanApplication().setNumberOfMonths(newValue);
+                    int newValue;
+
+                    try {
+                        newValue = Util.parseInt(newNumMonths.toString());
+                        getLoanApplication().setNumberOfMonths(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                    }
                 }
             });
         }
@@ -493,8 +1107,14 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                      */
                     @Override
                     public void afterTextChanged( final Editable newNumMonths ) {
-                        final int newValue = Util.parseInt(newNumMonths.toString());
-                        getLoanApplication().setNumberOfMonths(newValue);
+                        int newValue;
+
+                        try {
+                            newValue = Util.parseInt(newNumMonths.toString());
+                            getLoanApplication().setNumberOfMonths(newValue);
+                        } catch (final ParseException e) {
+                            textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                        }
                     }
                 });
             }

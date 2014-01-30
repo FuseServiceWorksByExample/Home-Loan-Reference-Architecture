@@ -12,6 +12,7 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ public final class Evaluation {
      * An empty list.
      */
     public static final ArrayList<EvaluationParcelable> NO_EVALUATIONS_LIST = new ArrayList<EvaluationParcelable>(0);
+
+    protected static final String PROPERTY_PREFIX = Evaluation.class.getSimpleName() + '.';
 
     /**
      * A value indicating the SSN has not be set.
@@ -87,6 +90,7 @@ public final class Evaluation {
     private final int creditScore;
     private String explanation;
     private BigDecimal insuranceCost;
+    private final PropertyChangeSupport pcs;
     private BigDecimal rate;
     private final int ssn;
 
@@ -101,6 +105,7 @@ public final class Evaluation {
         this.applicant = evaluationApplicant;
         this.ssn = evaluatonSsn;
         this.creditScore = evaluationCreditScore;
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     /**
@@ -122,6 +127,20 @@ public final class Evaluation {
                         && Util.equals(this.rate, that.rate)
                         && Util.equals(this.insuranceCost, that.insuranceCost)
                         && Util.equals(this.explanation, that.explanation) && Util.equals(this.approved, that.approved));
+    }
+
+    private void firePropertyChange( final String propId,
+                                     final Object oldValue,
+                                     final Object newValue ) {
+        if (oldValue == newValue) {
+            return;
+        }
+
+        if ((oldValue != null) && oldValue.equals(newValue)) {
+            return;
+        }
+
+        this.pcs.firePropertyChange(propId, oldValue, newValue);
     }
 
     /**
@@ -196,11 +215,15 @@ public final class Evaluation {
      * @param newApproved the new value for the approved
      */
     public void setApproved( final boolean newApproved ) {
-        this.approved = newApproved;
+        if (Util.equals(this.approved, newApproved)) {
+            final Object oldValue = this.approved;
+            this.approved = newApproved;
+            firePropertyChange(Properties.APPROVED, oldValue, this.approved);
 
-        if (!this.approved) {
-            setInsuranceCost(0);
-            setRate(0);
+            if (!this.approved) {
+                setInsuranceCost(0);
+                setRate(0);
+            }
         }
     }
 
@@ -208,14 +231,29 @@ public final class Evaluation {
      * @param newExplanation the new value for the explanation
      */
     public void setExplanation( final String newExplanation ) {
-        this.explanation = newExplanation;
+        if (Util.equals(this.explanation, newExplanation)) {
+            final Object oldValue = this.explanation;
+            this.explanation = newExplanation;
+            firePropertyChange(Properties.EXPLANATION, oldValue, this.explanation);
+        }
     }
 
     /**
      * @param newInsuranceCost the new value for the insurance cost
      */
     public void setInsuranceCost( final double newInsuranceCost ) {
-        if ((this.insuranceCost == null) || (this.insuranceCost.doubleValue() != newInsuranceCost)) {
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.insuranceCost == null) && (newInsuranceCost != 0)) {
+            changed = true;
+            oldValue = this.insuranceCost;
+            this.insuranceCost = new BigDecimal(newInsuranceCost);
+            this.insuranceCost.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.insuranceCost != null) && (this.insuranceCost.doubleValue() != newInsuranceCost)) {
+            changed = true;
+            oldValue = this.insuranceCost;
+
             if (newInsuranceCost == 0) {
                 this.insuranceCost = null;
             } else {
@@ -223,20 +261,81 @@ public final class Evaluation {
                 this.insuranceCost.setScale(2, RoundingMode.HALF_EVEN);
             }
         }
+
+        if (changed) {
+            firePropertyChange(Properties.INSURANCE_COST, oldValue, this.insuranceCost);
+        }
     }
 
     /**
      * @param newRate the new value for the loan rate
      */
     public void setRate( final double newRate ) {
-        if ((this.rate == null) || (this.rate.doubleValue() != newRate)) {
+        boolean changed = false;
+        Object oldValue = null;
+
+        if ((this.rate == null) && (newRate != 0)) {
+            changed = true;
+            oldValue = this.rate;
+            this.rate = new BigDecimal(newRate);
+            this.rate.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.rate != null) && (this.rate.doubleValue() != newRate)) {
+            changed = true;
+            oldValue = this.rate;
+
             if (newRate == 0) {
                 this.rate = null;
             } else {
                 this.rate = new BigDecimal(newRate);
-                this.rate.setScale(4, RoundingMode.HALF_EVEN);
+                this.rate.setScale(2, RoundingMode.HALF_EVEN);
             }
         }
+
+        if (changed) {
+            firePropertyChange(Properties.RATE, oldValue, this.rate);
+        }
+    }
+
+    /**
+     * An employer's property identifiers
+     */
+    public interface Properties {
+
+        /**
+         * The evaluation's applicant property identifier.
+         */
+        String APPLICANT = PROPERTY_PREFIX + "applicant"; //$NON-NLS-1$
+
+        /**
+         * The evaluation's approved property identifier.
+         */
+        String APPROVED = PROPERTY_PREFIX + "approved"; //$NON-NLS-1$
+
+        /**
+         * The evaluation's credit score property identifier.
+         */
+        String CREDIT_SCORE = PROPERTY_PREFIX + "credit_score"; //$NON-NLS-1$
+
+        /**
+         * The evaluation's explanation property identifier.
+         */
+        String EXPLANATION = PROPERTY_PREFIX + "explanation"; //$NON-NLS-1$
+
+        /**
+         * The evaluation's insurance cost property identifier.
+         */
+        String INSURANCE_COST = PROPERTY_PREFIX + "insurance_cost"; //$NON-NLS-1$
+
+        /**
+         * The evaluation's rate property identifier.
+         */
+        String RATE = PROPERTY_PREFIX + "rate"; //$NON-NLS-1$
+
+        /**
+         * The evaluation's SSN property identifier.
+         */
+        String SSN = PROPERTY_PREFIX + "ssn"; //$NON-NLS-1$
+
     }
 
 }

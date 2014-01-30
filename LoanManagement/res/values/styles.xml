@@ -21,6 +21,15 @@
         <item name="android:drawSelectorOnTop">true</item>
     </style>
 
+    <style name="loanmanagement.ImageButton" parent="@android:style/Widget.ImageButton">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
     <style name="loanmanagement.EditText" parent="@android:style/Widget.EditText">
         <item name="android:background">@drawable/edit_text_selector</item>
         <item name="android:inputType">text</item>

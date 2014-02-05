@@ -12,30 +12,31 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
-import java.util.Collections;
-import java.util.List;
 
 /**
  * An automobile model object.
  */
-public final class Automobile extends Asset {
+public final class Automobile extends Asset<Automobile> {
 
     /**
-     * An empty collection of automobiles.
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
      */
-    static final List<Automobile> NONE = Collections.emptyList();
-
-    /**
-     * @param original the automobile being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static Automobile copy( final Automobile original ) {
+    @Override
+    public Automobile copy() {
         final Automobile copy = new Automobile();
-
-        copy.setAmount(original.getAmount());
-        copy.setDescription(original.getDescription());
+        copy.setAmount(getAmount());
+        copy.setDescription(getDescription());
 
         return copy;
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final Automobile from ) {
+        setAmount(from.getAmount());
+        setDescription(from.getDescription());
     }
 
 }

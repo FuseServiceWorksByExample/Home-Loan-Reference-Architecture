@@ -79,12 +79,13 @@
     </string-array>
 
     <string name="Accounts">Accounts</string>
-    <string name="add_account_dialog_msg">Enter the account number, address, amount, and description for the account being added.</string>
-    <string name="add_auto_dialog_msg">Enter the amount and description for the automobile being added.</string>
-    <string name="add_deposit_dialog_msg">Enter the amount and description for the cash deposit being added.</string>
-    <string name="add_dialog_title">Add</string>
+    <string name="add_account_dialog_title">Add Account</string>
+    <string name="add_auto_dialog_title">Add Automobile</string>
+    <string name="add_deposit_dialog_title">Add Account</string>
+    <string name="add_image_description">An image used when adding objects</string>
     <string name="AddAccount">Add Account</string>
     <string name="AddAuto">Add Automobile</string>
+    <string name="AddBorrower">Add Borrower</string>
     <string name="AddDeposit">Add Deposit</string>
     <string name="app_name">Loan Management</string>
     <string name="app_status_approved">APPROVED</string>
@@ -119,11 +120,12 @@
     <string name="delete_deposit_msg">Are you sure you want to delete the selected deposit?</string>
     <string name="delete_deposit_with_description_msg">Are you sure you want to delete deposit \'%1s\'?</string>
     <string name="delete_dialog_title">Delete</string>
+    <string name="delete_image_description">An image used when deleting objects</string>
     <string name="Deposits">Deposits</string>
-    <string name="edit_account_dialog_msg">Update this exising account and select \'OK.\'"</string>
-    <string name="edit_auto_dialog_msg">Update this exising automobile and select \'OK.\'"</string>
-    <string name="edit_deposit_dialog_msg">Update this exising deposit and select \'OK.\'"</string>
-    <string name="edit_dialog_title">Edit</string>
+    <string name="edit_account_dialog_title">Edit Account</string>
+    <string name="edit_auto_dialog_title">Edit Automobile</string>
+    <string name="edit_deposit_dialog_title">Edit Cash Deposit</string>
+    <string name="edit_image_description">An image used when editing objects</string>
     <string name="empty_accounts_message">There are no accounts.</string>
     <string name="empty_autos_message">There are no automobiles.</string>
     <string name="empty_borrowers_message">There are no borrowers for this loan application.</string>
@@ -131,10 +133,10 @@
     <string name="empty_evaluations_message">There are no available application evaluations.</string>
     <string name="empty_statuses_message">There are no available application statuses.</string>
     <string name="evaluate_dialog_title">Evaluate</string>
+    <string name="evaluation_processed_successfully">Loan evaluation was processed successfully!</string>
     <string name="Evaluations">Evaluations</string>
     <string name="evaluations_request_dialog_title">Evaluations Request</string>
     <string name="evaluations_request_dialog_msg">Obtaining available application evaluations&#8230;</string>
-    <string name="go_image_description">Go to current selection image</string>
     <string name="HousingExpense">Housing Expense</string>
     <string name="hint_date">MM/DD/YYYY</string>
     <string name="hint_dollar_amount">0.00</string>
@@ -154,6 +156,7 @@
     <string name="item_send_application">Save Application</string>
     <string name="item_separator">, </string>
     <string name="item_sort">Sort</string>
+    <string name="item_sort_by_date">By Date</string>
     <string name="item_sort_by_name">By Name</string>
     <string name="item_sort_by_rate">By Rate</string>
     <string name="item_sort_by_ssn">By SSN</string>
@@ -214,11 +217,14 @@
     <string name="msg_no_available_statuses">No available application statuses</string>
     <string name="number_of_evaluations">%1$s available evaluations</string>
     <string name="number_of_statuses">%1$s available statuses</string>
-    <string name="process_application_dialog_title">Send Application</string>
+    <string name="process_application_dialog_title">Loan Application</string>
     <string name="process_application_dialog_msg">Application is being processed&#8230;</string>
+    <string name="process_evaluation_dialog_title">Loan Evaluation</string>
+    <string name="process_evaluation_dialog_msg">Evaluation is being processed&#8230;</string>
     <string name="Reject">Reject</string>
     <string name="splash_screen_image_description">Loan Management splash screen image</string>
     <string name="status_bar_image_description">Loan Management status bar image</string>
+    <string name="status_image_description">An image that represents a status</string>
     <string name="Statuses">Statuses</string>
     <string name="statuses_request_dialog_title">Statuses Request</string>
     <string name="statuses_request_dialog_msg">Obtaining available application statuses&#8230;</string>

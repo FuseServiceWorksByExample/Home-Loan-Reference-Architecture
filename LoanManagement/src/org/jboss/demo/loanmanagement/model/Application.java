@@ -17,6 +17,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.jboss.demo.loanmanagement.Util;
@@ -24,7 +25,7 @@ import org.jboss.demo.loanmanagement.Util;
 /**
  * A loan application model object.
  */
-public final class Application implements PropertyChangeListener {
+public final class Application implements ModelObject<Application>, PropertyChangeListener {
 
     /**
      * The loan amortization types.
@@ -43,29 +44,6 @@ public final class Application implements PropertyChangeListener {
      */
     public static final String[] PURCHASE_TYPES = new String[] {"Purchase", "Refinance", "Construction", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                                                 "Construction_Permanent", "Other"}; //$NON-NLS-1$ //$NON-NLS-2$
-
-    /**
-     * @param original the application being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static Application copy( final Application original ) {
-        final Application copy = new Application();
-
-        copy.setAmortizationType(original.amortizationType);
-        copy.setLoanAmount(original.getAmount());
-        copy.setAssetsAndLiabilities(AssetsAndLiabilities.copy(original.getAssetsAndLiabilities()));
-        copy.setBorrowers(original.getBorrowers());
-        copy.setDescription(original.description);
-        copy.setDownPaymentSource(original.downPaymentSource);
-        copy.setHousingExpense(HousingExpense.copy(original.getHousingExpense()));
-        copy.setNumberOfMonths(original.numMonths);
-        copy.setProperty(Property.copy(original.getProperty()));
-        copy.setPurchaseType(original.purchaseType);
-        copy.setInterestRate(original.getRate());
-        copy.setType(original.type);
-
-        return copy;
-    }
 
     private String amortizationType;
     private BigDecimal amount; // n.xx
@@ -86,15 +64,6 @@ public final class Application implements PropertyChangeListener {
      */
     public Application() {
         this.pcs = new PropertyChangeSupport(this);
-
-        this.assetsAndLiabilities = new AssetsAndLiabilities();
-        this.assetsAndLiabilities.add(this);
-
-        this.housingExpense = new HousingExpense();
-        this.housingExpense.add(this);
-
-        this.property = new Property();
-        this.property.add(this);
     }
 
     /**
@@ -102,6 +71,57 @@ public final class Application implements PropertyChangeListener {
      */
     public final void add( final PropertyChangeListener listener ) {
         this.pcs.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * @param newBorrower the borrower being added (cannot be <code>null</code>)
+     */
+    public void addBorrower( final Borrower newBorrower ) {
+        if (newBorrower == null) {
+            throw new NullPointerException();
+        }
+
+        if (getBorrowers().add(newBorrower)) {
+            newBorrower.add(this);
+            firePropertyChange(Properties.BORROWERS, null, newBorrower);
+        }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     */
+    @Override
+    public Application copy() {
+        final Application copy = new Application();
+
+        copy.setAmortizationType(this.amortizationType);
+        copy.setLoanAmount(getAmount());
+        copy.setPurchaseType(getPurchaseType());
+        copy.setInterestRate(getRate());
+        copy.setType(getType());
+        copy.setDescription(getDescription());
+        copy.setDownPaymentSource(getDownPaymentSource());
+        copy.setNumberOfMonths(getNumMonths());
+
+        if (this.assetsAndLiabilities != null) {
+            copy.setAssetsAndLiabilities(this.assetsAndLiabilities.copy());
+        }
+
+        if (this.housingExpense != null) {
+            copy.setHousingExpense(this.housingExpense.copy());
+        }
+
+        if (this.property != null) {
+            copy.setProperty(this.property.copy());
+        }
+
+        if ((this.borrowers != null) && !this.borrowers.isEmpty()) {
+            for (final Borrower borrower : getBorrowers()) {
+                copy.addBorrower(borrower.copy());
+            }
+        }
+
+        return copy;
     }
 
     /**
@@ -163,9 +183,14 @@ public final class Application implements PropertyChangeListener {
     }
 
     /**
-     * @return the assets and liabilities (can be <code>null</code>)
+     * @return the assets and liabilities (never <code>null</code>)
      */
     public AssetsAndLiabilities getAssetsAndLiabilities() {
+        if (this.assetsAndLiabilities == null) {
+            this.assetsAndLiabilities = new AssetsAndLiabilities();
+            this.assetsAndLiabilities.add(this);
+        }
+
         return this.assetsAndLiabilities;
     }
 
@@ -174,7 +199,7 @@ public final class Application implements PropertyChangeListener {
      */
     public List<Borrower> getBorrowers() {
         if (this.borrowers == null) {
-            return Borrower.NONE;
+            this.borrowers = new ArrayList<Borrower>();
         }
 
         return this.borrowers;
@@ -195,9 +220,14 @@ public final class Application implements PropertyChangeListener {
     }
 
     /**
-     * @return the housing expense (can be <code>null</code>)
+     * @return the housing expense (never <code>null</code>)
      */
     public HousingExpense getHousingExpense() {
+        if (this.housingExpense == null) {
+            this.housingExpense = new HousingExpense();
+            this.housingExpense.add(this);
+        }
+
         return this.housingExpense;
     }
 
@@ -209,9 +239,14 @@ public final class Application implements PropertyChangeListener {
     }
 
     /**
-     * @return the property (can be <code>null</code>)
+     * @return the property (never <code>null</code>)
      */
     public Property getProperty() {
+        if (this.property == null) {
+            this.property = new Property();
+            this.property.add(this);
+        }
+
         return this.property;
     }
 
@@ -256,17 +291,7 @@ public final class Application implements PropertyChangeListener {
      */
     @Override
     public void propertyChange( final PropertyChangeEvent event ) {
-        final Object source = event.getSource();
-        final Object oldValue = event.getOldValue();
-        final Object newValue = event.getNewValue();
-
-        if (source instanceof AssetsAndLiabilities) {
-            firePropertyChange(Properties.ASSETS_LIABILITIES, oldValue, newValue);
-        } else if (source instanceof HousingExpense) {
-            firePropertyChange(Properties.HOUSING_EXPENSE, oldValue, newValue);
-        } else if (source instanceof Property) {
-            firePropertyChange(Properties.PROPERTY, oldValue, newValue);
-        }
+        firePropertyChange(event.getPropertyName(), event.getOldValue(), event.getNewValue());
     }
 
     /**
@@ -274,6 +299,20 @@ public final class Application implements PropertyChangeListener {
      */
     public final void remove( final PropertyChangeListener listener ) {
         this.pcs.removePropertyChangeListener(listener);
+    }
+
+    /**
+     * @param removeBorrower the account being deleted (cannot be <code>null</code>)
+     */
+    public void removeAccount( final Borrower removeBorrower ) {
+        if (removeBorrower == null) {
+            throw new NullPointerException();
+        }
+
+        if ((this.borrowers != null) && this.borrowers.remove(removeBorrower)) {
+            removeBorrower.remove(this);
+            firePropertyChange(Properties.BORROWERS, removeBorrower, null);
+        }
     }
 
     /**
@@ -311,12 +350,23 @@ public final class Application implements PropertyChangeListener {
      */
     public void setBorrowers( final List<Borrower> newBorrowers ) {
         if (!Util.equals(this.borrowers, newBorrowers)) {
+            // unregister and clear
+            if (!getBorrowers().isEmpty()) {
+                for (final Borrower removeBorrower : getBorrowers()) {
+                    removeBorrower.remove(this);
+                }
+
+                this.borrowers.clear();
+            }
+
             final Object oldValue = this.borrowers;
 
-            if ((newBorrowers != null) && newBorrowers.isEmpty()) {
+            if ((newBorrowers == null) || newBorrowers.isEmpty()) {
                 this.borrowers = null;
             } else {
-                this.borrowers = newBorrowers;
+                for (final Borrower borrower : newBorrowers) {
+                    addBorrower(borrower);
+                }
             }
 
             firePropertyChange(Properties.BORROWERS, oldValue, this.borrowers);
@@ -472,6 +522,25 @@ public final class Application implements PropertyChangeListener {
             this.type = newType;
             firePropertyChange(Properties.TYPE, oldValue, this.type);
         }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final Application from ) {
+        setAmortizationType(from.getAmoritizationType());
+        setLoanAmount(from.getAmount());
+        setPurchaseType(from.getPurchaseType());
+        setInterestRate(from.getRate());
+        setType(from.getType());
+        setDescription(from.getDescription());
+        setDownPaymentSource(from.getDownPaymentSource());
+        setNumberOfMonths(from.getNumMonths());
+        setBorrowers(from.getBorrowers());
+        setAssetsAndLiabilities((from.assetsAndLiabilities == null) ? null : from.assetsAndLiabilities.copy());
+        setHousingExpense((from.housingExpense == null) ? null : from.housingExpense.copy());
+        setProperty((from.property == null) ? null : from.property.copy());
     }
 
     /**

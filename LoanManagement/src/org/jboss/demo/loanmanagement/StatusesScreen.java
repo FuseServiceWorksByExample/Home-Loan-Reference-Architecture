@@ -13,6 +13,7 @@
 package org.jboss.demo.loanmanagement;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.jboss.demo.loanmanagement.Util.Prefs;
 import org.jboss.demo.loanmanagement.command.GetStatusesCommand;
 import org.jboss.demo.loanmanagement.model.ApplicationStatus;
@@ -48,11 +49,11 @@ public final class StatusesScreen extends Activity {
         final GetStatusesCommand command = new GetStatusesCommand(this) {
 
             /**
-             * @see org.jboss.demo.loanmanagement.command.GetStatusesCommand#process(org.jboss.demo.loanmanagement.model.ApplicationStatus[])
+             * @see org.jboss.demo.loanmanagement.command.GetStatusesCommand#process(java.util.List)
              */
             @Override
-            protected void process( final ApplicationStatus[] result ) {
-                setStatuses(result);
+            protected void process( final List<ApplicationStatus> statuses ) {
+                setStatuses(statuses);
             }
         };
 
@@ -77,24 +78,23 @@ public final class StatusesScreen extends Activity {
         // load statuses
         final ArrayList<ApplicationStatusParcelable> data =
                         getIntent().getExtras().getParcelableArrayList(ApplicationStatusParcelable.STATUSES);
-        ApplicationStatus[] statuses;
+        List<ApplicationStatus> statuses;
 
         if ((data == null) || data.isEmpty()) {
             statuses = ApplicationStatus.NO_STATUSES;
         } else {
-            statuses = new ApplicationStatus[data.size()];
-            int i = 0;
+            statuses = new ArrayList<ApplicationStatus>(data.size());
 
             for (final ApplicationStatusParcelable parcelable : data) {
-                statuses[i++] = parcelable.getStatus();
+                statuses.add(parcelable.getStatus());
             }
         }
 
-        // set number of statuses in status bar
-        updateStatusMessage(statuses.length);
-
         this.adapter = new StatusesAdapter(this, statuses);
         this.listView.setAdapter(this.adapter);
+
+        // set number of statuses in status bar
+        updateStatusMessage();
 
         // add up arrow
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -169,15 +169,14 @@ public final class StatusesScreen extends Activity {
         return super.onOptionsItemSelected(selectedItem);
     }
 
-    protected void setStatuses( final ApplicationStatus[] newStatuses ) {
-        final ApplicationStatus[] statuses = ((newStatuses == null) ? ApplicationStatus.NO_STATUSES : newStatuses);
-        this.adapter = new StatusesAdapter(this, statuses);
-        updateStatusMessage(statuses.length);
+    protected void setStatuses( final List<ApplicationStatus> newStatuses ) {
+        this.adapter.setStatuses(newStatuses);
+        updateStatusMessage();
     }
 
-    private void updateStatusMessage( final int numStatuses ) {
+    private void updateStatusMessage() {
         final TextView msgView = (TextView)findViewById(R.id.status_bar_message);
-        msgView.setText(getString(R.string.number_of_statuses, numStatuses));
+        msgView.setText(getString(R.string.number_of_statuses, this.adapter.getCount()));
     }
 
 }

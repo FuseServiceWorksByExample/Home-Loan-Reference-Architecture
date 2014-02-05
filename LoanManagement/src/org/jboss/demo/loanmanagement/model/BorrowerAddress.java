@@ -12,70 +12,45 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.jboss.demo.loanmanagement.Util;
 
 /**
  * A borrower's address model object.
  */
-public final class BorrowerAddress extends Address implements PropertyChangeListener {
+public final class BorrowerAddress extends Address {
 
     /**
      * The address types.
      */
     public static final String[] ADDRESS_TYPES = new String[] {"Own", "Rent", "Not_Specified"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
 
-    /**
-     * An empty collection of borrower addresses.
-     */
-    static List<BorrowerAddress> NONE = Collections.emptyList();
-
     protected static final String PREFIX = BorrowerAddress.class.getSimpleName() + '.';
 
-    /**
-     * @param original the address being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static BorrowerAddress copy( final BorrowerAddress original ) {
-        final BorrowerAddress copy = new BorrowerAddress();
-
-        copy.setCity(original.getCity());
-        copy.setCounty(original.getCounty());
-        copy.setLine1(original.getLine1());
-        copy.setLine2(original.getLine2());
-        copy.setPostalCode(original.getPostalCode());
-        copy.setState(original.getState());
-        copy.setNumYears(original.getNumYears());
-        copy.setType(original.type);
-
-        return copy;
-    }
-
     private BigDecimal numYears; // xx.xx
-    private final PropertyChangeSupport pcs;
     private String type;
 
     /**
-     * Constructs a borrower's address.
-     */
-    public BorrowerAddress() {
-        this.pcs = new PropertyChangeSupport(this);
-        super.add(this);
-    }
-
-    /**
-     * @see org.jboss.demo.loanmanagement.model.Address#add(java.beans.PropertyChangeListener)
+     * Return value can safely be cast to a {@link BorrowerAddress}.
+     * 
+     * @see org.jboss.demo.loanmanagement.model.Address#copy()
      */
     @Override
-    public final void add( final PropertyChangeListener listener ) {
-        this.pcs.addPropertyChangeListener(listener);
+    public Address copy() {
+        final BorrowerAddress copy = new BorrowerAddress();
+
+        copy.setCity(getCity());
+        copy.setCounty(getCounty());
+        copy.setLine1(getLine1());
+        copy.setLine2(getLine2());
+        copy.setPostalCode(getPostalCode());
+        copy.setState(getState());
+        copy.setNumYears(getNumYears());
+        copy.setType(getType());
+
+        return copy;
     }
 
     /**
@@ -89,25 +64,6 @@ public final class BorrowerAddress extends Address implements PropertyChangeList
         }
 
         return false;
-    }
-
-    /**
-     * @see org.jboss.demo.loanmanagement.model.Address#firePropertyChange(java.lang.String, java.lang.Object,
-     *      java.lang.Object)
-     */
-    @Override
-    protected final void firePropertyChange( final String name,
-                                             final Object oldValue,
-                                             final Object newValue ) {
-        if (oldValue == newValue) {
-            return;
-        }
-
-        if ((oldValue != null) && oldValue.equals(newValue)) {
-            return;
-        }
-
-        this.pcs.firePropertyChange(name, oldValue, newValue);
     }
 
     /**
@@ -134,35 +90,6 @@ public final class BorrowerAddress extends Address implements PropertyChangeList
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {super.hashCode(), this.numYears, this.type});
-    }
-
-    @Override
-    public void propertyChange( final PropertyChangeEvent event ) {
-        final String propId = event.getPropertyName();
-        final Object oldValue = event.getOldValue();
-        final Object newValue = event.getNewValue();
-
-        if (Address.Properties.CITY.equals(propId)) {
-            firePropertyChange(Properties.CITY, oldValue, newValue);
-        } else if (Address.Properties.COUNTY.equals(propId)) {
-            firePropertyChange(Properties.COUNTY, oldValue, newValue);
-        } else if (Address.Properties.LINE_1.equals(propId)) {
-            firePropertyChange(Properties.LINE_1, oldValue, newValue);
-        } else if (Address.Properties.LINE_2.equals(propId)) {
-            firePropertyChange(Properties.LINE_2, oldValue, newValue);
-        } else if (Address.Properties.POSTAL_CODE.equals(propId)) {
-            firePropertyChange(Properties.POSTAL_CODE, oldValue, newValue);
-        } else if (Address.Properties.STATE.equals(propId)) {
-            firePropertyChange(Properties.STATE, oldValue, newValue);
-        }
-    }
-
-    /**
-     * @see org.jboss.demo.loanmanagement.model.Address#remove(java.beans.PropertyChangeListener)
-     */
-    @Override
-    public final void remove( final PropertyChangeListener listener ) {
-        this.pcs.removePropertyChangeListener(listener);
     }
 
     /**
@@ -206,44 +133,27 @@ public final class BorrowerAddress extends Address implements PropertyChangeList
     }
 
     /**
+     * @see org.jboss.demo.loanmanagement.model.Address#update(org.jboss.demo.loanmanagement.model.Address)
+     */
+    @Override
+    public void update( final Address from ) {
+        super.update(from);
+
+        if (from instanceof BorrowerAddress) {
+            setNumYears(((BorrowerAddress)from).getNumYears());
+            setType(((BorrowerAddress)from).getType());
+        }
+    }
+
+    /**
      * A borrower address's property identifiers
      */
     public interface Properties {
 
         /**
-         * The address's city property identifier.
-         */
-        String CITY = PREFIX + "city"; //$NON-NLS-1$
-
-        /**
-         * The address's county property identifier.
-         */
-        String COUNTY = PREFIX + "county"; //$NON-NLS-1$
-
-        /**
-         * The address's line 1 property identifier.
-         */
-        String LINE_1 = PREFIX + "line_1"; //$NON-NLS-1$
-
-        /**
-         * The address's line 2 property identifier.
-         */
-        String LINE_2 = PREFIX + "line_2"; //$NON-NLS-1$
-
-        /**
          * The address's number of years live at property identifier.
          */
         String NUM_YEARS = PREFIX + "num_years"; //$NON-NLS-1$
-
-        /**
-         * The address's postal code (zipcode) property identifier.
-         */
-        String POSTAL_CODE = PREFIX + "postal_code"; //$NON-NLS-1$
-
-        /**
-         * The address's state property identifier.
-         */
-        String STATE = PREFIX + "state"; //$NON-NLS-1$
 
         /**
          * The address's borrower type property identifier.

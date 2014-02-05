@@ -12,6 +12,7 @@
  */
 package org.jboss.demo.loanmanagement;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.regex.Matcher;
@@ -95,6 +96,17 @@ public final class Util {
         }
 
         return thisObj.equals(thatObj);
+    }
+
+    /**
+     * @param text the text being formatted (can be <code>null</code> or empty)
+     * @return the text in the form of xx.xx (never <code>null</code>)
+     * @throws ParseException if input parameter cannot be parsed as a double
+     */
+    public static String formatMoneyAmount( final String text ) throws ParseException {
+        final double amount = parseDouble(text);
+        final BigDecimal bg = new BigDecimal(String.valueOf(amount)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        return bg.toString();
     }
 
     /**
@@ -216,6 +228,11 @@ public final class Util {
          * The preference for sorting application evaluations.
          */
         String EVALUATION_SORTER = "evaluation.sorter"; //$NON-NLS-1$
+
+        /**
+         * A value that indicates the data should be sorted by date.
+         */
+        String SORT_BY_DATE = "sort_by_date"; //$NON-NLS-1$
 
         /**
          * A value that indicates the data should be sorted by name.

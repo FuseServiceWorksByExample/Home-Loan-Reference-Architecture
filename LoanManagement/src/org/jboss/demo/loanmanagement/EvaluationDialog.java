@@ -15,7 +15,7 @@ package org.jboss.demo.loanmanagement;
 import java.util.List;
 import org.jboss.demo.loanmanagement.model.Evaluation;
 import org.jboss.demo.loanmanagement.validate.EvaluationValidator;
-import org.jboss.demo.loanmanagement.validate.EvaluationValidator.EvaluationError;
+import org.jboss.demo.loanmanagement.validate.ValidationError;
 import org.jboss.demo.loanmanagement.widget.TextWatcherAdapter;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -34,15 +34,14 @@ import android.widget.TextView;
  * The UI for editing an evaluation.
  */
 public final class EvaluationDialog extends DialogFragment implements
-                                                          DialogInterface.OnClickListener,
                                                           DialogInterface.OnShowListener,
                                                           View.OnClickListener {
 
     private Evaluation copy;
     private AlertDialog dialog;
     private TextView lblInsuraceCost;
-
     private TextView lblRate;
+    private DialogInterface.OnClickListener listener;
     private Evaluation original;
     private TextView txtInsuraceCost;
     private TextView txtRate;
@@ -51,7 +50,8 @@ public final class EvaluationDialog extends DialogFragment implements
      * @return the evaluation represented by the dialog
      */
     public Evaluation getEvaluation() {
-        return this.copy;
+        this.original.update(this.copy);
+        return this.original;
     }
 
     private void handleApproveSelected() {
@@ -103,21 +103,6 @@ public final class EvaluationDialog extends DialogFragment implements
         this.txtInsuraceCost.getParent().requestLayout();
 
         updateState();
-    }
-
-    /**
-     * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
-     */
-    @Override
-    public void onClick( final DialogInterface dialogInterface,
-                         final int buttonId ) {
-        assert (buttonId == DialogInterface.BUTTON_POSITIVE); // only have an OK button listener
-
-        if (this.dialog != null) {
-            this.dialog.dismiss();
-
-            // TODO run submit evaluation command
-        }
     }
 
     /**
@@ -229,7 +214,7 @@ public final class EvaluationDialog extends DialogFragment implements
         this.dialog =
                         builder.setView(view).setTitle(R.string.evaluate_dialog_title).setIcon(R.drawable.ic_home)
                                .setNegativeButton(android.R.string.cancel, null)
-                               .setPositiveButton(android.R.string.ok, this).create();
+                               .setPositiveButton(android.R.string.ok, this.listener).create();
         this.dialog.setOnShowListener(this);
 
         return this.dialog;
@@ -251,32 +236,18 @@ public final class EvaluationDialog extends DialogFragment implements
 
     void setEvaluation( final Evaluation edit ) {
         this.original = edit;
-        this.copy = Evaluation.copy(this.original);
+        this.copy = this.original.copy();
     }
 
-    //
-    // private void updateError( final TextView textView,
-    // final EvaluationError error ) {
-    // final CharSequence current = textView.getError();
-    //
-    // if (error == null) {
-    // if (!TextUtils.isEmpty(current)) {
-    // textView.setError(null);
-    // }
-    // } else {
-    // final String errorMsg = getActivity().getString(error.getMessageId());
-    //
-    // if (!errorMsg.equals(current)) {
-    // textView.setError(errorMsg);
-    // }
-    // }
-    // }
+    void setOkListener( final DialogInterface.OnClickListener okListener ) {
+        this.listener = okListener;
+    }
 
     private void updateState() {
         final Button btn = this.dialog.getButton(DialogInterface.BUTTON_POSITIVE);
 
         if (btn != null) {
-            final List<EvaluationError> errors = EvaluationValidator.isValid(this.copy);
+            final List<ValidationError> errors = EvaluationValidator.SHARED.validate(this.copy);
             final boolean valid = errors.isEmpty();
 
             if (btn.isEnabled() != valid) {

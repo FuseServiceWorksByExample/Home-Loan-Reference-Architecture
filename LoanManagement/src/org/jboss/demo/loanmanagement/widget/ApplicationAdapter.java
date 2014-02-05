@@ -27,13 +27,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.RadioGroup;
@@ -76,6 +76,41 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
      */
     public static final int LOAN_INDEX = 0;
 
+    protected static void doEditAccount( final AccountEditor editor,
+                                         final Account editAccount ) {
+        try {
+            editAccount.setAmount(Util.parseDouble(editor.getAmount()));
+        } catch (final ParseException e) {
+            Log.e(ApplicationAdapter.class.getSimpleName(), e.getLocalizedMessage(), e);
+        }
+
+        editAccount.setDescription(editor.getDescription());
+        editAccount.setNumber(editor.getNumber());
+        editAccount.setAddress(editor.getAddress());
+    }
+
+    protected static void doEditAuto( final AssetEditor<Automobile> editor,
+                                      final Automobile editAuto ) {
+        try {
+            editAuto.setAmount(Util.parseDouble(editor.getAmount()));
+        } catch (final ParseException e) {
+            Log.e(ApplicationAdapter.class.getSimpleName(), e.getLocalizedMessage(), e);
+        }
+
+        editAuto.setDescription(editor.getDescription());
+    }
+
+    protected static void doEditDeposit( final AssetEditor<CashDeposit> editor,
+                                         final CashDeposit editDeposit ) {
+        try {
+            editDeposit.setAmount(Util.parseDouble(editor.getAmount()));
+        } catch (final ParseException e) {
+            Log.e(ApplicationAdapter.class.getSimpleName(), e.getLocalizedMessage(), e);
+        }
+
+        editDeposit.setDescription(editor.getDescription());
+    }
+
     private ViewGroup accountsContainer;
     private ViewGroup accountsTab;
     private boolean accountsTabSetup = false;
@@ -83,25 +118,73 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     private ViewGroup autosContainer;
     private ViewGroup autosTab;
     private boolean autosTabSetup = false;
+    private final Context context;
     private ViewGroup depositsContainer;
     private ViewGroup depositsTab;
     private boolean depositsTabSetup = false;
     private final ExpandableListView expandableListView;
     private final LayoutInflater inflater;
+
     private int lastExpandedGroupIndex;
+
     private final boolean[] listenersSetup = new boolean[] {false, false, false, false};
 
     /**
-     * @param context the home loan main screen (cannot be <code>null</code>)
+     * @param screen the home loan main screen (cannot be <code>null</code>)
      * @param view the expandable list view (cannot be <code>null</code>)
      * @param loanApplication the loan application (cannot be <code>null</code>)
      */
-    public ApplicationAdapter( final Context context,
+    public ApplicationAdapter( final Context screen,
                                final ExpandableListView view,
                                final Application loanApplication ) {
-        this.inflater = LayoutInflater.from(context);
+        this.context = screen;
+        this.inflater = LayoutInflater.from(this.context);
         this.expandableListView = view;
         this.application = loanApplication;
+    }
+
+    protected void doAddAccount( final AccountEditor editor ) {
+        final Account newAccount = new Account();
+
+        try {
+            newAccount.setAmount(Util.parseDouble(editor.getAmount()));
+        } catch (final ParseException e) {
+            Log.e(ApplicationAdapter.class.getSimpleName(), e.getLocalizedMessage(), e);
+            newAccount.setAmount(0);
+        }
+
+        newAccount.setDescription(editor.getDescription());
+        newAccount.setNumber(editor.getNumber());
+        newAccount.setAddress(editor.getAddress());
+        getAssetsAndLiabilities().addAccount(newAccount);
+    }
+
+    protected void doAddAuto( final AssetEditor<Automobile> editor ) {
+        final Automobile newAuto = new Automobile();
+
+        try {
+            newAuto.setAmount(Util.parseDouble(editor.getAmount()));
+        } catch (final ParseException e) {
+            Log.e(ApplicationAdapter.class.getSimpleName(), e.getLocalizedMessage(), e);
+            newAuto.setAmount(0);
+        }
+
+        newAuto.setDescription(editor.getDescription());
+        getAssetsAndLiabilities().addAutomobile(newAuto);
+    }
+
+    protected void doAddDeposit( final AssetEditor<CashDeposit> editor ) {
+        final CashDeposit newDeposit = new CashDeposit();
+
+        try {
+            newDeposit.setAmount(Util.parseDouble(editor.getAmount()));
+        } catch (final ParseException e) {
+            Log.e(ApplicationAdapter.class.getSimpleName(), e.getLocalizedMessage(), e);
+            newDeposit.setAmount(0);
+        }
+
+        newDeposit.setDescription(editor.getDescription());
+        getAssetsAndLiabilities().addCashDeposit(newDeposit);
     }
 
     protected AssetsAndLiabilities getAssetsAndLiabilities() {
@@ -195,21 +278,21 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                     { // accounts tab
                         final TabSpec tab = tabHost.newTabSpec(ACCOUNTS_TAB_ID);
                         tab.setContent(R.id.tab_accounts);
-                        tab.setIndicator(tabHost.getContext().getString(R.string.Accounts));
+                        tab.setIndicator(getContext().getString(R.string.Accounts));
                         tabHost.addTab(tab);
                     }
 
                     { // autos tab
                         final TabSpec tab = tabHost.newTabSpec(AUTOS_TAB_ID);
                         tab.setContent(R.id.tab_autos);
-                        tab.setIndicator(tabHost.getContext().getString(R.string.Automobiles));
+                        tab.setIndicator(getContext().getString(R.string.Automobiles));
                         tabHost.addTab(tab);
                     }
 
                     { // cash deposits tab
                         final TabSpec tab = tabHost.newTabSpec(DEPOSITS_TAB_ID);
                         tab.setContent(R.id.tab_cash_deposits);
-                        tab.setIndicator(tabHost.getContext().getString(R.string.Deposits));
+                        tab.setIndicator(getContext().getString(R.string.Deposits));
                         tabHost.addTab(tab);
                     }
 
@@ -222,8 +305,8 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         return result;
     }
 
-    private Context getContext() {
-        return this.expandableListView.getContext();
+    protected Context getContext() {
+        return this.context;
     }
 
     /**
@@ -286,89 +369,56 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     }
 
     protected void handleAddAccount() {
-        // TODO need different layout
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
-        final View view = this.inflater.inflate(R.layout.asset, null);
-        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
-        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
-        builder.setView(view).setTitle(R.string.add_dialog_title).setIcon(R.drawable.ic_home)
-               .setMessage(R.string.add_account_dialog_msg).setNegativeButton(android.R.string.cancel, null)
-               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        final AccountEditor editor =
+                        new AccountEditor(getContext(), R.string.add_account_dialog_title, R.drawable.ic_home, null);
+        editor.setListener(new DialogInterface.OnClickListener() {
 
-                   /**
-                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
-                    */
-                   @Override
-                   public void onClick( final DialogInterface dialog,
-                                        final int which ) {
-                       final Account newAccount = new Account();
-
-                       try {
-                           newAccount.setAmount(Util.parseDouble(txtAmount.getText().toString()));
-                           newAccount.setDescription(txtDescription.getText().toString());
-                           getAssetsAndLiabilities().addAccount(newAccount);
-                       } catch (final ParseException e) {
-                           // TODO this code will not do anything as dialog is closed!!!
-                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
-                       }
-                   }
-               }).show();
+            /**
+             * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+             */
+            @Override
+            public void onClick( final DialogInterface dialog,
+                                 final int which ) {
+                doAddAccount(editor);
+            }
+        });
+        editor.show();
     }
 
     protected void handleAddAuto() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
-        final View view = this.inflater.inflate(R.layout.asset, null);
-        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
-        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
-        builder.setView(view).setTitle(R.string.add_dialog_title).setIcon(R.drawable.ic_home)
-               .setMessage(R.string.add_auto_dialog_msg).setNegativeButton(android.R.string.cancel, null)
-               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        final AssetEditor<Automobile> editor =
+                        new AssetEditor<Automobile>(getContext(), R.string.add_auto_dialog_title, R.drawable.ic_home,
+                                                    null);
+        editor.setListener(new DialogInterface.OnClickListener() {
 
-                   /**
-                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
-                    */
-                   @Override
-                   public void onClick( final DialogInterface dialog,
-                                        final int which ) {
-                       final Automobile newAuto = new Automobile();
-
-                       try {
-                           newAuto.setAmount(Util.parseDouble(txtAmount.getText().toString()));
-                           newAuto.setDescription(txtDescription.getText().toString());
-                           getAssetsAndLiabilities().addAutomobile(newAuto);
-                       } catch (final ParseException e) {
-                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
-                       }
-                   }
-               }).show();
+            /**
+             * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+             */
+            @Override
+            public void onClick( final DialogInterface dialog,
+                                 final int which ) {
+                doAddAuto(editor);
+            }
+        });
+        editor.show();
     }
 
     protected void handleAddDeposit() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
-        final View view = this.inflater.inflate(R.layout.asset, null);
-        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
-        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
-        builder.setView(view).setTitle(R.string.add_dialog_title).setIcon(R.drawable.ic_home)
-               .setMessage(R.string.add_deposit_dialog_msg).setNegativeButton(android.R.string.cancel, null)
-               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        final AssetEditor<CashDeposit> editor =
+                        new AssetEditor<CashDeposit>(getContext(), R.string.add_deposit_dialog_title,
+                                                     R.drawable.ic_home, null);
+        editor.setListener(new DialogInterface.OnClickListener() {
 
-                   /**
-                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
-                    */
-                   @Override
-                   public void onClick( final DialogInterface dialog,
-                                        final int which ) {
-                       final CashDeposit newDeposit = new CashDeposit();
-
-                       try {
-                           newDeposit.setAmount(Util.parseDouble(txtAmount.getText().toString()));
-                           newDeposit.setDescription(txtDescription.getText().toString());
-                           getAssetsAndLiabilities().addCashDeposit(newDeposit);
-                       } catch (final ParseException e) {
-                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
-                       }
-                   }
-               }).show();
+            /**
+             * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+             */
+            @Override
+            public void onClick( final DialogInterface dialog,
+                                 final int which ) {
+                doAddDeposit(editor);
+            }
+        });
+        editor.show();
     }
 
     protected void handleDeleteAccount( final Account deleteAccount ) {
@@ -380,7 +430,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
             msg = getContext().getString(R.string.delete_account_with_id_msg, deleteAccount.getNumber());
         }
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.delete_dialog_title).setIcon(R.drawable.ic_home).setMessage(msg)
                .setNegativeButton(android.R.string.cancel, null)
                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -405,7 +455,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
             msg = getContext().getString(R.string.delete_auto_with_description_msg, deleteAuto.getDescription());
         }
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.delete_dialog_title).setIcon(R.drawable.ic_home).setMessage(msg)
                .setNegativeButton(android.R.string.cancel, null)
                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -430,7 +480,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
             msg = getContext().getString(R.string.delete_deposit_with_description_msg, deleteDeposit.getDescription());
         }
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.delete_dialog_title).setIcon(R.drawable.ic_home).setMessage(msg)
                .setNegativeButton(android.R.string.cancel, null)
                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -447,102 +497,61 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     }
 
     protected void handleEditAccount( final Account editAccount ) {
-        // TODO need number and address
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
-        final View view = this.inflater.inflate(R.layout.asset, null);
+        final AccountEditor editor =
+                        new AccountEditor(getContext(), R.string.edit_account_dialog_title, R.drawable.ic_home,
+                                          editAccount);
+        editor.setListener(new DialogInterface.OnClickListener() {
 
-        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
-        txtAmount.setText(Double.toString(editAccount.getAmount()));
-
-        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
-        txtDescription.setText(editAccount.getDescription());
-
-        builder.setView(view).setTitle(R.string.edit_dialog_title).setIcon(R.drawable.ic_home)
-               .setMessage(R.string.edit_account_dialog_msg).setNegativeButton(android.R.string.cancel, null)
-               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-                   /**
-                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
-                    */
-                   @Override
-                   public void onClick( final DialogInterface dialog,
-                                        final int which ) {
-                       try {
-                           editAccount.setAmount(Util.parseDouble(txtAmount.getText().toString()));
-                           editAccount.setDescription(txtDescription.getText().toString());
-                       } catch (final ParseException e) {
-                           // TODO the dialog will be closed!!!
-                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
-                       }
-                   }
-               }).show();
+            /**
+             * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+             */
+            @Override
+            public void onClick( final DialogInterface dialog,
+                                 final int which ) {
+                doEditAccount(editor, editAccount);
+            }
+        });
+        editor.show();
     }
 
     protected void handleEditAuto( final Automobile editAuto ) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
-        final View view = this.inflater.inflate(R.layout.asset, null);
+        final AssetEditor<Automobile> editor =
+                        new AssetEditor<Automobile>(getContext(), R.string.edit_auto_dialog_title, R.drawable.ic_home,
+                                                    editAuto);
+        editor.setListener(new DialogInterface.OnClickListener() {
 
-        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
-        txtAmount.setText(Double.toString(editAuto.getAmount()));
-
-        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
-        txtDescription.setText(editAuto.getDescription());
-
-        builder.setView(view).setTitle(R.string.edit_dialog_title).setIcon(R.drawable.ic_home)
-               .setMessage(R.string.edit_auto_dialog_msg).setNegativeButton(android.R.string.cancel, null)
-               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-                   /**
-                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
-                    */
-                   @Override
-                   public void onClick( final DialogInterface dialog,
-                                        final int which ) {
-                       try {
-                           editAuto.setAmount(Util.parseDouble(txtAmount.getText().toString()));
-                           editAuto.setDescription(txtDescription.getText().toString());
-                       } catch (final ParseException e) {
-                           // TODO fix this
-                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
-                       }
-                   }
-               }).show();
+            /**
+             * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+             */
+            @Override
+            public void onClick( final DialogInterface dialog,
+                                 final int which ) {
+                doEditAuto(editor, editAuto);
+            }
+        });
+        editor.show();
     }
 
     protected void handleEditDeposit( final CashDeposit editDeposit ) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this.expandableListView.getContext());
-        final View view = this.inflater.inflate(R.layout.asset, null);
+        final AssetEditor<CashDeposit> editor =
+                        new AssetEditor<CashDeposit>(getContext(), R.string.edit_deposit_dialog_title,
+                                                     R.drawable.ic_home, editDeposit);
+        editor.setListener(new DialogInterface.OnClickListener() {
 
-        final EditText txtAmount = (EditText)view.findViewById(R.id.txt_asset_amount);
-        txtAmount.setText(Double.toString(editDeposit.getAmount()));
-
-        final EditText txtDescription = (EditText)view.findViewById(R.id.txt_asset_description);
-        txtDescription.setText(editDeposit.getDescription());
-
-        builder.setView(view).setTitle(R.string.edit_dialog_title).setIcon(R.drawable.ic_home)
-               .setMessage(R.string.edit_deposit_dialog_msg).setNegativeButton(android.R.string.cancel, null)
-               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-                   /**
-                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
-                    */
-                   @Override
-                   public void onClick( final DialogInterface dialog,
-                                        final int which ) {
-                       try {
-                           editDeposit.setAmount(Util.parseDouble(txtAmount.getText().toString()));
-                           editDeposit.setDescription(txtDescription.getText().toString());
-                       } catch (final ParseException e) {
-                           // TODO fix this
-                           txtAmount.setError(view.getResources().getString(R.string.err_invalid_amount));
-                       }
-                   }
-               }).show();
+            /**
+             * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+             */
+            @Override
+            public void onClick( final DialogInterface dialog,
+                                 final int which ) {
+                doEditDeposit(editor, editDeposit);
+            }
+        });
+        editor.show();
     }
 
     protected void handleTabChanged( final String tabId,
                                      final View tabHost ) {
-        // TODO hide or disable edit and delete buttons if list is empty
         if (ACCOUNTS_TAB_ID.equals(tabId) && !this.accountsTabSetup) {
             this.accountsTab = (ViewGroup)tabHost.findViewById(R.id.tab_accounts);
             this.accountsContainer = (ViewGroup)this.accountsTab.findViewById(R.id.accounts_container);
@@ -643,8 +652,13 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         this.accountsContainer.removeAllViews();
 
         for (final Account account : getAssetsAndLiabilities().getAccounts()) {
-            final View view = this.inflater.inflate(R.layout.readonly_asset, null);
+            final View view = this.inflater.inflate(R.layout.readonly_account, null);
             this.accountsContainer.addView(view);
+
+            { // number
+                final TextView txt = (TextView)view.findViewById(R.id.txt_account_number);
+                txt.setText(account.getNumber());
+            }
 
             { // description
                 final TextView txt = (TextView)view.findViewById(R.id.txt_asset_description);
@@ -653,7 +667,13 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
             { // amount
                 final TextView txt = (TextView)view.findViewById(R.id.txt_asset_amount);
-                txt.setText(Double.toString(account.getAmount()));
+
+                try {
+                    txt.setText(Util.formatMoneyAmount(Double.toString(account.getAmount())));
+                } catch (final ParseException e) {
+                    Log.e(ApplicationAdapter.class.getSimpleName(), e.getLocalizedMessage(), e);
+                    txt.setError(getContext().getText(R.string.err_invalid_amount));
+                }
             }
 
             { // edit account
@@ -703,7 +723,13 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
             { // amount
                 final TextView txt = (TextView)view.findViewById(R.id.txt_asset_amount);
-                txt.setText(Double.toString(auto.getAmount()));
+
+                try {
+                    txt.setText(Util.formatMoneyAmount(Double.toString(auto.getAmount())));
+                } catch (final ParseException e) {
+                    Log.e(ApplicationAdapter.class.getSimpleName(), e.getLocalizedMessage(), e);
+                    txt.setError(getContext().getText(R.string.err_invalid_amount));
+                }
             }
 
             { // edit auto
@@ -753,7 +779,13 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
             { // amount
                 final TextView txt = (TextView)view.findViewById(R.id.txt_asset_amount);
-                txt.setText(Double.toString(deposit.getAmount()));
+
+                try {
+                    txt.setText(Util.formatMoneyAmount(Double.toString(deposit.getAmount())));
+                } catch (final ParseException e) {
+                    Log.e(ApplicationAdapter.class.getSimpleName(), e.getLocalizedMessage(), e);
+                    txt.setError(getContext().getText(R.string.err_invalid_amount));
+                }
             }
 
             { // edit deposit
@@ -850,7 +882,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         newValue = Util.parseDouble(newFirstMortgage.toString());
                         getHousingExpense().setFirstMortgage(newValue);
                     } catch (final ParseException e) {
-                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                        textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
                 }
             });
@@ -871,7 +903,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         newValue = Util.parseDouble(newHazardInsurance.toString());
                         getHousingExpense().setHazardInsurance(newValue);
                     } catch (final ParseException e) {
-                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                        textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
                 }
             });
@@ -892,7 +924,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         newValue = Util.parseDouble(newAssociationDues.toString());
                         getHousingExpense().setHomeOwnerAssociationDues(newValue);
                     } catch (final ParseException e) {
-                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                        textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
                 }
             });
@@ -913,7 +945,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         newValue = Util.parseDouble(newOther.toString());
                         getHousingExpense().setOther(newValue);
                     } catch (final ParseException e) {
-                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                        textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
                 }
             });
@@ -934,7 +966,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         newValue = Util.parseDouble(newRealEstateTaxes.toString());
                         getHousingExpense().setRealEstateTaxes(newValue);
                     } catch (final ParseException e) {
-                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                        textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
                 }
             });
@@ -954,7 +986,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         newValue = Util.parseDouble(newRent.toString());
                         getHousingExpense().setRent(newValue);
                     } catch (final ParseException e) {
-                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                        textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
                 }
             });
@@ -1011,7 +1043,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         newValue = Util.parseDouble(newAmount.toString());
                         getLoanApplication().setLoanAmount(newValue);
                     } catch (final ParseException e) {
-                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                        textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
                 }
             });
@@ -1032,7 +1064,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         newValue = Util.parseDouble(newRate.toString());
                         getLoanApplication().setInterestRate(newValue);
                     } catch (final ParseException e) {
-                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                        textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
                 }
             });
@@ -1053,7 +1085,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         newValue = Util.parseInt(newNumMonths.toString());
                         getLoanApplication().setNumberOfMonths(newValue);
                     } catch (final ParseException e) {
-                        textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                        textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
                 }
             });
@@ -1113,7 +1145,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                             newValue = Util.parseInt(newNumMonths.toString());
                             getLoanApplication().setNumberOfMonths(newValue);
                         } catch (final ParseException e) {
-                            textView.setError(view.getResources().getString(R.string.err_invalid_amount));
+                            textView.setError(getContext().getText(R.string.err_invalid_amount));
                         }
                     }
                 });

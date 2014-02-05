@@ -52,7 +52,7 @@
             android:layout_gravity="center"
             android:background="@android:color/transparent"
             android:clickable="false"
-            android:contentDescription="@string/go_image_description"
+            android:contentDescription="@string/status_image_description"
             android:focusable="false"
             android:minHeight="0dp"
             android:minWidth="0dp"

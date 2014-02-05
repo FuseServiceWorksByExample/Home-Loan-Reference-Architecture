@@ -15,7 +15,9 @@ package org.jboss.demo.loanmanagement.model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import android.text.TextUtils;
 
 /**
@@ -40,9 +42,9 @@ public final class ApplicationStatus {
     };
 
     /**
-     * An empty array.
+     * An empty application status collection.
      */
-    public static final ApplicationStatus[] NO_STATUSES = new ApplicationStatus[0];
+    public static final List<ApplicationStatus> NO_STATUSES = Collections.emptyList();
 
     /**
      * An empty list.

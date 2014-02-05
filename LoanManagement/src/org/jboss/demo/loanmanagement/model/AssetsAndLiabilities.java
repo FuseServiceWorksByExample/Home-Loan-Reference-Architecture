@@ -23,7 +23,7 @@ import org.jboss.demo.loanmanagement.Util;
 /**
  * A borrower's assets and liabilities model object.
  */
-public final class AssetsAndLiabilities implements PropertyChangeListener {
+public final class AssetsAndLiabilities implements ModelObject<AssetsAndLiabilities>, PropertyChangeListener {
 
     /**
      * Indicates who was present when the assets and liabilities were declared.
@@ -41,38 +41,6 @@ public final class AssetsAndLiabilities implements PropertyChangeListener {
     public static final int NOT_JOINTLY_INDEX = 1;
 
     protected static final String PROPERTY_PREFIX = AssetsAndLiabilities.class.getSimpleName() + '.';
-
-    /**
-     * @param original the assets and liabilities being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static AssetsAndLiabilities copy( final AssetsAndLiabilities original ) {
-        final AssetsAndLiabilities copy = new AssetsAndLiabilities();
-        copy.setCompletedType(original.completedType);
-
-        // accounts
-        if (!original.getAccounts().isEmpty()) {
-            for (final Account account : original.getAccounts()) {
-                copy.addAccount(Account.copy(account));
-            }
-        }
-
-        // autos
-        if (!original.getAutomobiles().isEmpty()) {
-            for (final Automobile auto : original.getAutomobiles()) {
-                copy.addAutomobile(Automobile.copy(auto));
-            }
-        }
-
-        // cash deposit
-        if (!original.getCashDeposits().isEmpty()) {
-            for (final CashDeposit cashDeposit : original.getCashDeposits()) {
-                copy.addCashDeposit(CashDeposit.copy(cashDeposit));
-            }
-        }
-
-        return copy;
-    }
 
     private List<Account> accounts = null;
     private List<Automobile> autos = null;
@@ -102,11 +70,7 @@ public final class AssetsAndLiabilities implements PropertyChangeListener {
             throw new NullPointerException();
         }
 
-        if (this.accounts == null) {
-            this.accounts = new ArrayList<Account>();
-        }
-
-        if (this.accounts.add(newAccount)) {
+        if (getAccounts().add(newAccount)) {
             newAccount.add(this);
             firePropertyChange(Properties.ACCOUNTS, null, newAccount);
         }
@@ -120,11 +84,7 @@ public final class AssetsAndLiabilities implements PropertyChangeListener {
             throw new NullPointerException();
         }
 
-        if (this.autos == null) {
-            this.autos = new ArrayList<Automobile>();
-        }
-
-        if (this.autos.add(newAutomobile)) {
+        if (getAutomobiles().add(newAutomobile)) {
             newAutomobile.add(this);
             firePropertyChange(Properties.AUTOS, null, newAutomobile);
         }
@@ -138,14 +98,42 @@ public final class AssetsAndLiabilities implements PropertyChangeListener {
             throw new NullPointerException();
         }
 
-        if (this.cashDeposits == null) {
-            this.cashDeposits = new ArrayList<CashDeposit>();
-        }
-
-        if (this.cashDeposits.add(newCashDeposit)) {
+        if (getCashDeposits().add(newCashDeposit)) {
             newCashDeposit.add(this);
             firePropertyChange(Properties.CASH_DEPOSITS, null, newCashDeposit);
         }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     */
+    @Override
+    public AssetsAndLiabilities copy() {
+        final AssetsAndLiabilities copy = new AssetsAndLiabilities();
+        copy.setCompletedType(getCompletedType());
+
+        // accounts
+        if ((this.accounts != null) && !this.accounts.isEmpty()) {
+            for (final Account account : getAccounts()) {
+                copy.addAccount(account.copy());
+            }
+        }
+
+        // autos
+        if ((this.autos != null) && !this.autos.isEmpty()) {
+            for (final Automobile auto : getAutomobiles()) {
+                copy.addAutomobile(auto.copy());
+            }
+        }
+
+        // cash deposit
+        if ((this.cashDeposits != null) && !this.cashDeposits.isEmpty()) {
+            for (final CashDeposit cashDeposit : getCashDeposits()) {
+                copy.addCashDeposit(cashDeposit.copy());
+            }
+        }
+
+        return copy;
     }
 
     /**
@@ -184,11 +172,11 @@ public final class AssetsAndLiabilities implements PropertyChangeListener {
     /**
      * Use {@link #addAccount(Account)} and {@link #removeAccount(Account)} when adding and removing accounts.
      * 
-     * @return the cash deposits (never <code>null</code>)
+     * @return the accounts (never <code>null</code>)
      */
     public List<Account> getAccounts() {
         if (this.accounts == null) {
-            return Account.NONE;
+            this.accounts = new ArrayList<Account>();
         }
 
         return this.accounts;
@@ -202,7 +190,7 @@ public final class AssetsAndLiabilities implements PropertyChangeListener {
      */
     public List<Automobile> getAutomobiles() {
         if (this.autos == null) {
-            return Automobile.NONE;
+            this.autos = new ArrayList<Automobile>();
         }
 
         return this.autos;
@@ -216,7 +204,7 @@ public final class AssetsAndLiabilities implements PropertyChangeListener {
      */
     public List<CashDeposit> getCashDeposits() {
         if (this.cashDeposits == null) {
-            return CashDeposit.NONE;
+            this.cashDeposits = new ArrayList<CashDeposit>();
         }
 
         return this.cashDeposits;
@@ -312,6 +300,86 @@ public final class AssetsAndLiabilities implements PropertyChangeListener {
             final Object oldValue = this.completedType;
             this.completedType = newCompletedType;
             firePropertyChange(Properties.COMPLETED_TYPE, oldValue, this.completedType);
+        }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final AssetsAndLiabilities from ) {
+        setCompletedType(from.getCompletedType());
+
+        { // accounts
+            final List<Account> oldValue = this.accounts;
+
+            if ((oldValue != null) && !oldValue.isEmpty()) {
+                // unregister
+                for (final Account account : oldValue) {
+                    account.remove(this);
+                }
+
+                oldValue.clear();
+            }
+
+            if ((from.accounts == null) || from.accounts.isEmpty()) {
+                if ((oldValue != null) && !oldValue.isEmpty()) {
+                    this.accounts = null;
+                    firePropertyChange(Properties.ACCOUNTS, oldValue, null);
+                }
+            } else {
+                for (final Account account : from.getAccounts()) {
+                    addAccount(account.copy());
+                }
+            }
+        }
+
+        { // autos
+            final List<Automobile> oldValue = this.autos;
+
+            if ((oldValue != null) && !oldValue.isEmpty()) {
+                // unregister
+                for (final Automobile auto : oldValue) {
+                    auto.remove(this);
+                }
+
+                oldValue.clear();
+            }
+
+            if ((from.autos == null) || from.autos.isEmpty()) {
+                if ((oldValue != null) && !oldValue.isEmpty()) {
+                    this.autos = null;
+                    firePropertyChange(Properties.AUTOS, oldValue, null);
+                }
+            } else {
+                for (final Automobile auto : from.getAutomobiles()) {
+                    addAutomobile(auto.copy());
+                }
+            }
+        }
+
+        { // cash deposit
+            final List<CashDeposit> oldValue = this.cashDeposits;
+
+            if ((oldValue != null) && !oldValue.isEmpty()) {
+                // unregister
+                for (final CashDeposit deposit : oldValue) {
+                    deposit.remove(this);
+                }
+
+                oldValue.clear();
+            }
+
+            if ((from.cashDeposits == null) || from.cashDeposits.isEmpty()) {
+                if ((oldValue != null) && !oldValue.isEmpty()) {
+                    this.cashDeposits = null;
+                    firePropertyChange(Properties.CASH_DEPOSITS, oldValue, null);
+                }
+            } else {
+                for (final CashDeposit cashDeposit : from.getCashDeposits()) {
+                    addCashDeposit(cashDeposit.copy());
+                }
+            }
         }
     }
 

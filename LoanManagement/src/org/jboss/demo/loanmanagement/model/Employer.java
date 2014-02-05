@@ -26,7 +26,7 @@ import android.text.TextUtils;
 /**
  * A borrower's employer.
  */
-public final class Employer implements PropertyChangeListener {
+public final class Employer implements ModelObject<Employer>, PropertyChangeListener {
 
     /**
      * An empty collection of employers.
@@ -35,30 +35,9 @@ public final class Employer implements PropertyChangeListener {
 
     protected static final String PROPERTY_PREFIX = Employer.class.getSimpleName() + '.';
 
-    /**
-     * @param original the employer being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static Employer copy( final Employer original ) {
-        final Employer copy = new Employer();
-
-        copy.setAddress(Address.copy(original.getAddress()));
-        copy.setBusinessType(original.businessType);
-        copy.setFromDate(original.from);
-        copy.setMonthlyIncome(original.getMonthlyIncome());
-        copy.setName(original.name);
-        copy.setPhone(original.phone);
-        copy.setPosition(original.position);
-        copy.setSelfEmployed(original.selfEmployed);
-        copy.setTitle(original.title);
-        copy.setToDate(original.to);
-
-        return copy;
-    }
-
     private Address address;
     private String businessType; // max 100
-    private String from; // see date pattern
+    private String fromDate; // see date pattern
     private BigDecimal monthlyIncome;
     private String name; // max 100
     private final PropertyChangeSupport pcs;
@@ -66,7 +45,7 @@ public final class Employer implements PropertyChangeListener {
     private String position; // max 100
     private boolean selfEmployed = false;
     private String title; // max 100
-    private String to; // see date pattern
+    private String toDate; // see date pattern
 
     /**
      * Constructs an employer.
@@ -80,6 +59,30 @@ public final class Employer implements PropertyChangeListener {
      */
     public void add( final PropertyChangeListener listener ) {
         this.pcs.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     */
+    @Override
+    public Employer copy() {
+        final Employer copy = new Employer();
+
+        if (this.address != null) {
+            copy.setAddress(getAddress().copy());
+        }
+
+        copy.setBusinessType(getBusinessType());
+        copy.setFromDate(getFromDate());
+        copy.setMonthlyIncome(getMonthlyIncome());
+        copy.setName(getName());
+        copy.setPhone(getPhone());
+        copy.setPosition(getPosition());
+        copy.setSelfEmployed(isSelfEmployed());
+        copy.setTitle(getTitle());
+        copy.setToDate(getToDate());
+
+        return copy;
     }
 
     /**
@@ -97,14 +100,14 @@ public final class Employer implements PropertyChangeListener {
 
         final Employer that = (Employer)obj;
         return Util.equals(this.address, that.address) && Util.equals(this.businessType, that.businessType)
-                        && Util.equals(this.from, that.from)
+                        && Util.equals(this.fromDate, that.fromDate)
                         && Util.equals(this.monthlyIncome, that.monthlyIncome)
                         && Util.equals(this.name, that.name)
                         && Util.equals(this.phone, that.phone)
                         && Util.equals(this.position, that.position)
                         && Util.equals(this.selfEmployed, that.selfEmployed)
                         && Util.equals(this.title, that.title)
-                        && Util.equals(this.to, that.to);
+                        && Util.equals(this.toDate, that.toDate);
     }
 
     private void firePropertyChange( final String propId,
@@ -122,9 +125,13 @@ public final class Employer implements PropertyChangeListener {
     }
 
     /**
-     * @return the address (can be <code>null</code>)
+     * @return the address (never <code>null</code>)
      */
     public Address getAddress() {
+        if (this.address == null) {
+            this.address = new Address();
+        }
+
         return this.address;
     }
 
@@ -139,7 +146,7 @@ public final class Employer implements PropertyChangeListener {
      * @return the from date (can be <code>null</code>)
      */
     public String getFromDate() {
-        return this.from;
+        return this.fromDate;
     }
 
     /**
@@ -185,7 +192,7 @@ public final class Employer implements PropertyChangeListener {
      * @return the to date (can be <code>null</code>)
      */
     public String getToDate() {
-        return this.to;
+        return this.toDate;
     }
 
     /**
@@ -193,8 +200,9 @@ public final class Employer implements PropertyChangeListener {
      */
     @Override
     public int hashCode() {
-        return Arrays.hashCode(new Object[] {this.address, this.businessType, this.from, this.monthlyIncome, this.name,
-                                             this.phone, this.position, this.selfEmployed, this.title, this.to});
+        return Arrays.hashCode(new Object[] {this.address, this.businessType, this.fromDate, this.monthlyIncome,
+                                             this.name, this.phone, this.position, this.selfEmployed, this.title,
+                                             this.toDate});
     }
 
     /**
@@ -253,10 +261,10 @@ public final class Employer implements PropertyChangeListener {
      * @param newFrom the new value for the from date
      */
     public void setFromDate( final String newFrom ) {
-        if (!TextUtils.equals(this.from, newFrom)) {
-            final Object oldValue = this.from;
-            this.from = newFrom;
-            firePropertyChange(Properties.FROM_DATE, oldValue, this.from);
+        if (!TextUtils.equals(this.fromDate, newFrom)) {
+            final Object oldValue = this.fromDate;
+            this.fromDate = newFrom;
+            firePropertyChange(Properties.FROM_DATE, oldValue, this.fromDate);
         }
     }
 
@@ -348,11 +356,33 @@ public final class Employer implements PropertyChangeListener {
      * @param newTo the new value for the to date (can be <code>null</code>)
      */
     public void setToDate( final String newTo ) {
-        if (!TextUtils.equals(this.to, newTo)) {
-            final Object oldValue = this.to;
-            this.to = newTo;
-            firePropertyChange(Properties.TO_DATE, oldValue, this.to);
+        if (!TextUtils.equals(this.toDate, newTo)) {
+            final Object oldValue = this.toDate;
+            this.toDate = newTo;
+            firePropertyChange(Properties.TO_DATE, oldValue, this.toDate);
         }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final Employer from ) {
+        if (from.address == null) {
+            setAddress(null);
+        } else {
+            setAddress(from.address.copy());
+        }
+
+        setBusinessType(from.getBusinessType());
+        setFromDate(from.getFromDate());
+        setMonthlyIncome(from.getMonthlyIncome());
+        setName(from.getName());
+        setPhone(from.getPhone());
+        setPosition(from.getPosition());
+        setSelfEmployed(from.isSelfEmployed());
+        setTitle(from.getTitle());
+        setToDate(from.getToDate());
     }
 
     /**

@@ -16,9 +16,7 @@
 
         <TextView
             android:id="@+id/txtSsn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            style="@style/loanmanagement.ReadonlyText" />
     </LinearLayout>
 
     <LinearLayout
@@ -28,15 +26,11 @@
         <TextView
             android:id="@+id/lblApplicant"
             style="@style/loanmanagement.LeftLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/label_applicant" />
 
         <TextView
             android:id="@+id/txtApplicant"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            style="@style/loanmanagement.ReadonlyText" />
     </LinearLayout>
 
     <LinearLayout
@@ -46,28 +40,14 @@
         <TextView
             android:id="@+id/lblCreditScore"
             style="@style/loanmanagement.LeftLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/label_credit_score" />
 
         <TextView
             android:id="@+id/txtCreditScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            style="@style/loanmanagement.ReadonlyText" />
     </LinearLayout>
 
-    <!-- Divider -->
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/darker_gray"
-        android:gravity="center"
-        android:inputType="none"
-        android:maxHeight="2dp"
-        android:textIsSelectable="false" />
+    <TextView style="@style/loanmanagement.HorizontalDivider" />
 
     <RadioGroup
         android:layout_width="wrap_content"

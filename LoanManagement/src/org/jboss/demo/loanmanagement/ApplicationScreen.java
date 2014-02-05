@@ -17,6 +17,7 @@ import java.beans.PropertyChangeListener;
 import org.jboss.demo.loanmanagement.command.ProcessApplicationCommand;
 import org.jboss.demo.loanmanagement.model.Account;
 import org.jboss.demo.loanmanagement.model.Application;
+import org.jboss.demo.loanmanagement.model.AssetsAndLiabilities;
 import org.jboss.demo.loanmanagement.model.Automobile;
 import org.jboss.demo.loanmanagement.model.CashDeposit;
 import org.jboss.demo.loanmanagement.widget.ApplicationAdapter;
@@ -148,13 +149,19 @@ public final class ApplicationScreen extends Activity implements PropertyChangeL
             @Override
             public void run() {
                 if (Application.Properties.ASSETS_LIABILITIES.equals(propName)) {
-                    if ((oldValue instanceof Automobile) || (newValue instanceof Automobile)) {
-                        getAdapter().refreshAutos();
-                    } else if ((oldValue instanceof Account) || (newValue instanceof Account)) {
+                    if ((oldValue instanceof Account) || (newValue instanceof Account)) {
                         getAdapter().refreshAccounts();
+                    } else if ((oldValue instanceof Automobile) || (newValue instanceof Automobile)) {
+                        getAdapter().refreshAutos();
                     } else if ((oldValue instanceof CashDeposit) || (newValue instanceof CashDeposit)) {
                         getAdapter().refreshDeposits();
                     }
+                } else if (AssetsAndLiabilities.Properties.ACCOUNTS.equals(propName)) {
+                    getAdapter().refreshAccounts();
+                } else if (AssetsAndLiabilities.Properties.AUTOS.equals(propName)) {
+                    getAdapter().refreshAutos();
+                } else if (AssetsAndLiabilities.Properties.CASH_DEPOSITS.equals(propName)) {
+                    getAdapter().refreshDeposits();
                 }
             }
         }));

@@ -21,7 +21,7 @@ import org.jboss.demo.loanmanagement.Util;
 /**
  * A property address model object.
  */
-public final class Property implements PropertyChangeListener {
+public final class Property implements ModelObject<Property>, PropertyChangeListener {
 
     protected static final String PROPERTY_PREFIX = Property.class.getSimpleName() + '.';
 
@@ -30,21 +30,6 @@ public final class Property implements PropertyChangeListener {
      */
     public static final String[] PROPERTY_TYPES =
                     new String[] {"Primary_Residence", "Secondary_Residence", "Investment"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
-
-    /**
-     * @param original the property being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static Property copy( final Property original ) {
-        final Property copy = new Property();
-
-        copy.setAddress(Address.copy(original.address));
-        copy.setNumUnits(original.numUnits);
-        copy.setYearBuilt(original.yearBuilt);
-        copy.setType(original.type);
-
-        return copy;
-    }
 
     private Address address;
     private int numUnits = 1;
@@ -64,6 +49,24 @@ public final class Property implements PropertyChangeListener {
      */
     public void add( final PropertyChangeListener listener ) {
         this.pcs.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     */
+    @Override
+    public Property copy() {
+        final Property copy = new Property();
+
+        if (this.address != null) {
+            copy.setAddress(this.address.copy());
+        }
+
+        copy.setNumUnits(getNumUnits());
+        copy.setYearBuilt(getYearBuilt());
+        copy.setType(getType());
+
+        return copy;
     }
 
     /**
@@ -199,6 +202,22 @@ public final class Property implements PropertyChangeListener {
             this.yearBuilt = newYearBuilt;
             firePropertyChange(Properties.YEAR_BUILT, oldValue, this.yearBuilt);
         }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final Property from ) {
+        if (from.address == null) {
+            setAddress(null);
+        } else {
+            setAddress(from.address.copy());
+        }
+
+        setNumUnits(from.getNumUnits());
+        setYearBuilt(from.getYearBuilt());
+        setType(from.getType());
     }
 
     /**

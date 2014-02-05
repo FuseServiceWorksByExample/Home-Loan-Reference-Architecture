@@ -22,7 +22,7 @@ import org.jboss.demo.loanmanagement.Util;
 /**
  * A housing expense model object.
  */
-public final class HousingExpense {
+public final class HousingExpense implements ModelObject<HousingExpense> {
 
     /**
      * The housing expense types.
@@ -30,24 +30,6 @@ public final class HousingExpense {
     public static final String[] HOUSING_EXPENSE_TYPES = new String[] {"Present", "Proposed"}; //$NON-NLS-1$ //$NON-NLS-2$ 
 
     protected static final String PROPERTY_PREFIX = HousingExpense.class.getSimpleName() + '.';
-
-    /**
-     * @param original the housing expense being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static HousingExpense copy( final HousingExpense original ) {
-        final HousingExpense copy = new HousingExpense();
-
-        copy.setFirstMortgage(original.getFirstMortgage());
-        copy.setHazardInsurance(original.getHazardInsurance());
-        copy.setHomeOwnerAssociationDues(original.getHomeOwnerAssociationDues());
-        copy.setOther(original.getOther());
-        copy.setOtherMortgage(original.getOtherMortgage());
-        copy.setRealEstateTaxes(original.getRealEstateTaxes());
-        copy.setRent(original.getRent());
-
-        return copy;
-    }
 
     private BigDecimal firstMortgage;
     private BigDecimal hazardInsurance;
@@ -71,6 +53,25 @@ public final class HousingExpense {
      */
     public void add( final PropertyChangeListener listener ) {
         this.pcs.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     */
+    @Override
+    public HousingExpense copy() {
+        final HousingExpense copy = new HousingExpense();
+
+        copy.setFirstMortgage(getFirstMortgage());
+        copy.setHazardInsurance(getHazardInsurance());
+        copy.setHomeOwnerAssociationDues(getHomeOwnerAssociationDues());
+        copy.setOther(getOther());
+        copy.setOtherMortgage(getOtherMortgage());
+        copy.setRealEstateTaxes(getRealEstateTaxes());
+        copy.setRent(getRent());
+        copy.setType(getType());
+
+        return copy;
     }
 
     /**
@@ -422,6 +423,21 @@ public final class HousingExpense {
             this.type = newType;
             firePropertyChange(Properties.TYPE, oldValue, this.type);
         }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final HousingExpense from ) {
+        setFirstMortgage(from.getFirstMortgage());
+        setHazardInsurance(from.getHazardInsurance());
+        setHomeOwnerAssociationDues(from.getHomeOwnerAssociationDues());
+        setOther(from.getOther());
+        setOtherMortgage(from.getOtherMortgage());
+        setRealEstateTaxes(from.getRealEstateTaxes());
+        setRent(from.getRent());
+        setType(from.getType());
     }
 
     /**

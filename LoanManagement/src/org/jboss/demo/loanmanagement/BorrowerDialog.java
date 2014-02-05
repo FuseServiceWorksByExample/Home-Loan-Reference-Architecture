@@ -72,7 +72,12 @@ public final class BorrowerDialog extends DialogFragment implements
      * @return the borrower represented by the dialog
      */
     public Borrower getBorrower() {
-        return this.copy;
+        if (this.original == null) {
+            return this.copy;
+        }
+
+        this.original.update(this.copy);
+        return this.original;
     }
 
     private void handleBorrowerTypeSelected( final int index ) {
@@ -555,7 +560,7 @@ public final class BorrowerDialog extends DialogFragment implements
         if (edit == null) {
             this.copy = new Borrower();
         } else {
-            this.copy = Borrower.copy(this.original);
+            this.copy = this.original.copy();
         }
     }
 

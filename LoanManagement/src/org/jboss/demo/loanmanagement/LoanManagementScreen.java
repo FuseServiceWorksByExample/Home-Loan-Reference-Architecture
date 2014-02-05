@@ -13,6 +13,7 @@
 package org.jboss.demo.loanmanagement;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.jboss.demo.loanmanagement.command.GetEvaluationsCommand;
 import org.jboss.demo.loanmanagement.command.GetStatusesCommand;
 import org.jboss.demo.loanmanagement.model.ApplicationStatus;
@@ -105,17 +106,17 @@ public final class LoanManagementScreen extends Activity {
         final GetEvaluationsCommand command = new GetEvaluationsCommand(this) {
 
             /**
-             * @see org.jboss.demo.loanmanagement.command.GetEvaluationsCommand#process(org.jboss.demo.loanmanagement.model.Evaluation[])
+             * @see org.jboss.demo.loanmanagement.command.GetEvaluationsCommand#process(java.util.List)
              */
             @Override
-            protected void process( final Evaluation[] evaluations ) {
+            protected void process( final List<Evaluation> evaluations ) {
                 // pass result to evaluations screen
                 ArrayList<EvaluationParcelable> data = null;
 
-                if (evaluations.length == 0) {
+                if ((evaluations == null) || evaluations.isEmpty()) {
                     data = Evaluation.NO_EVALUATIONS_LIST;
                 } else {
-                    data = new ArrayList<EvaluationParcelable>(evaluations.length);
+                    data = new ArrayList<EvaluationParcelable>(evaluations.size());
 
                     for (final Evaluation eval : evaluations) {
                         final EvaluationParcelable parcelable = new EvaluationParcelable(eval);
@@ -144,17 +145,17 @@ public final class LoanManagementScreen extends Activity {
         final GetStatusesCommand command = new GetStatusesCommand(this) {
 
             /**
-             * @see org.jboss.demo.loanmanagement.command.GetStatusesCommand#process(org.jboss.demo.loanmanagement.model.ApplicationStatus[])
+             * @see org.jboss.demo.loanmanagement.command.GetStatusesCommand#process(java.util.List)
              */
             @Override
-            protected void process( final ApplicationStatus[] statuses ) {
+            protected void process( final List<ApplicationStatus> statuses ) {
                 // pass result to statuses screen
                 ArrayList<ApplicationStatusParcelable> data = null;
 
-                if (statuses.length == 0) {
+                if ((statuses == null) || statuses.isEmpty()) {
                     data = ApplicationStatus.NO_STATUSES_LIST;
                 } else {
-                    data = new ArrayList<ApplicationStatusParcelable>(statuses.length);
+                    data = new ArrayList<ApplicationStatusParcelable>(statuses.size());
 
                     for (final ApplicationStatus status : statuses) {
                         final ApplicationStatusParcelable parcelable = new ApplicationStatusParcelable(status);

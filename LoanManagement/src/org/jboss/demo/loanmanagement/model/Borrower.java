@@ -19,14 +19,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.jboss.demo.loanmanagement.Util;
 
 /**
  * A borrower model object.
  */
-public final class Borrower implements PropertyChangeListener {
+public final class Borrower implements ModelObject<Borrower>, PropertyChangeListener {
 
     /**
      * The {@link #BORROWER_TYPE} index for the borrower type.
@@ -49,52 +48,7 @@ public final class Borrower implements PropertyChangeListener {
     public static final String[] MARITAL_TYPE = new String[] {"Married", "Unmarried", "Separated", "Not_Specified"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     private static final int[] NO_DEP_AGES = new int[0];
-
-    /**
-     * An empty collection.
-     */
-    static final List<Borrower> NONE = Collections.emptyList();
-
     protected static final String PROPERTY_PREFIX = Borrower.class.getSimpleName() + '.';
-
-    /**
-     * @param original the borrower being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static Borrower copy( final Borrower original ) {
-        final Borrower copy = new Borrower();
-
-        copy.setDeclarations(Declarations.copy(original.getDeclarations()));
-        copy.setNumberOfDependents(original.dependents);
-        copy.setDependentsAges(Util.copy(original.dependentsAges));
-        copy.setDob(original.dob);
-        copy.setEmploymentInformation(Employment.copy(original.getEmploymentInformation()));
-        copy.setFirstName(original.firstName);
-        copy.setMiddleName(original.middleName);
-        copy.setLastName(original.lastName);
-        copy.setMaritalStatus(original.maritalStatus);
-        copy.setPhone(original.phone);
-        copy.setSsn(original.ssn);
-        copy.setTitle(original.title);
-        copy.setType(original.type);
-        copy.setYearsSchool(original.getYearsSchool());
-
-        // addresses
-        if (!original.getAddresses().isEmpty()) {
-            for (final BorrowerAddress address : original.getAddresses()) {
-                copy.addAddress(BorrowerAddress.copy(address));
-            }
-        }
-
-        // dependent ages
-        if (original.getDependentsAges().length != 0) {
-            final int[] source = original.getDependentsAges();
-            final int[] destination = new int[source.length];
-            System.arraycopy(source, 0, destination, 0, source.length);
-        }
-
-        return copy;
-    }
 
     private List<BorrowerAddress> addresses; // ordered, max 3
     private Declarations declarations;
@@ -135,13 +89,54 @@ public final class Borrower implements PropertyChangeListener {
             throw new NullPointerException();
         }
 
-        if (this.addresses == null) {
-            this.addresses = new ArrayList<BorrowerAddress>();
-        }
-
-        if (this.addresses.add(newAddress)) {
+        if (getAddresses().add(newAddress)) {
             firePropertyChange(Properties.ADDRESSES, null, newAddress);
         }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     */
+    @Override
+    public Borrower copy() {
+        final Borrower copy = new Borrower();
+
+        if (this.declarations != null) {
+            copy.setDeclarations(getDeclarations().copy());
+        }
+
+        if (this.employmentInformation != null) {
+            copy.setEmploymentInformation(getEmploymentInformation().copy());
+        }
+
+        copy.setNumberOfDependents(getNumberOfDependents());
+        copy.setDob(getDob());
+        copy.setFirstName(getFirstName());
+        copy.setMiddleName(getMiddleName());
+        copy.setLastName(getLastName());
+        copy.setMaritalStatus(getMaritalStatus());
+        copy.setPhone(getPhone());
+        copy.setSsn(getSsn());
+        copy.setTitle(getTitle());
+        copy.setType(getType());
+        copy.setYearsSchool(getYearsSchool());
+
+        // addresses
+        if ((this.addresses != null) && !getAddresses().isEmpty()) {
+            for (final BorrowerAddress address : getAddresses()) {
+                copy.addAddress((BorrowerAddress)address.copy());
+            }
+        }
+
+        // dependent ages
+        if (getDependentsAges().length != 0) {
+            final int[] source = getDependentsAges();
+            final int[] destination = new int[source.length];
+            System.arraycopy(source, 0, destination, 0, source.length);
+            copy.setDependentsAges(destination);
+        }
+
+        return copy;
     }
 
     /**
@@ -192,7 +187,7 @@ public final class Borrower implements PropertyChangeListener {
      */
     public List<BorrowerAddress> getAddresses() {
         if (this.addresses == null) {
-            return BorrowerAddress.NONE;
+            this.addresses = new ArrayList<BorrowerAddress>();
         }
 
         return this.addresses;
@@ -538,6 +533,68 @@ public final class Borrower implements PropertyChangeListener {
 
         if (changed) {
             firePropertyChange(Properties.NUM_YEARS_SCHOOL, oldValue, this.numYearsSchool);
+        }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final Borrower from ) {
+        if (from.declarations == null) {
+            setDeclarations(null);
+        } else {
+            setDeclarations(from.getDeclarations());
+        }
+
+        if (from.employmentInformation == null) {
+            setEmploymentInformation(null);
+        } else {
+            setEmploymentInformation(from.getEmploymentInformation().copy());
+        }
+
+        setNumberOfDependents(from.getNumberOfDependents());
+        setDob(from.getDob());
+        setFirstName(from.getFirstName());
+        setMiddleName(from.getMiddleName());
+        setLastName(from.getLastName());
+        setMaritalStatus(from.getMaritalStatus());
+        setPhone(from.getPhone());
+        setSsn(from.getSsn());
+        setTitle(from.getTitle());
+        setType(from.getType());
+        setYearsSchool(from.getYearsSchool());
+
+        { // addresses
+            final List<BorrowerAddress> oldValue = this.addresses;
+
+            if ((oldValue != null) && !oldValue.isEmpty()) {
+                // unregister
+                for (final BorrowerAddress address : oldValue) {
+                    address.remove(this);
+                }
+
+                oldValue.clear();
+            }
+
+            if ((from.addresses == null) || from.addresses.isEmpty()) {
+                if ((oldValue != null) && !oldValue.isEmpty()) {
+                    this.addresses = null;
+                    firePropertyChange(Properties.ADDRESSES, oldValue, null);
+                }
+            } else {
+                for (final BorrowerAddress address : getAddresses()) {
+                    addAddress((BorrowerAddress)address.copy());
+                }
+            }
+        }
+
+        // dependent ages
+        if (getDependentsAges().length != 0) {
+            final int[] source = from.getDependentsAges();
+            final int[] destination = new int[source.length];
+            System.arraycopy(source, 0, destination, 0, source.length);
+            setDependentsAges(destination);
         }
     }
 

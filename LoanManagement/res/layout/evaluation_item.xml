@@ -3,23 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="6dp" >
 
-    <TextView
-        android:id="@+id/app_eval_name"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ellipsize="middle"
-        android:maxLines="1"
-        android:scrollHorizontally="true"
-        android:textSize="14sp" />
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/app_eval_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/app_eval_ssn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/app_eval_ssn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:id="@+id/app_eval_create_date"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical|right"
         android:textSize="12sp" />
 
 </LinearLayout>

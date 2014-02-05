@@ -23,11 +23,6 @@ import android.text.TextUtils;
 public final class EvaluationParcelable implements Parcelable {
 
     /**
-     * An intent key whose value is a list of available application evaluations.
-     */
-    public static final String EVALUATIONS = "evaluations"; //$NON-NLS-1$
-
-    /**
      * Used to un-marshal or de-serialize an evaluation from a parcel.
      */
     public static final Creator<EvaluationParcelable> CREATOR = new Creator<EvaluationParcelable>() {
@@ -50,6 +45,11 @@ public final class EvaluationParcelable implements Parcelable {
 
     };
 
+    /**
+     * An intent key whose value is a list of available application evaluations.
+     */
+    public static final String EVALUATIONS = "evaluations"; //$NON-NLS-1$
+
     private final Evaluation evaluation;
 
     /**
@@ -63,8 +63,9 @@ public final class EvaluationParcelable implements Parcelable {
         final int ssn = in.readInt();
         final String name = in.readString();
         final int creditScore = in.readInt();
+        final long creationDate = in.readLong();
 
-        this.evaluation = new Evaluation(ssn, name, creditScore);
+        this.evaluation = new Evaluation(ssn, name, creditScore, creationDate);
 
         final double rate = in.readDouble();
         this.evaluation.setRate(rate);
@@ -111,6 +112,7 @@ public final class EvaluationParcelable implements Parcelable {
         dest.writeString(name);
 
         dest.writeInt(this.evaluation.getCreditScore());
+        dest.writeLong(this.evaluation.getCreationDate());
         dest.writeDouble(this.evaluation.getRate());
         dest.writeDouble(this.evaluation.getInsuranceCost());
         dest.writeByte((byte)(this.evaluation.isApproved() ? 1 : 0));

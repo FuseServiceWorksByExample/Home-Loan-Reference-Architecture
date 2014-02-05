@@ -20,26 +20,9 @@ import android.text.TextUtils;
 /**
  * A borrower's address model object.
  */
-public class Address {
+public class Address implements ModelObject<Address> {
 
     protected static final String PROPERTY_PREFIX = Address.class.getSimpleName() + '.';
-
-    /**
-     * @param original the address being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static Address copy( final Address original ) {
-        final Address copy = new Address();
-
-        copy.setCity(original.city);
-        copy.setCounty(original.county);
-        copy.setLine1(original.line1);
-        copy.setLine2(original.line2);
-        copy.setPostalCode(original.postalCode);
-        copy.setState(original.state);
-
-        return copy;
-    }
 
     private String city; // max 50
     private String county; // max 50
@@ -61,6 +44,23 @@ public class Address {
      */
     public void add( final PropertyChangeListener listener ) {
         this.pcs.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     */
+    @Override
+    public Address copy() {
+        final Address copy = new Address();
+
+        copy.setCity(getCity());
+        copy.setCounty(getCounty());
+        copy.setLine1(getLine1());
+        copy.setLine2(getLine2());
+        copy.setPostalCode(getPostalCode());
+        copy.setState(getState());
+
+        return copy;
     }
 
     /**
@@ -220,6 +220,19 @@ public class Address {
             this.state = newState;
             firePropertyChange(Properties.STATE, oldValue, this.state);
         }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final Address from ) {
+        setCity(from.getCity());
+        setCounty(from.getCounty());
+        setLine1(from.getLine1());
+        setLine2(from.getLine2());
+        setPostalCode(from.getPostalCode());
+        setState(from.getState());
     }
 
     /**

@@ -13,6 +13,7 @@
 package org.jboss.demo.loanmanagement.widget;
 
 import java.util.Comparator;
+import java.util.List;
 import org.jboss.demo.loanmanagement.R;
 import org.jboss.demo.loanmanagement.Util;
 import org.jboss.demo.loanmanagement.Util.Prefs;
@@ -40,7 +41,7 @@ public final class StatusesAdapter extends ArrayAdapter<ApplicationStatus> {
      * @param appStatuses the statuses (cannot be <code>null</code> or empty)
      */
     public StatusesAdapter( final Context context,
-                            final ApplicationStatus[] appStatuses ) {
+                            final List<ApplicationStatus> appStatuses ) {
         super(context, R.layout.statuses_screen, appStatuses);
 
         // setup sorter
@@ -55,6 +56,8 @@ public final class StatusesAdapter extends ArrayAdapter<ApplicationStatus> {
         } else {
             this.sorter = ApplicationStatus.STATUS_SORTER;
         }
+
+        sort(this.sorter);
     }
 
     /**
@@ -166,11 +169,11 @@ public final class StatusesAdapter extends ArrayAdapter<ApplicationStatus> {
             newId = DEFAULT_SORTER_ID;
         }
 
-        if (Prefs.SORT_BY_NAME.equals(newId) && (this.sorter != ApplicationStatus.NAME_SORTER)) {
+        if (Prefs.SORT_BY_NAME.equals(newId)) {
             statusSorter = ApplicationStatus.NAME_SORTER;
-        } else if (Prefs.SORT_BY_SSN.equals(newId) && (this.sorter != ApplicationStatus.SSN_SORTER)) {
+        } else if (Prefs.SORT_BY_SSN.equals(newId)) {
             statusSorter = ApplicationStatus.SSN_SORTER;
-        } else if (Prefs.SORT_BY_SSN.equals(newId) && (this.sorter != ApplicationStatus.RATE_SORTER)) {
+        } else if (Prefs.SORT_BY_RATE.equals(newId)) {
             statusSorter = ApplicationStatus.RATE_SORTER;
         } else {
             statusSorter = ApplicationStatus.STATUS_SORTER;
@@ -188,10 +191,13 @@ public final class StatusesAdapter extends ArrayAdapter<ApplicationStatus> {
     /**
      * @param newStatuses the available application statuses (can be <code>null</code>)
      */
-    public void setStatuses( final ApplicationStatus[] newStatuses ) {
+    public void setStatuses( final List<ApplicationStatus> newStatuses ) {
         clear();
-        addAll(newStatuses);
-        sort(this.sorter);
+
+        if ((newStatuses != null) && !newStatuses.isEmpty()) {
+            addAll(newStatuses);
+            sort(this.sorter);
+        }
     }
 
     class ItemHolder {

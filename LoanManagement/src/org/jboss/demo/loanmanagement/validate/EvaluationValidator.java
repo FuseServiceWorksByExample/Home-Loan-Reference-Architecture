@@ -22,18 +22,30 @@ import android.text.TextUtils;
 /**
  * An evaluation validator.
  */
-public final class EvaluationValidator {
+public final class EvaluationValidator implements Validator<Evaluation> {
 
     /**
-     * @param evaluation the evaluation being validated (can be <code>null</code>)
-     * @return a collection of validatioan errors or empty if evaluation is valid (never <code>null</code>)
+     * The shared {@link Evaluation} validator.
      */
-    public static List<EvaluationError> isValid( final Evaluation evaluation ) {
+    public static final EvaluationValidator SHARED = new EvaluationValidator();
+
+    /**
+     * Don't allow public construction.
+     */
+    private EvaluationValidator() {
+        // nothing to do
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.validate.Validator#validate(org.jboss.demo.loanmanagement.model.ModelObject)
+     */
+    @Override
+    public List<ValidationError> validate( final Evaluation evaluation ) {
         if (evaluation == null) {
-            return Collections.singletonList(EvaluationError.NULL);
+            return Collections.singletonList(ValidationError.NULL);
         }
 
-        final List<EvaluationError> result = new ArrayList<EvaluationError>();
+        final List<ValidationError> result = new ArrayList<ValidationError>(5);
 
         if ((evaluation.getSsn() < 100000000) || (evaluation.getSsn() > 999999999)) {
             result.add(EvaluationError.SSN);
@@ -63,16 +75,9 @@ public final class EvaluationValidator {
     }
 
     /**
-     * Don't allow public construction.
-     */
-    private EvaluationValidator() {
-        // nothing to do
-    }
-
-    /**
      * Evaluation validation errors.
      */
-    public enum EvaluationError {
+    public enum EvaluationError implements ValidationError {
 
         /**
          * The applicant is not valid.
@@ -97,7 +102,7 @@ public final class EvaluationValidator {
         /**
          * The evaluation is <code>null</code>.
          */
-        NULL(R.string.err_eval_null),
+        NULL(R.string.err_null_model_object),
 
         /**
          * The loan rate is not valid.
@@ -116,8 +121,9 @@ public final class EvaluationValidator {
         }
 
         /**
-         * @return the error message resource identifier
+         * @see org.jboss.demo.loanmanagement.validate.ValidationError#getMessageId()
          */
+        @Override
         public int getMessageId() {
             return this.msgId;
         }

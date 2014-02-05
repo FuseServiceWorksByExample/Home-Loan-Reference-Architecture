@@ -52,7 +52,8 @@ public final class ProcessApplicationCommand extends AsyncTask<Application, Void
         } catch (final Exception e) {
             this.error = e;
             Log.e(ProcessApplicationCommand.class.getSimpleName(),
-                  this.context.getString(R.string.err_process_application_command), this.error);
+                  this.context.getString(R.string.err_process_application_command, this.error.getLocalizedMessage()),
+                  this.error);
         }
 
         return null;

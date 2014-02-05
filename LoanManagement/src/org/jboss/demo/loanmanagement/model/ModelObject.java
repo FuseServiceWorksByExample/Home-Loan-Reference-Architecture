@@ -12,31 +12,22 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
-
 /**
- * A cash deposit model object.
+ * A loan management business object.
  */
-public final class CashDeposit extends Asset<CashDeposit> {
+/**
+ * @param <T> the type of the model object
+ */
+public interface ModelObject<T> {
 
     /**
-     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     * @return a copy of the model object (never <code>null</code>)
      */
-    @Override
-    public CashDeposit copy() {
-        final CashDeposit copy = new CashDeposit();
-        copy.setAmount(getAmount());
-        copy.setDescription(getDescription());
-
-        return copy;
-    }
+    T copy();
 
     /**
-     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     * @param from the model object whose state is being used to update the original (cannot be <code>null</code>)
      */
-    @Override
-    public void update( final CashDeposit from ) {
-        setAmount(from.getAmount());
-        setDescription(from.getDescription());
-    }
+    void update( T from );
 
 }

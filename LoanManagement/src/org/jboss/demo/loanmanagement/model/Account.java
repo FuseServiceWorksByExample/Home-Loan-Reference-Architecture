@@ -16,37 +16,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import org.jboss.demo.loanmanagement.Util;
 import android.text.TextUtils;
 
 /**
  * A savings or checking account model object.
  */
-public final class Account extends Asset implements PropertyChangeListener {
-
-    /**
-     * An empty collection of accounts.
-     */
-    static final List<Account> NONE = Collections.emptyList();
+public final class Account extends Asset<Account> implements PropertyChangeListener {
 
     protected static final String PREFIX = Account.class.getSimpleName() + '.';
-
-    /**
-     * @param original the account being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static Account copy( final Account original ) {
-        final Account copy = new Account();
-
-        copy.setAmount(original.getAmount());
-        copy.setDescription(original.getDescription());
-        copy.setNumber(original.number);
-        copy.setAddress(Address.copy(original.getAddress()));
-
-        return copy;
-    }
 
     private Address address;
     private String number; // max 100
@@ -66,6 +44,24 @@ public final class Account extends Asset implements PropertyChangeListener {
     @Override
     public final void add( final PropertyChangeListener listener ) {
         this.pcs.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     */
+    @Override
+    public Account copy() {
+        final Account copy = new Account();
+
+        copy.setAmount(getAmount());
+        copy.setDescription(getDescription());
+        copy.setNumber(getNumber());
+
+        if (getAddress() != null) {
+            copy.setAddress(getAddress().copy());
+        }
+
+        return copy;
     }
 
     /**
@@ -189,6 +185,27 @@ public final class Account extends Asset implements PropertyChangeListener {
             final Object oldValue = this.number;
             this.number = newNumber;
             firePropertyChange(Properties.NUMBER, oldValue, this.number);
+        }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final Account from ) {
+        setAmount(from.getAmount());
+        setDescription(from.getDescription());
+        setNumber(from.getNumber());
+
+        { // address
+            final Address oldValue = getAddress();
+
+            if (from.getAddress() == null) {
+                this.address = null;
+                firePropertyChange(Properties.ADDRESS, oldValue, null);
+            } else {
+                setAddress(from.getAddress().copy());
+            }
         }
     }
 

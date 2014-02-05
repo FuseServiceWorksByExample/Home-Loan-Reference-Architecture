@@ -12,11 +12,11 @@
  */
 package org.jboss.demo.loanmanagement.model;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.jboss.demo.loanmanagement.Util;
@@ -24,27 +24,9 @@ import org.jboss.demo.loanmanagement.Util;
 /**
  * Employment information model object.
  */
-public final class Employment {
+public final class Employment implements ModelObject<Employment>, PropertyChangeListener {
 
     protected static final String PROPERTY_PREFIX = Employment.class.getSimpleName() + '.';
-
-    /**
-     * @param original the employment being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static Employment copy( final Employment original ) {
-        final Employment copy = new Employment();
-        copy.setYearsInProfession(original.getYearsInProfession());
-
-        // employers
-        if (!original.getEmployers().isEmpty()) {
-            for (final Employer employer : original.getEmployers()) {
-                copy.addEmployer(Employer.copy(employer));
-            }
-        }
-
-        return copy;
-    }
 
     private List<Employer> employers; // max 3
     private final PropertyChangeSupport pcs;
@@ -72,13 +54,28 @@ public final class Employment {
             throw new NullPointerException();
         }
 
-        if (this.employers == null) {
-            this.employers = new ArrayList<Employer>();
-        }
-
-        if (this.employers.add(newEmployer)) {
+        if (getEmployers().add(newEmployer)) {
+            newEmployer.add(this);
             firePropertyChange(Properties.EMPLOYERS, null, newEmployer);
         }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     */
+    @Override
+    public Employment copy() {
+        final Employment copy = new Employment();
+        copy.setYearsInProfession(getYearsInProfession());
+
+        // employers
+        if ((this.employers != null) && !this.employers.isEmpty()) {
+            for (final Employer employer : getEmployers()) {
+                copy.addEmployer(employer.copy());
+            }
+        }
+
+        return copy;
     }
 
     /**
@@ -144,6 +141,14 @@ public final class Employment {
     }
 
     /**
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    @Override
+    public void propertyChange( final PropertyChangeEvent event ) {
+        firePropertyChange(Properties.EMPLOYERS, event.getOldValue(), event.getNewValue());
+    }
+
+    /**
      * @param listener the listener unregistering from receiving property change events (cannot be <code>null</code>)
      */
     public void remove( final PropertyChangeListener listener ) {
@@ -189,6 +194,37 @@ public final class Employment {
 
         if (changed) {
             firePropertyChange(Properties.YEARS_IN_PROFESSION, oldValue, this.yearsInProfession);
+        }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final Employment from ) {
+        setYearsInProfession(from.getYearsInProfession());
+
+        // employers
+        final List<Employer> oldValue = this.employers;
+
+        if ((oldValue != null) && !oldValue.isEmpty()) {
+            // unregister
+            for (final Employer employer : oldValue) {
+                employer.remove(this);
+            }
+
+            oldValue.clear();
+        }
+
+        if ((from.employers == null) || from.employers.isEmpty()) {
+            if ((oldValue != null) && !oldValue.isEmpty()) {
+                this.employers = null;
+                firePropertyChange(Properties.EMPLOYERS, oldValue, null);
+            }
+        } else {
+            for (final Employer employer : from.getEmployers()) {
+                addEmployer(employer.copy());
+            }
         }
     }
 

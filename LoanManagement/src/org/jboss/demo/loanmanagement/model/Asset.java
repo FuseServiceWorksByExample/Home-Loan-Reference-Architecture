@@ -22,8 +22,10 @@ import android.text.TextUtils;
 
 /**
  * An asset model object.
+ * 
+ * @param <T> the asset type
  */
-public abstract class Asset {
+public abstract class Asset<T> implements ModelObject<T> {
 
     protected static final String PROPERTY_PREFIX = Asset.class.getSimpleName() + '.';
 
@@ -58,7 +60,8 @@ public abstract class Asset {
             return true;
         }
 
-        final Asset that = (Asset)obj;
+        @SuppressWarnings( "unchecked" )
+        final Asset<T> that = (Asset<T>)obj;
         return (Util.equals(this.amount, that.amount) && Util.equals(this.description, that.description));
     }
 

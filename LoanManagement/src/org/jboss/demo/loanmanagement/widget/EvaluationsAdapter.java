@@ -12,7 +12,10 @@
  */
 package org.jboss.demo.loanmanagement.widget;
 
+import java.text.DateFormat;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import org.jboss.demo.loanmanagement.R;
 import org.jboss.demo.loanmanagement.Util;
 import org.jboss.demo.loanmanagement.Util.Prefs;
@@ -39,7 +42,7 @@ public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
      * @param appEvaluations the available evaluations (cannot be <code>null</code>)
      */
     public EvaluationsAdapter( final Context context,
-                               final Evaluation[] appEvaluations ) {
+                               final List<Evaluation> appEvaluations ) {
         super(context, R.layout.evaluations_screen, appEvaluations);
 
         // setup sorter
@@ -47,9 +50,13 @@ public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
 
         if (Prefs.SORT_BY_NAME.equals(sortBy)) {
             this.sorter = Evaluation.NAME_SORTER;
-        } else {
+        } else if (Prefs.SORT_BY_SSN.equals(sortBy)) {
             this.sorter = Evaluation.SSN_SORTER;
+        } else {
+            this.sorter = Evaluation.CREATION_DATE_SORTER;
         }
+
+        sort(this.sorter);
     }
 
     /**
@@ -71,7 +78,11 @@ public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
             return Prefs.SORT_BY_NAME;
         }
 
-        return Prefs.SORT_BY_SSN;
+        if (this.sorter == Evaluation.SSN_SORTER) {
+            return Prefs.SORT_BY_SSN;
+        }
+
+        return Prefs.SORT_BY_DATE;
     }
 
     /**
@@ -90,6 +101,7 @@ public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
             holder = new ItemHolder();
             holder.nameView = (TextView)itemView.findViewById(R.id.app_eval_name);
             holder.ssnView = (TextView)itemView.findViewById(R.id.app_eval_ssn);
+            holder.dateView = (TextView)itemView.findViewById(R.id.app_eval_create_date);
             itemView.setTag(holder);
         } else {
             holder = (ItemHolder)view.getTag();
@@ -97,6 +109,7 @@ public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
 
         final Evaluation evaluation = getItem(position);
         holder.nameView.setText(evaluation.getApplicant());
+        holder.dateView.setText(DateFormat.getInstance().format(new Date(evaluation.getCreationDate())));
 
         { // ssn
             final int ssn = evaluation.getSsn();
@@ -112,10 +125,13 @@ public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
     /**
      * @param newEvaluations the available application evaluations (can be <code>null</code>)
      */
-    public void setEvaluations( final Evaluation[] newEvaluations ) {
+    public void setEvaluations( final List<Evaluation> newEvaluations ) {
         clear();
-        addAll(newEvaluations);
-        sort(this.sorter);
+
+        if ((newEvaluations != null) && !newEvaluations.isEmpty()) {
+            addAll(newEvaluations);
+            sort(this.sorter);
+        }
     }
 
     /**
@@ -131,10 +147,12 @@ public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
             newId = DEFAULT_SORTER_ID;
         }
 
-        if (Prefs.SORT_BY_NAME.equals(newId) && (this.sorter != Evaluation.NAME_SORTER)) {
+        if (Prefs.SORT_BY_NAME.equals(newId)) {
             evaluationSorter = Evaluation.NAME_SORTER;
-        } else if (Prefs.SORT_BY_SSN.equals(newId) && (this.sorter != Evaluation.SSN_SORTER)) {
+        } else if (Prefs.SORT_BY_SSN.equals(newId)) {
             evaluationSorter = Evaluation.SSN_SORTER;
+        } else {
+            evaluationSorter = Evaluation.CREATION_DATE_SORTER;
         }
 
         if (evaluationSorter != null) {
@@ -148,6 +166,7 @@ public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
 
     class ItemHolder {
 
+        TextView dateView;
         TextView nameView;
         TextView ssnView;
 

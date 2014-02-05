@@ -20,7 +20,7 @@ import org.jboss.demo.loanmanagement.Util;
 /**
  * A property address model object.
  */
-public final class Declarations {
+public final class Declarations implements ModelObject<Declarations> {
 
     protected static final String PROPERTY_PREFIX = Declarations.class.getSimpleName() + '.';
 
@@ -35,32 +35,6 @@ public final class Declarations {
      */
     public static final String[] TITLED_BY_TYPES = new String[] {"Solely_By_Yourself", "Jointly_With_Your_Spouse", //$NON-NLS-1$ //$NON-NLS-2$
                                                                  "Jointly_With_Another_Person", "Not_Specified"}; //$NON-NLS-1$ //$NON-NLS-2$
-
-    /**
-     * @param original the declarations being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static Declarations copy( final Declarations original ) {
-        final Declarations copy = new Declarations();
-
-        copy.setAnyJudgments(original.anyJudgments);
-        copy.setBorrowedDownPayment(original.borrowedDownPayment);
-        copy.setCoMakerNote(original.coMakerNote);
-        copy.setDeclaredBankrupt(original.declaredBankrupt);
-        copy.setDelinquent(original.delinquent);
-        copy.setLawsuit(original.lawsuit);
-        copy.setObligatedOnAnyLoan(original.obligatedOnAnyLoan);
-        copy.setObligatedToPayAlimony(original.obligatedToPayAlimony);
-        copy.setOwnershipInterest(original.ownershipInterest);
-        copy.setPermanentResident(original.permanentResident);
-        copy.setPrimaryResidence(original.primaryResidence);
-        copy.setPropertyForeclosed(original.propertyForeclosed);
-        copy.setUsCitizen(original.usCitizen);
-        copy.setPropertyType(original.propertyType);
-        copy.setTitled(original.titled);
-
-        return copy;
-    }
 
     private boolean anyJudgments;
     private boolean borrowedDownPayment;
@@ -91,6 +65,32 @@ public final class Declarations {
      */
     public void add( final PropertyChangeListener listener ) {
         this.pcs.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     */
+    @Override
+    public Declarations copy() {
+        final Declarations copy = new Declarations();
+
+        copy.setAnyJudgments(isAnyJudgments());
+        copy.setBorrowedDownPayment(isBorrowedDownPayment());
+        copy.setCoMakerNote(isCoMakerNote());
+        copy.setDeclaredBankrupt(isDeclaredBankrupt());
+        copy.setDelinquent(isDelinquent());
+        copy.setLawsuit(isLawsuit());
+        copy.setObligatedOnAnyLoan(isObligatedOnAnyLoan());
+        copy.setObligatedToPayAlimony(isObligatedToPayAlimony());
+        copy.setOwnershipInterest(isOwnershipInterest());
+        copy.setPermanentResident(isPermanentResident());
+        copy.setPrimaryResidence(isPrimaryResidence());
+        copy.setPropertyForeclosed(isPropertyForeclosed());
+        copy.setUsCitizen(isUsCitizen());
+        copy.setPropertyType(getPropertyType());
+        copy.setTitled(getTitled());
+
+        return copy;
     }
 
     /**
@@ -423,6 +423,28 @@ public final class Declarations {
             this.usCitizen = newUsCitizen;
             firePropertyChange(Properties.US_CITIZEN, oldValue, this.usCitizen);
         }
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final Declarations from ) {
+        setAnyJudgments(from.isAnyJudgments());
+        setBorrowedDownPayment(from.isBorrowedDownPayment());
+        setCoMakerNote(from.isCoMakerNote());
+        setDeclaredBankrupt(from.isDeclaredBankrupt());
+        setDelinquent(from.isDelinquent());
+        setLawsuit(from.isLawsuit());
+        setObligatedOnAnyLoan(from.isObligatedOnAnyLoan());
+        setObligatedToPayAlimony(from.isObligatedToPayAlimony());
+        setOwnershipInterest(from.isOwnershipInterest());
+        setPermanentResident(from.isPermanentResident());
+        setPrimaryResidence(from.isPrimaryResidence());
+        setPropertyForeclosed(from.isPropertyForeclosed());
+        setUsCitizen(from.isUsCitizen());
+        setPropertyType(from.getPropertyType());
+        setTitled(from.getTitled());
     }
 
     /**

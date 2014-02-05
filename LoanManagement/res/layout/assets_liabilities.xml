@@ -75,7 +75,7 @@
                                 android:id="@+id/btn_add_account"
                                 style="@style/loanmanagement.ImageButton"
                                 android:layout_marginRight="6dp"
-                                android:contentDescription="@string/go_image_description"
+                                android:contentDescription="@string/add_image_description"
                                 android:src="@drawable/ic_add" />
 
                             <TextView
@@ -85,6 +85,8 @@
                                 android:layout_gravity="center"
                                 android:text="@string/AddAccount" />
                         </LinearLayout>
+
+                        <TextView style="@style/loanmanagement.HorizontalDivider" />
 
                         <LinearLayout
                             android:id="@+id/accounts_container"
@@ -110,7 +112,7 @@
                                 android:id="@+id/btn_add_auto"
                                 style="@style/loanmanagement.ImageButton"
                                 android:layout_marginRight="6dp"
-                                android:contentDescription="@string/go_image_description"
+                                android:contentDescription="@string/add_image_description"
                                 android:src="@drawable/ic_add" />
 
                             <TextView
@@ -120,6 +122,8 @@
                                 android:layout_gravity="center"
                                 android:text="@string/AddAuto" />
                         </LinearLayout>
+
+                        <TextView style="@style/loanmanagement.HorizontalDivider" />
 
                         <LinearLayout
                             android:id="@+id/autos_container"
@@ -145,7 +149,7 @@
                                 android:id="@+id/btn_add_deposit"
                                 style="@style/loanmanagement.ImageButton"
                                 android:layout_marginRight="6dp"
-                                android:contentDescription="@string/go_image_description"
+                                android:contentDescription="@string/add_image_description"
                                 android:src="@drawable/ic_add" />
 
                             <TextView
@@ -155,6 +159,8 @@
                                 android:layout_gravity="center"
                                 android:text="@string/AddDeposit" />
                         </LinearLayout>
+
+                        <TextView style="@style/loanmanagement.HorizontalDivider" />
 
                         <LinearLayout
                             android:id="@+id/deposits_container"

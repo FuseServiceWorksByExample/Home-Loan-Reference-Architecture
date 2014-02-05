@@ -17,13 +17,30 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import org.jboss.demo.loanmanagement.Util;
 
 /**
  * A home loan evaluation model object.
  */
-public final class Evaluation {
+public final class Evaluation implements ModelObject<Evaluation> {
+
+    /**
+     * Sorts evaluations by applicant name.
+     */
+    public static final Comparator<Evaluation> CREATION_DATE_SORTER = new Comparator<Evaluation>() {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        @Override
+        public int compare( final Evaluation thisEval,
+                            final Evaluation thatEval ) {
+            return Long.valueOf(thisEval.getCreationDate() - thatEval.getCreationDate()).intValue();
+        }
+    };
 
     /**
      * Sorts evaluations by applicant name.
@@ -41,9 +58,9 @@ public final class Evaluation {
     };
 
     /**
-     * An empty array.
+     * An empty evaluation collection.
      */
-    public static final Evaluation[] NO_EVALUATIONS = new Evaluation[0];
+    public static final List<Evaluation> NO_EVALUATIONS = Collections.emptyList();
 
     /**
      * An empty list.
@@ -72,21 +89,9 @@ public final class Evaluation {
         }
     };
 
-    /**
-     * @param original the evaluation being copied (cannot be <code>null</code>)
-     * @return the copy (never <code>null</code>)
-     */
-    public static Evaluation copy( final Evaluation original ) {
-        final Evaluation copy = new Evaluation(original.ssn, original.applicant, original.creditScore);
-        copy.insuranceCost = original.insuranceCost;
-        copy.explanation = original.explanation;
-        copy.approved = original.approved;
-
-        return copy;
-    }
-
     private final String applicant;
     private boolean approved;
+    private final long creationDate;
     private final int creditScore;
     private String explanation;
     private BigDecimal insuranceCost;
@@ -98,14 +103,30 @@ public final class Evaluation {
      * @param evaluatonSsn the applicant's SSN
      * @param evaluationApplicant the applicant's name
      * @param evaluationCreditScore the applicant's credit score
+     * @param evaluationCreationDate the date the evaluation was put in the queue
      */
     public Evaluation( final int evaluatonSsn,
                        final String evaluationApplicant,
-                       final int evaluationCreditScore ) {
+                       final int evaluationCreditScore,
+                       final long evaluationCreationDate ) {
         this.applicant = evaluationApplicant;
         this.ssn = evaluatonSsn;
         this.creditScore = evaluationCreditScore;
+        this.creationDate = evaluationCreationDate;
         this.pcs = new PropertyChangeSupport(this);
+    }
+
+    /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#copy()
+     */
+    @Override
+    public Evaluation copy() {
+        final Evaluation copy = new Evaluation(this.ssn, this.applicant, this.creditScore, this.creationDate);
+        copy.setInsuranceCost(getInsuranceCost());
+        copy.setExplanation(getExplanation());
+        copy.setApproved(isApproved());
+
+        return copy;
     }
 
     /**
@@ -124,6 +145,7 @@ public final class Evaluation {
         final Evaluation that = (Evaluation)obj;
         return (Util.equals(this.ssn, that.ssn) && Util.equals(this.applicant, that.applicant)
                         && Util.equals(this.creditScore, that.creditScore)
+                        && Util.equals(this.creationDate, that.creationDate)
                         && Util.equals(this.rate, that.rate)
                         && Util.equals(this.insuranceCost, that.insuranceCost)
                         && Util.equals(this.explanation, that.explanation) && Util.equals(this.approved, that.approved));
@@ -148,6 +170,13 @@ public final class Evaluation {
      */
     public String getApplicant() {
         return this.applicant;
+    }
+
+    /**
+     * @return the creation date
+     */
+    public long getCreationDate() {
+        return this.creationDate;
     }
 
     /**
@@ -198,8 +227,8 @@ public final class Evaluation {
      */
     @Override
     public int hashCode() {
-        return Arrays.hashCode(new Object[] {this.ssn, this.applicant, this.creditScore, this.rate, this.insuranceCost,
-                                             this.explanation, this.approved
+        return Arrays.hashCode(new Object[] {this.ssn, this.applicant, this.creditScore, this.creationDate, this.rate,
+                                             this.insuranceCost, this.explanation, this.approved
 
         });
     }
@@ -215,7 +244,7 @@ public final class Evaluation {
      * @param newApproved the new value for the approved
      */
     public void setApproved( final boolean newApproved ) {
-        if (Util.equals(this.approved, newApproved)) {
+        if (!Util.equals(this.approved, newApproved)) {
             final Object oldValue = this.approved;
             this.approved = newApproved;
             firePropertyChange(Properties.APPROVED, oldValue, this.approved);
@@ -231,7 +260,7 @@ public final class Evaluation {
      * @param newExplanation the new value for the explanation
      */
     public void setExplanation( final String newExplanation ) {
-        if (Util.equals(this.explanation, newExplanation)) {
+        if (!Util.equals(this.explanation, newExplanation)) {
             final Object oldValue = this.explanation;
             this.explanation = newExplanation;
             firePropertyChange(Properties.EXPLANATION, oldValue, this.explanation);
@@ -297,24 +326,24 @@ public final class Evaluation {
     }
 
     /**
+     * @see org.jboss.demo.loanmanagement.model.ModelObject#update(java.lang.Object)
+     */
+    @Override
+    public void update( final Evaluation from ) {
+        setInsuranceCost(from.getInsuranceCost());
+        setExplanation(from.getExplanation());
+        setApproved(from.isApproved());
+    }
+
+    /**
      * An employer's property identifiers
      */
     public interface Properties {
 
         /**
-         * The evaluation's applicant property identifier.
-         */
-        String APPLICANT = PROPERTY_PREFIX + "applicant"; //$NON-NLS-1$
-
-        /**
          * The evaluation's approved property identifier.
          */
         String APPROVED = PROPERTY_PREFIX + "approved"; //$NON-NLS-1$
-
-        /**
-         * The evaluation's credit score property identifier.
-         */
-        String CREDIT_SCORE = PROPERTY_PREFIX + "credit_score"; //$NON-NLS-1$
 
         /**
          * The evaluation's explanation property identifier.
@@ -330,11 +359,6 @@ public final class Evaluation {
          * The evaluation's rate property identifier.
          */
         String RATE = PROPERTY_PREFIX + "rate"; //$NON-NLS-1$
-
-        /**
-         * The evaluation's SSN property identifier.
-         */
-        String SSN = PROPERTY_PREFIX + "ssn"; //$NON-NLS-1$
 
     }
 

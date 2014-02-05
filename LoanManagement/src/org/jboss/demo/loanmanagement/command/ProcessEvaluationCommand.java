@@ -12,9 +12,6 @@
  */
 package org.jboss.demo.loanmanagement.command;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import org.jboss.demo.loanmanagement.R;
 import org.jboss.demo.loanmanagement.Util;
 import org.jboss.demo.loanmanagement.model.Evaluation;
@@ -25,9 +22,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 /**
- * Command that obtains the available evaluations.
+ * Command that processes an evaluation.
  */
-public abstract class GetEvaluationsCommand extends AsyncTask<Void, Void, List<Evaluation>> {
+public final class ProcessEvaluationCommand extends AsyncTask<Evaluation, Void, Evaluation> {
 
     private final Context context;
     private ProgressDialog dialog = null;
@@ -36,7 +33,7 @@ public abstract class GetEvaluationsCommand extends AsyncTask<Void, Void, List<E
     /**
      * @param commandContext the app context (cannot be <code>null</code>)
      */
-    public GetEvaluationsCommand( final Context commandContext ) {
+    public ProcessEvaluationCommand( final Context commandContext ) {
         this.context = commandContext;
     }
 
@@ -45,46 +42,42 @@ public abstract class GetEvaluationsCommand extends AsyncTask<Void, Void, List<E
      */
     @SuppressWarnings( "javadoc" )
     @Override
-    protected List<Evaluation> doInBackground( final Void... newParams ) {
+    protected Evaluation doInBackground( final Evaluation... loanEvaluations ) {
         try {
-            // TODO make call to get evaluations
+            // TODO make call to process application
             Thread.sleep(2000);
-
-            final List<Evaluation> evaluations = new ArrayList<Evaluation>(3);
-            evaluations.add(new Evaluation(111111111, "Elvis Costello", 560,
-                                           Calendar.getInstance().getTimeInMillis() - 50000));
-            evaluations.add(new Evaluation(333333333, "Billy Bragg", 410, Calendar.getInstance().getTimeInMillis()));
-            evaluations.add(new Evaluation(222222222, "Nick Lowe", 890,
-                                           Calendar.getInstance().getTimeInMillis() - 600000));
-
-            return evaluations;
+            return loanEvaluations[0];
         } catch (final InterruptedException ignore) {
             // user canceled
         } catch (final Exception e) {
             this.error = e;
-            Log.e(GetEvaluationsCommand.class.getSimpleName(),
-                  this.context.getString(R.string.err_get_evaluations_command), this.error);
+            Log.e(ProcessEvaluationCommand.class.getSimpleName(),
+                  this.context.getString(R.string.err_process_evaluation_command, this.error.getLocalizedMessage()),
+                  this.error);
         }
 
-        return Evaluation.NO_EVALUATIONS;
+        return null;
     }
 
     /**
      * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
      */
     @Override
-    protected void onPostExecute( final List<Evaluation> evaluations ) {
+    protected void onPostExecute( final Evaluation evaluation ) {
         if (this.dialog != null) {
             this.dialog.dismiss();
         }
 
         if (this.error == null) {
-            process(evaluations);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+            builder.setIcon(R.drawable.ic_home)
+                   .setMessage(this.context.getString(R.string.evaluation_processed_successfully))
+                   .setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.ok, null).show();
         } else {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
             builder.setTitle(R.string.err_dialog_title)
                    .setIcon(R.drawable.ic_home)
-                   .setMessage(this.context.getString(R.string.err_get_evaluations_command,
+                   .setMessage(this.context.getString(R.string.err_process_evaluation_command,
                                                       this.error.getLocalizedMessage()))
                    .setIcon(android.R.drawable.ic_dialog_alert).setPositiveButton(android.R.string.ok, null).show();
         }
@@ -97,11 +90,9 @@ public abstract class GetEvaluationsCommand extends AsyncTask<Void, Void, List<E
     protected void onPreExecute() {
         this.dialog =
                         Util.createProgressDialog(this.context,
-                                                  this.context.getString(R.string.evaluations_request_dialog_title),
-                                                  this.context.getString(R.string.evaluations_request_dialog_msg));
+                                                  this.context.getString(R.string.process_evaluation_dialog_title),
+                                                  this.context.getString(R.string.process_evaluation_dialog_msg));
         this.dialog.show();
     }
-
-    protected abstract void process( List<Evaluation> evaluations );
 
 }

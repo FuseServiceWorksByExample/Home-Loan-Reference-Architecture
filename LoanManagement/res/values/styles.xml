@@ -18,7 +18,7 @@
     </style>
 
     <style name="loanmanagement.HorizontalDivider" parent="@android:style/Widget.TextView">
-        <item name="android:background">@color/gray40</item>
+        <item name="android:background">@color/gray81</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_height">2dp</item>
         <item name="android:layout_width">match_parent</item>
@@ -26,7 +26,7 @@
     </style>
 
     <style name="loanmanagement.VerticalDivider" parent="@android:style/Widget.TextView">
-        <item name="android:background">@color/gray40</item>
+        <item name="android:background">@color/gray81</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">2dp</item>
@@ -50,7 +50,7 @@
         <item name="android:background">@drawable/edit_text_selector</item>
         <item name="android:inputType">text</item>
         <item name="android:textColor">@color/gray40</item>
-        <item name="android:layout_margin">4dp</item>
+        <item name="android:layout_margin">2dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
     </style>
 
@@ -58,7 +58,7 @@
         <item name="android:ellipsize">end</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_margin">4dp</item>
+        <item name="android:layout_margin">2dp</item>
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>

@@ -12,6 +12,38 @@
         android:orientation="vertical" >
 
         <TextView
+            android:id="@+id/lbl_housing_expense_type"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_housing_expense_type" />
+
+        <RadioGroup
+            android:id="@+id/grp_housing_expense_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/btn_present"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:text="@string/Present" />
+
+            <RadioButton
+                android:id="@+id/btn_proposed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Proposed" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
             android:id="@+id/lbl_first_mortgage"
             style="@style/loanmanagement.TopLabel"
             android:text="@string/label_first_mortgage" />
@@ -69,12 +101,12 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/lbl_other_housing_expenses"
+            android:id="@+id/lbl_other_mortgages"
             style="@style/loanmanagement.TopLabel"
-            android:text="@string/label_other_housing_expenses" />
+            android:text="@string/label_other_mortgages" />
 
         <EditText
-            android:id="@+id/txt_other_housing_expense"
+            android:id="@+id/txt_other_mortgages"
             style="@style/loanmanagement.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,6 +151,25 @@
             android:hint="@string/hint_dollar_amount"
             android:inputType="numberDecimal" >
         </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/lbl_misc_housing_expenses"
+            style="@style/loanmanagement.TopLabel"
+            android:text="@string/label_misc_housing_expense" />
+
+        <EditText
+            android:id="@+id/txt_misc_housing_expense"
+            style="@style/loanmanagement.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_dollar_amount"
+            android:inputType="numberDecimal" />
     </LinearLayout>
 
 </LinearLayout>

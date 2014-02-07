@@ -61,12 +61,11 @@ class AssetEditor<T extends Asset<T>> extends AlertDialog {
 
     AssetEditor( final Context context,
                  final int titleId,
-                 final int iconId,
                  final T asset ) {
         super(context);
 
         setTitle(titleId);
-        setIcon(iconId);
+        setIcon(R.drawable.ic_home);
         setButton(DialogInterface.BUTTON_NEGATIVE, getContext().getText(android.R.string.cancel),
                   (DialogInterface.OnClickListener)null);
 
@@ -75,18 +74,7 @@ class AssetEditor<T extends Asset<T>> extends AlertDialog {
                         (((asset == null) || (asset.getDescription() == null)) ? Util.EMPTY_STRING
                                         : asset.getDescription());
         this.description = this.originalDescription;
-
-        String temp = "0.00"; //$NON-NLS-1$
-
-        if (asset != null) {
-            try {
-                temp = Util.formatMoneyAmount(Double.toString(asset.getAmount()));
-            } catch (final ParseException e) {
-                // should not ever happen since a double is being used
-            }
-        }
-
-        this.originalAmount = temp;
+        this.originalAmount = ((asset == null) ? "0.00" : Util.formatMoneyAmount(asset.getAmount())); //$NON-NLS-1$
         this.amount = this.originalAmount;
 
         doSetView();
@@ -129,9 +117,13 @@ class AssetEditor<T extends Asset<T>> extends AlertDialog {
         return ((this.txtAmount.getError() != null) || (this.txtDescription.getError() != null));
     }
 
+    /**
+     * Must be called before <code>show</code> is called.
+     * 
+     * @param okListener the listener receiving event when OK button is pushed (can be <code>null</code>)
+     */
     void setListener( final DialogInterface.OnClickListener okListener ) {
         this.listener = okListener;
-
     }
 
     /**

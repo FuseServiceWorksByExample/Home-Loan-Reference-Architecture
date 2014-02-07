@@ -302,9 +302,9 @@ public final class Application implements ModelObject<Application>, PropertyChan
     }
 
     /**
-     * @param removeBorrower the account being deleted (cannot be <code>null</code>)
+     * @param removeBorrower the borrower being deleted (cannot be <code>null</code>)
      */
-    public void removeAccount( final Borrower removeBorrower ) {
+    public void removeBorrower( final Borrower removeBorrower ) {
         if (removeBorrower == null) {
             throw new NullPointerException();
         }

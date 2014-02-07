@@ -7,6 +7,12 @@
         android:showAsAction="ifRoom"
         android:title="@string/item_send_application"/>
     <item
+        android:id="@+id/action_collapse"
+        android:icon="@drawable/ic_collapse"
+        android:onClick="handleCollapseAll"
+        android:showAsAction="ifRoom"
+        android:title="@string/item_collapse_all"/>
+    <item
         android:id="@+id/ic_jump_to"
         android:icon="@drawable/ic_jump_to"
         android:showAsAction="ifRoom"

@@ -13,12 +13,15 @@
 package org.jboss.demo.loanmanagement.widget;
 
 import java.text.ParseException;
+import java.util.List;
 import org.jboss.demo.loanmanagement.R;
 import org.jboss.demo.loanmanagement.Util;
 import org.jboss.demo.loanmanagement.model.Account;
+import org.jboss.demo.loanmanagement.model.Address;
 import org.jboss.demo.loanmanagement.model.Application;
 import org.jboss.demo.loanmanagement.model.AssetsAndLiabilities;
 import org.jboss.demo.loanmanagement.model.Automobile;
+import org.jboss.demo.loanmanagement.model.Borrower;
 import org.jboss.demo.loanmanagement.model.CashDeposit;
 import org.jboss.demo.loanmanagement.model.HousingExpense;
 import org.jboss.demo.loanmanagement.model.Property;
@@ -26,6 +29,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +40,7 @@ import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -64,6 +69,11 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
     private static final String DEPOSITS_TAB_ID = "tab_deposits"; //$NON-NLS-1$
 
+    private static final int[] GROUP_DESCRIPTIONS = new int[] {R.string.item_loan_description,
+                                                               R.string.item_borrowers_description,
+                                                               R.string.item_housing_expense_description,
+                                                               R.string.item_assets_and_liabilities_description};
+
     private static final int[] GROUPS = new int[] {R.string.Loan, R.string.Borrowers, R.string.HousingExpense,
                                                    R.string.AssetsAndLiabilities};
     /**
@@ -75,6 +85,44 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
      * The index of the loan view in the expandable list.
      */
     public static final int LOAN_INDEX = 0;
+
+    private static String constructBorrowerName( final Borrower borrower ) {
+        final StringBuilder name = new StringBuilder();
+
+        { // first
+            final String first = borrower.getFirstName();
+
+            if (!TextUtils.isEmpty(first)) {
+                name.append(first);
+            }
+        }
+
+        { // middle
+            final String middle = borrower.getMiddleName();
+
+            if (!TextUtils.isEmpty(middle)) {
+                if (name.length() != 0) {
+                    name.append(' ');
+                }
+
+                name.append(middle);
+            }
+        }
+
+        { // last
+            final String last = borrower.getLastName();
+
+            if (!TextUtils.isEmpty(last)) {
+                if (name.length() != 0) {
+                    name.append(' ');
+                }
+
+                name.append(last);
+            }
+        }
+
+        return name.toString();
+    }
 
     protected static void doEditAccount( final AccountEditor editor,
                                          final Account editAccount ) {
@@ -118,14 +166,14 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     private ViewGroup autosContainer;
     private ViewGroup autosTab;
     private boolean autosTabSetup = false;
+    private ViewGroup borrowersContainer;
     private final Context context;
     private ViewGroup depositsContainer;
     private ViewGroup depositsTab;
     private boolean depositsTabSetup = false;
     private final ExpandableListView expandableListView;
     private final LayoutInflater inflater;
-
-    private int lastExpandedGroupIndex;
+    private int lastExpandedGroupIndex = AdapterView.INVALID_POSITION;
 
     private final boolean[] listenersSetup = new boolean[] {false, false, false, false};
 
@@ -141,6 +189,15 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         this.inflater = LayoutInflater.from(this.context);
         this.expandableListView = view;
         this.application = loanApplication;
+    }
+
+    /**
+     * Collapses the last group that was expanded.
+     */
+    public void collapseAllGroups() {
+        if (this.lastExpandedGroupIndex != AdapterView.INVALID_POSITION) {
+            this.expandableListView.collapseGroup(this.lastExpandedGroupIndex);
+        }
     }
 
     protected void doAddAccount( final AccountEditor editor ) {
@@ -187,8 +244,16 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         getAssetsAndLiabilities().addCashDeposit(newDeposit);
     }
 
+    protected Application getApplication() {
+        return this.application;
+    }
+
     protected AssetsAndLiabilities getAssetsAndLiabilities() {
         return this.application.getAssetsAndLiabilities();
+    }
+
+    protected List<Borrower> getBorrowers() {
+        return this.application.getBorrowers();
     }
 
     /**
@@ -344,14 +409,22 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         View result = view;
 
         if (view == null) {
-            result = this.inflater.inflate(android.R.layout.simple_expandable_list_item_1, viewGroup, false);
+            result = this.inflater.inflate(android.R.layout.simple_expandable_list_item_2, viewGroup, false);
+            result.setBackgroundResource(R.drawable.gradient);
         }
 
         // set group name as tag so view can be found view later
         result.setTag(GROUPS[groupIndex]);
 
-        final TextView textView = (TextView)result.findViewById(android.R.id.text1);
-        textView.setText(GROUPS[groupIndex]);
+        { // group title
+            final TextView textView = (TextView)result.findViewById(android.R.id.text1);
+            textView.setText(GROUPS[groupIndex]);
+        }
+
+        { // group description
+            final TextView textView = (TextView)result.findViewById(android.R.id.text2);
+            textView.setText(GROUP_DESCRIPTIONS[groupIndex]);
+        }
 
         return result;
     }
@@ -369,8 +442,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     }
 
     protected void handleAddAccount() {
-        final AccountEditor editor =
-                        new AccountEditor(getContext(), R.string.add_account_dialog_title, R.drawable.ic_home, null);
+        final AccountEditor editor = new AccountEditor(getContext(), R.string.add_account_dialog_title, null);
         editor.setListener(new DialogInterface.OnClickListener() {
 
             /**
@@ -387,8 +459,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
     protected void handleAddAuto() {
         final AssetEditor<Automobile> editor =
-                        new AssetEditor<Automobile>(getContext(), R.string.add_auto_dialog_title, R.drawable.ic_home,
-                                                    null);
+                        new AssetEditor<Automobile>(getContext(), R.string.add_auto_dialog_title, null);
         editor.setListener(new DialogInterface.OnClickListener() {
 
             /**
@@ -403,10 +474,26 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         editor.show();
     }
 
+    protected void handleAddBorrower() {
+        final BorrowerEditor editor = new BorrowerEditor(getContext(), R.string.add_borrower_dialog_title, null);
+        editor.setListener(new DialogInterface.OnClickListener() {
+
+            /**
+             * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+             */
+            @Override
+            public void onClick( final DialogInterface dialog,
+                                 final int which ) {
+                final Borrower newBorrower = editor.getBorrower();
+                getBorrowers().add(newBorrower);
+            }
+        });
+        editor.show();
+    }
+
     protected void handleAddDeposit() {
         final AssetEditor<CashDeposit> editor =
-                        new AssetEditor<CashDeposit>(getContext(), R.string.add_deposit_dialog_title,
-                                                     R.drawable.ic_home, null);
+                        new AssetEditor<CashDeposit>(getContext(), R.string.add_deposit_dialog_title, null);
         editor.setListener(new DialogInterface.OnClickListener() {
 
             /**
@@ -471,6 +558,24 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                }).show();
     }
 
+    protected void handleDeleteBorrower( final Borrower deleteBorrower ) {
+        final String msg = getContext().getString(R.string.delete_borrower_msg, constructBorrowerName(deleteBorrower));
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.delete_dialog_title).setIcon(R.drawable.ic_home).setMessage(msg)
+               .setNegativeButton(android.R.string.cancel, null)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                   /**
+                    * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+                    */
+                   @Override
+                   public void onClick( final DialogInterface dialog,
+                                        final int which ) {
+                       getApplication().removeBorrower(deleteBorrower);
+                   }
+               }).show();
+    }
+
     protected void handleDeleteDeposit( final CashDeposit deleteDeposit ) {
         String msg = null;
 
@@ -497,9 +602,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     }
 
     protected void handleEditAccount( final Account editAccount ) {
-        final AccountEditor editor =
-                        new AccountEditor(getContext(), R.string.edit_account_dialog_title, R.drawable.ic_home,
-                                          editAccount);
+        final AccountEditor editor = new AccountEditor(getContext(), R.string.edit_account_dialog_title, editAccount);
         editor.setListener(new DialogInterface.OnClickListener() {
 
             /**
@@ -516,8 +619,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
     protected void handleEditAuto( final Automobile editAuto ) {
         final AssetEditor<Automobile> editor =
-                        new AssetEditor<Automobile>(getContext(), R.string.edit_auto_dialog_title, R.drawable.ic_home,
-                                                    editAuto);
+                        new AssetEditor<Automobile>(getContext(), R.string.edit_auto_dialog_title, editAuto);
         editor.setListener(new DialogInterface.OnClickListener() {
 
             /**
@@ -532,10 +634,26 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         editor.show();
     }
 
+    protected void handleEditBorrower( final Borrower editBorrower ) {
+        final BorrowerEditor editor =
+                        new BorrowerEditor(getContext(), R.string.edit_borrower_dialog_title, editBorrower);
+        editor.setListener(new DialogInterface.OnClickListener() {
+
+            /**
+             * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+             */
+            @Override
+            public void onClick( final DialogInterface dialog,
+                                 final int which ) {
+                editBorrower.update(editor.getBorrower());
+            }
+        });
+        editor.show();
+    }
+
     protected void handleEditDeposit( final CashDeposit editDeposit ) {
         final AssetEditor<CashDeposit> editor =
-                        new AssetEditor<CashDeposit>(getContext(), R.string.edit_deposit_dialog_title,
-                                                     R.drawable.ic_home, editDeposit);
+                        new AssetEditor<CashDeposit>(getContext(), R.string.edit_deposit_dialog_title, editDeposit);
         editor.setListener(new DialogInterface.OnClickListener() {
 
             /**
@@ -763,6 +881,66 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     }
 
     /**
+     * Re-loads the borrowers data from the application.
+     */
+    public void refreshBorrowers() {
+        this.borrowersContainer.removeAllViews();
+
+        for (final Borrower borrower : getBorrowers()) {
+            final View view = this.inflater.inflate(R.layout.borrower_item, null);
+            this.borrowersContainer.addView(view);
+
+            { // name
+                final TextView txt = (TextView)view.findViewById(R.id.txt_borrower_name);
+                txt.setText(constructBorrowerName(borrower));
+            }
+
+            { // type
+                final TextView txt = (TextView)view.findViewById(R.id.txt_borrower_type);
+                final String type = borrower.getType();
+                String label = null;
+
+                if (Borrower.BORROWER_TYPE[Borrower.BORROWER_INDEX].equals(type)) {
+                    label = getContext().getString(R.string.Borrower);
+                } else {
+                    label = getContext().getString(R.string.CoBorrower);
+                }
+
+                txt.setText(label);
+            }
+
+            { // edit borrower
+                final ImageButton btn = (ImageButton)view.findViewById(R.id.btn_edit);
+                btn.setOnClickListener(new OnClickListener() {
+
+                    /**
+                     * @see android.view.View.OnClickListener#onClick(android.view.View)
+                     */
+                    @Override
+                    public void onClick( final View editButton ) {
+                        handleEditBorrower(borrower);
+                    }
+                });
+            }
+
+            { // delete borrower
+                final ImageButton btn = (ImageButton)view.findViewById(R.id.btn_delete);
+                btn.setOnClickListener(new OnClickListener() {
+
+                    /**
+                     * @see android.view.View.OnClickListener#onClick(android.view.View)
+                     */
+                    @Override
+                    public void onClick( final View deleteButton ) {
+                        handleDeleteBorrower(borrower);
+                    }
+                });
+            }
+        }
+
+    }
+
+    /**
      * Re-loads the cash deposit data from the application.
      */
     public void refreshDeposits() {
@@ -838,6 +1016,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         completedBy = AssetsAndLiabilities.COMPLETED_BY[AssetsAndLiabilities.NOT_JOINTLY_INDEX];
                     }
 
+                    assert !TextUtils.isEmpty(completedBy);
                     getAssetsAndLiabilities().setCompletedType(completedBy);
                 }
             });
@@ -863,12 +1042,67 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
      * @param view the borrowers view of the application screen (cannot be <code>null</code>)
      */
     private void setupBorrowersViewListeners( final View view ) {
-        // TODO implement
+        this.borrowersContainer = (ViewGroup)view.findViewById(R.id.borrowers_container);
+
+        { // add borrower
+            final ImageButton btn = (ImageButton)view.findViewById(R.id.btn_add_borrower);
+            btn.setOnClickListener(new OnClickListener() {
+
+                /**
+                 * @see android.view.View.OnClickListener#onClick(android.view.View)
+                 */
+                @Override
+                public void onClick( final View imageView ) {
+                    handleAddBorrower();
+                }
+            });
+        }
+
+        refreshBorrowers();
     }
 
     private void setupHousingExpenseViewListeners( final View view ) {
+        final HousingExpense housingExpense = getHousingExpense();
+
+        { // type
+            final String type = housingExpense.getType();
+
+            if (HousingExpense.HOUSING_EXPENSE_TYPES[HousingExpense.PRESENT_INDEX].equals(type)) {
+                final RadioButton btnPresent = (RadioButton)view.findViewById(R.id.btn_present);
+                btnPresent.setChecked(true);
+            } else if (HousingExpense.HOUSING_EXPENSE_TYPES[HousingExpense.PROPOSED_INDEX].equals(type)) {
+                final RadioButton btnProposed = (RadioButton)view.findViewById(R.id.btn_proposed);
+                btnProposed.setChecked(true);
+            }
+
+            final RadioGroup group = (RadioGroup)view.findViewById(R.id.grp_housing_expense_type);
+            group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+                /**
+                 * @see android.widget.RadioGroup.OnCheckedChangeListener#onCheckedChanged(android.widget.RadioGroup,
+                 *      int)
+                 */
+                @Override
+                public void onCheckedChanged( final RadioGroup radioGroup,
+                                              final int btnId ) {
+                    String newType = null;
+
+                    if (btnId == R.id.btn_present) {
+                        newType = HousingExpense.HOUSING_EXPENSE_TYPES[HousingExpense.PRESENT_INDEX];
+                    } else if (btnId == R.id.btn_proposed) {
+                        newType = HousingExpense.HOUSING_EXPENSE_TYPES[HousingExpense.PROPOSED_INDEX];
+                    }
+
+                    assert !TextUtils.isEmpty(newType);
+                    housingExpense.setType(newType);
+                }
+            });
+        }
+
         { // first mortgage
             final TextView textView = (TextView)view.findViewById(R.id.txt_first_mortgage);
+            textView.setText(Util.formatMoneyAmount(housingExpense.getFirstMortgage()));
+            textView.setFilters(new InputFilter[] {Util.getCurrencyFilter()});
             textView.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**
@@ -880,7 +1114,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
                     try {
                         newValue = Util.parseDouble(newFirstMortgage.toString());
-                        getHousingExpense().setFirstMortgage(newValue);
+                        housingExpense.setFirstMortgage(newValue);
                     } catch (final ParseException e) {
                         textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
@@ -890,6 +1124,8 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
         { // hazard insurance
             final TextView textView = (TextView)view.findViewById(R.id.txt_hazard_insurance);
+            textView.setText(Util.formatMoneyAmount(housingExpense.getHazardInsurance()));
+            textView.setFilters(new InputFilter[] {Util.getCurrencyFilter()});
             textView.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**
@@ -901,7 +1137,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
                     try {
                         newValue = Util.parseDouble(newHazardInsurance.toString());
-                        getHousingExpense().setHazardInsurance(newValue);
+                        housingExpense.setHazardInsurance(newValue);
                     } catch (final ParseException e) {
                         textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
@@ -911,6 +1147,8 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
         { // association dues
             final TextView textView = (TextView)view.findViewById(R.id.txt_association_dues);
+            textView.setText(Util.formatMoneyAmount(housingExpense.getHomeOwnerAssociationDues()));
+            textView.setFilters(new InputFilter[] {Util.getCurrencyFilter()});
             textView.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**
@@ -922,28 +1160,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
                     try {
                         newValue = Util.parseDouble(newAssociationDues.toString());
-                        getHousingExpense().setHomeOwnerAssociationDues(newValue);
-                    } catch (final ParseException e) {
-                        textView.setError(getContext().getText(R.string.err_invalid_amount));
-                    }
-                }
-            });
-        }
-
-        { // other
-            final TextView textView = (TextView)view.findViewById(R.id.txt_other_housing_expense);
-            textView.addTextChangedListener(new TextWatcherAdapter() {
-
-                /**
-                 * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
-                 */
-                @Override
-                public void afterTextChanged( final Editable newOther ) {
-                    double newValue;
-
-                    try {
-                        newValue = Util.parseDouble(newOther.toString());
-                        getHousingExpense().setOther(newValue);
+                        housingExpense.setHomeOwnerAssociationDues(newValue);
                     } catch (final ParseException e) {
                         textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
@@ -953,6 +1170,8 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
         { // real estate taxes
             final TextView textView = (TextView)view.findViewById(R.id.txt_real_estate_taxes);
+            textView.setText(Util.formatMoneyAmount(housingExpense.getRealEstateTaxes()));
+            textView.setFilters(new InputFilter[] {Util.getCurrencyFilter()});
             textView.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**
@@ -964,7 +1183,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
                     try {
                         newValue = Util.parseDouble(newRealEstateTaxes.toString());
-                        getHousingExpense().setRealEstateTaxes(newValue);
+                        housingExpense.setRealEstateTaxes(newValue);
                     } catch (final ParseException e) {
                         textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
@@ -974,6 +1193,8 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
         { // rent
             final TextView textView = (TextView)view.findViewById(R.id.txt_rent);
+            textView.setText(Util.formatMoneyAmount(housingExpense.getRent()));
+            textView.setFilters(new InputFilter[] {Util.getCurrencyFilter()});
             textView.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**
@@ -984,7 +1205,53 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                     double newValue;
                     try {
                         newValue = Util.parseDouble(newRent.toString());
-                        getHousingExpense().setRent(newValue);
+                        housingExpense.setRent(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(getContext().getText(R.string.err_invalid_amount));
+                    }
+                }
+            });
+        }
+
+        { // other mortgages
+            final TextView textView = (TextView)view.findViewById(R.id.txt_other_mortgages);
+            textView.setText(Util.formatMoneyAmount(housingExpense.getOtherMortgages()));
+            textView.setFilters(new InputFilter[] {Util.getCurrencyFilter()});
+            textView.addTextChangedListener(new TextWatcherAdapter() {
+
+                /**
+                 * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
+                 */
+                @Override
+                public void afterTextChanged( final Editable newOther ) {
+                    double newValue;
+
+                    try {
+                        newValue = Util.parseDouble(newOther.toString());
+                        housingExpense.setOtherMortgages(newValue);
+                    } catch (final ParseException e) {
+                        textView.setError(getContext().getText(R.string.err_invalid_amount));
+                    }
+                }
+            });
+        }
+
+        { // misc
+            final TextView textView = (TextView)view.findViewById(R.id.txt_misc_housing_expense);
+            textView.setText(Util.formatMoneyAmount(housingExpense.getOther()));
+            textView.setFilters(new InputFilter[] {Util.getCurrencyFilter()});
+            textView.addTextChangedListener(new TextWatcherAdapter() {
+
+                /**
+                 * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
+                 */
+                @Override
+                public void afterTextChanged( final Editable newOther ) {
+                    double newValue;
+
+                    try {
+                        newValue = Util.parseDouble(newOther.toString());
+                        housingExpense.setOther(newValue);
                     } catch (final ParseException e) {
                         textView.setError(getContext().getText(R.string.err_invalid_amount));
                     }
@@ -996,6 +1263,9 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     private void setupLoanViewListeners( final View view ) {
         { // loan type
             final Spinner cbxLoanType = (Spinner)view.findViewById(R.id.cbx_loan_type);
+            final String type = this.application.getType();
+            Util.selectSpinnerItem(cbxLoanType, type, Application.LOAN_TYPES);
+
             cbxLoanType.setOnItemSelectedListener(new ItemSelectedAdapter() {
 
                 /**
@@ -1015,6 +1285,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
         { // loan description
             final TextView textView = (TextView)view.findViewById(R.id.txt_description);
+            textView.setText(this.application.getDescription());
             textView.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**
@@ -1030,6 +1301,8 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
         { // loan amount
             final TextView textView = (TextView)view.findViewById(R.id.txt_loan_amount);
+            textView.setText(Util.formatMoneyAmount(this.application.getAmount()));
+            textView.setFilters(new InputFilter[] {Util.getCurrencyFilter()});
             textView.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**
@@ -1051,6 +1324,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
         { // interest rate
             final TextView textView = (TextView)view.findViewById(R.id.txt_interest_rate);
+            textView.setText(Double.toString(this.application.getRate()));
             textView.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**
@@ -1072,6 +1346,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
         { // loan months
             final TextView textView = (TextView)view.findViewById(R.id.txt_loan_months);
+            textView.setText(Integer.toString(this.application.getNumMonths()));
             textView.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**
@@ -1093,6 +1368,9 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
         { // amortization type
             final Spinner cbxAmortizationType = (Spinner)view.findViewById(R.id.cbx_amortization_type);
+            final String amortizationType = this.application.getAmoritizationType();
+            Util.selectSpinnerItem(cbxAmortizationType, amortizationType, Application.AMORTIZATION_TYPES);
+
             cbxAmortizationType.setOnItemSelectedListener(new ItemSelectedAdapter() {
 
                 /**
@@ -1111,8 +1389,21 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         }
 
         { // property
+            final Property property = getProperty();
+            Address tempAddress = property.getAddress();
+
+            if (tempAddress == null) {
+                tempAddress = new Address();
+                property.setAddress(tempAddress);
+            }
+
+            final Address address = tempAddress;
+
             { // property type
                 final Spinner cbxPropertyType = (Spinner)view.findViewById(R.id.cbx_property_type);
+                final String propertyType = property.getType();
+                Util.selectSpinnerItem(cbxPropertyType, propertyType, Property.PROPERTY_TYPES);
+
                 cbxPropertyType.setOnItemSelectedListener(new ItemSelectedAdapter() {
 
                     /**
@@ -1125,25 +1416,144 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                                                 final int position,
                                                 final long id ) {
                         final int index = ((Spinner)spinner).getSelectedItemPosition();
-                        getProperty().setType(Property.PROPERTY_TYPES[index]);
+                        property.setType(Property.PROPERTY_TYPES[index]);
                     }
                 });
             }
 
-            { // number of unites
-                final TextView textView = (TextView)view.findViewById(R.id.txt_num_units);
+            { // line 1
+                final TextView textView = (TextView)view.findViewById(R.id.txt_addr_line_1);
+                textView.setText(address.getLine1());
                 textView.addTextChangedListener(new TextWatcherAdapter() {
 
                     /**
                      * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
                      */
                     @Override
-                    public void afterTextChanged( final Editable newNumMonths ) {
+                    public void afterTextChanged( final Editable newLine1 ) {
+                        final String newValue = newLine1.toString();
+                        address.setLine1(newValue);
+                    }
+                });
+            }
+
+            { // line 2
+                final TextView textView = (TextView)view.findViewById(R.id.txt_addr_line_2);
+                textView.setText(address.getLine2());
+                textView.addTextChangedListener(new TextWatcherAdapter() {
+
+                    /**
+                     * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
+                     */
+                    @Override
+                    public void afterTextChanged( final Editable newLine2 ) {
+                        final String newValue = newLine2.toString();
+                        address.setLine2(newValue);
+                    }
+                });
+            }
+
+            { // city
+                final TextView textView = (TextView)view.findViewById(R.id.txt_city);
+                textView.setText(address.getCity());
+                textView.addTextChangedListener(new TextWatcherAdapter() {
+
+                    /**
+                     * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
+                     */
+                    @Override
+                    public void afterTextChanged( final Editable newCity ) {
+                        final String newValue = newCity.toString();
+                        address.setCity(newValue);
+                    }
+                });
+            }
+
+            { // state
+                final TextView textView = (TextView)view.findViewById(R.id.txt_state);
+                textView.setText(address.getState());
+                textView.addTextChangedListener(new TextWatcherAdapter() {
+
+                    /**
+                     * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
+                     */
+                    @Override
+                    public void afterTextChanged( final Editable newState ) {
+                        final String newValue = newState.toString();
+                        address.setState(newValue);
+                    }
+                });
+            }
+
+            { // zipcode
+                final TextView textView = (TextView)view.findViewById(R.id.txt_zipcode);
+                textView.setText(address.getPostalCode());
+                textView.addTextChangedListener(new TextWatcherAdapter() {
+
+                    /**
+                     * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
+                     */
+                    @Override
+                    public void afterTextChanged( final Editable newZipcode ) {
+                        final String newValue = newZipcode.toString();
+                        address.setPostalCode(newValue);
+                    }
+                });
+            }
+
+            { // county
+                final TextView textView = (TextView)view.findViewById(R.id.txt_county);
+                textView.setText(address.getCounty());
+                textView.addTextChangedListener(new TextWatcherAdapter() {
+
+                    /**
+                     * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
+                     */
+                    @Override
+                    public void afterTextChanged( final Editable newCounty ) {
+                        final String newValue = newCounty.toString();
+                        address.setCounty(newValue);
+                    }
+                });
+            }
+
+            { // year built
+                final TextView textView = (TextView)view.findViewById(R.id.txt_year_built);
+                textView.setText(Integer.toString(property.getYearBuilt()));
+                textView.addTextChangedListener(new TextWatcherAdapter() {
+
+                    /**
+                     * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
+                     */
+                    @Override
+                    public void afterTextChanged( final Editable newYearBuilt ) {
                         int newValue;
 
                         try {
-                            newValue = Util.parseInt(newNumMonths.toString());
-                            getLoanApplication().setNumberOfMonths(newValue);
+                            newValue = Util.parseInt(newYearBuilt.toString());
+                            property.setYearBuilt(newValue);
+                        } catch (final ParseException e) {
+                            textView.setError(getContext().getText(R.string.err_invalid_amount));
+                        }
+                    }
+                });
+            }
+
+            { // number of units
+                final TextView textView = (TextView)view.findViewById(R.id.txt_num_units);
+                textView.setText(Integer.toString(property.getNumUnits()));
+                textView.addTextChangedListener(new TextWatcherAdapter() {
+
+                    /**
+                     * @see org.jboss.demo.loanmanagement.widget.TextWatcherAdapter#afterTextChanged(android.text.Editable)
+                     */
+                    @Override
+                    public void afterTextChanged( final Editable newNumUnits ) {
+                        int newValue;
+
+                        try {
+                            newValue = Util.parseInt(newNumUnits.toString());
+                            property.setNumUnits(newValue);
                         } catch (final ParseException e) {
                             textView.setError(getContext().getText(R.string.err_invalid_amount));
                         }
@@ -1154,6 +1564,9 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
         { // purchase type
             final Spinner cbxAmortizationType = (Spinner)view.findViewById(R.id.cbx_purchase_type);
+            final String purchaseType = this.application.getPurchaseType();
+            Util.selectSpinnerItem(cbxAmortizationType, purchaseType, Application.PURCHASE_TYPES);
+
             cbxAmortizationType.setOnItemSelectedListener(new ItemSelectedAdapter() {
 
                 /**
@@ -1173,6 +1586,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
         { // source of down payment
             final TextView textView = (TextView)view.findViewById(R.id.txt_down_payment_source);
+            textView.setText(this.application.getDownPaymentSource());
             textView.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**

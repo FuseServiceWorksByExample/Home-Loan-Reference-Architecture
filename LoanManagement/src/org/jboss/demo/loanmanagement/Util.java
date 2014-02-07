@@ -12,7 +12,7 @@
  */
 package org.jboss.demo.loanmanagement;
 
-import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.regex.Matcher;
@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.widget.Spinner;
 
 /**
  * Loan management app utilities.
@@ -40,6 +41,10 @@ public final class Util {
      * An empty string constant.
      */
     public static final String EMPTY_STRING = ""; //$NON-NLS-1$
+
+    private static final DecimalFormat FORMATTER = new DecimalFormat("#.00"); //$NON-NLS-1$
+
+    static final Pattern MONEY_PATTERN = Pattern.compile("(0|[1-9]+[0-9]*)?(\\.[0-9]{0,2})?"); //$NON-NLS-1$
 
     private static final String PREFS_NAME = "loanmanagement"; //$NON-NLS-1$
 
@@ -99,14 +104,20 @@ public final class Util {
     }
 
     /**
+     * @param amount the amount being formatted
+     * @return the text in the form of xx.xx (never <code>null</code>)
+     */
+    public static String formatMoneyAmount( final double amount ) {
+        return FORMATTER.format(amount);
+    }
+
+    /**
      * @param text the text being formatted (can be <code>null</code> or empty)
      * @return the text in the form of xx.xx (never <code>null</code>)
      * @throws ParseException if input parameter cannot be parsed as a double
      */
     public static String formatMoneyAmount( final String text ) throws ParseException {
-        final double amount = parseDouble(text);
-        final BigDecimal bg = new BigDecimal(String.valueOf(amount)).setScale(2, BigDecimal.ROUND_HALF_UP);
-        return bg.toString();
+        return formatMoneyAmount(parseDouble(text));
     }
 
     /**
@@ -187,6 +198,33 @@ public final class Util {
     }
 
     /**
+     * @param spinner the spinner whose item is being selected (cannot be <code>null</code>)
+     * @param value the value to select in the spinner (can be <code>null</code> or empty)
+     * @param validValues a list of valid values (cannot be <code>null</code>)
+     */
+    public static void selectSpinnerItem( final Spinner spinner,
+                                          final String value,
+                                          final String[] validValues ) {
+        if (!TextUtils.isEmpty(value)) {
+            int index = -1;
+            int i = 0;
+
+            for (final String validValue : validValues) {
+                if (validValue.equals(value)) {
+                    index = i;
+                    break;
+                }
+
+                ++i;
+            }
+
+            if (index != -1) {
+                spinner.setSelection(index);
+            }
+        }
+    }
+
+    /**
      * Don't allow public construction.
      */
     private Util() {
@@ -194,8 +232,6 @@ public final class Util {
     }
 
     protected static class CurrencyFormatInputFilter implements InputFilter {
-
-        Pattern pattern = Pattern.compile("(0|[1-9]+[0-9]*)?(\\.[0-9]{0,2})?"); //$NON-NLS-1$
 
         /**
          * @see android.text.InputFilter#filter(java.lang.CharSequence, int, int, android.text.Spanned, int, int)
@@ -209,7 +245,7 @@ public final class Util {
                                     final int dend ) {
             final String result =
                             dest.subSequence(0, dstart) + source.toString() + dest.subSequence(dend, dest.length());
-            final Matcher matcher = this.pattern.matcher(result);
+            final Matcher matcher = MONEY_PATTERN.matcher(result);
 
             if (matcher.matches()) {
                 return null;

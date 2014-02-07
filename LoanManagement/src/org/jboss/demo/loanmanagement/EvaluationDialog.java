@@ -23,6 +23,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,11 +59,11 @@ public final class EvaluationDialog extends DialogFragment implements
         this.copy.setApproved(true);
 
         this.lblRate.setVisibility(View.VISIBLE);
-        this.txtRate.setText(Double.toString(this.copy.getInsuranceCost()));
+        this.txtRate.setText(Double.toString(this.copy.getRate()));
         this.txtRate.setVisibility(View.VISIBLE);
 
         this.lblInsuraceCost.setVisibility(View.VISIBLE);
-        this.txtInsuraceCost.setText(Double.toString(this.copy.getInsuranceCost()));
+        this.txtInsuraceCost.setText(Util.formatMoneyAmount(this.copy.getInsuranceCost()));
         this.txtInsuraceCost.setVisibility(View.VISIBLE);
 
         updateState();
@@ -184,6 +185,7 @@ public final class EvaluationDialog extends DialogFragment implements
         { // insurance cost
             this.lblInsuraceCost = (TextView)view.findViewById(R.id.lblInsuranceCost);
             this.txtInsuraceCost = (TextView)view.findViewById(R.id.editInsuranceCost);
+            this.txtInsuraceCost.setFilters(new InputFilter[] {Util.getCurrencyFilter()});
             this.txtInsuraceCost.addTextChangedListener(new TextWatcherAdapter() {
 
                 /**

@@ -92,8 +92,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <include
-        layout="@layout/status_bar"
-        android:background="@color/included_layout_background" />
+    <include layout="@layout/status_bar" />
 
 </LinearLayout>

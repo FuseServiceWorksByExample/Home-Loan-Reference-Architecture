@@ -43,9 +43,8 @@ final class AccountEditor extends AssetEditor<Account> {
 
     AccountEditor( final Context context,
                    final int titleId,
-                   final int iconId,
                    final Account account ) {
-        super(context, titleId, iconId, account);
+        super(context, titleId, account);
 
         this.originalNumber =
                         (((account == null) || (account.getNumber() == null)) ? Util.EMPTY_STRING : account.getNumber());

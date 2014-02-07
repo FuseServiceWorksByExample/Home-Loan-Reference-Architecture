@@ -81,6 +81,7 @@
     <string name="Accounts">Accounts</string>
     <string name="add_account_dialog_title">Add Account</string>
     <string name="add_auto_dialog_title">Add Automobile</string>
+    <string name="add_borrower_dialog_title">Add Borrower</string>
     <string name="add_deposit_dialog_title">Add Account</string>
     <string name="add_image_description">An image used when adding objects</string>
     <string name="AddAccount">Add Account</string>
@@ -117,6 +118,7 @@
     <string name="delete_account_with_id_msg">Are you sure you want to delete account \'%1s\'?</string>
     <string name="delete_auto_msg">Are you sure you want to delete the selected automobile?</string>
     <string name="delete_auto_with_description_msg">Are you sure you want to delete auto \'%1s\'?</string>
+    <string name="delete_borrower_msg">Are you sure you want to delete borrower \'%1s\'?</string>
     <string name="delete_deposit_msg">Are you sure you want to delete the selected deposit?</string>
     <string name="delete_deposit_with_description_msg">Are you sure you want to delete deposit \'%1s\'?</string>
     <string name="delete_dialog_title">Delete</string>
@@ -124,6 +126,7 @@
     <string name="Deposits">Deposits</string>
     <string name="edit_account_dialog_title">Edit Account</string>
     <string name="edit_auto_dialog_title">Edit Automobile</string>
+    <string name="edit_borrower_dialog_title">Edit Borrower</string>
     <string name="edit_deposit_dialog_title">Edit Cash Deposit</string>
     <string name="edit_image_description">An image used when editing objects</string>
     <string name="empty_accounts_message">There are no accounts.</string>
@@ -147,9 +150,14 @@
     <string name="item_application_evaluations_description">A list of available application evaluations</string>
     <string name="item_application_statuses">Application\nStatuses</string>
     <string name="item_application_statuses_description">A list of available application statuses</string>
+    <string name="item_assets_and_liabilities_description">Accounts, automobiles, and deposits</string>
+    <string name="item_borrowers_description">Borrower\'s name, employment, and declarations</string>
+    <string name="item_collapse_all">Collapse All</string>
     <string name="item_help">Help\n</string>
     <string name="item_help_description">Information on using the Home Loan app</string>
+    <string name="item_housing_expense_description">Costs like insurance and real estate taxes</string>
     <string name="item_jump_to">Jump</string>
+    <string name="item_loan_description">Loan term, rate, and property information</string>
     <string name="item_new_application">Loan\nApplication</string>
     <string name="item_new_application_description">Create a new home loan application</string>
     <string name="item_refresh">Refresh</string>
@@ -169,7 +177,7 @@
     <string name="label_applicant">Applicant:</string>
     <string name="label_asset_amount">Amount:</string>
     <string name="label_asset_description">Description:</string>
-    <string name="label_association_dues">Amount:</string>
+    <string name="label_association_dues">Home Owner Association Dues:</string>
     <string name="label_business_type">Business Type:</string>
     <string name="label_city">City:</string>
     <string name="label_completed_by">Assets and Liabilities Section Completed:</string>
@@ -183,6 +191,7 @@
     <string name="label_first_name">First Name:</string>
     <string name="label_first_mortgage">First Mortgage:</string>
     <string name="label_hazard_insurance">Hazard Insurance:</string>
+    <string name="label_housing_expense_type">Housing Expense Type:</string>
     <string name="label_insurance_cost">Insurance Cost:</string>
     <string name="label_interest_rate">Interest Rate:</string>
     <string name="label_job_position">Position:</string>
@@ -195,10 +204,11 @@
     <string name="label_loan_type">Type:</string>
     <string name="label_marital_status">Marital Status:</string>
     <string name="label_middle_name">Middle Name:</string>
+    <string name="label_misc_housing_expense">Additional Housing-Related Expenses:</string>
     <string name="label_monthly_income">Monthly Income:</string>
     <string name="label_number_of_units">Number Of Units:</string>
     <string name="label_number_of_years">Number Of Years:</string>
-    <string name="label_other_housing_expenses">Other Housing Expenses:</string>
+    <string name="label_other_mortgages">Other Mortgages:</string>
     <string name="label_phone">Phone:</string>
     <string name="label_property_type">Property Type:</string>
     <string name="label_purchase_type">Purchase Type:</string>
@@ -217,10 +227,12 @@
     <string name="msg_no_available_statuses">No available application statuses</string>
     <string name="number_of_evaluations">%1$s available evaluations</string>
     <string name="number_of_statuses">%1$s available statuses</string>
+    <string name="Present">Present</string>
     <string name="process_application_dialog_title">Loan Application</string>
     <string name="process_application_dialog_msg">Application is being processed&#8230;</string>
     <string name="process_evaluation_dialog_title">Loan Evaluation</string>
     <string name="process_evaluation_dialog_msg">Evaluation is being processed&#8230;</string>
+    <string name="Proposed">Proposed</string>
     <string name="Reject">Reject</string>
     <string name="splash_screen_image_description">Loan Management splash screen image</string>
     <string name="status_bar_image_description">Loan Management status bar image</string>

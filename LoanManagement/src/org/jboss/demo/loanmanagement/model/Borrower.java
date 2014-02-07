@@ -183,7 +183,7 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
     }
 
     /**
-     * @return the addresses (never <code>null</code>)
+     * @return the addresses (never <code>null</code> but can be empty)
      */
     public List<BorrowerAddress> getAddresses() {
         if (this.addresses == null) {

@@ -125,7 +125,7 @@ public final class BorrowerDialog extends DialogFragment implements
     @Override
     public Dialog onCreateDialog( final Bundle savedInstanceState ) {
         final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.borrower_dialog, null);
+        final View view = inflater.inflate(R.layout.borrower_editor, null);
 
         { // borrower type
             final RadioButton btnBorrower = (RadioButton)view.findViewById(R.id.btn_borrower);
@@ -259,24 +259,7 @@ public final class BorrowerDialog extends DialogFragment implements
         { // marital status
             final Spinner cbxMaritalStatus = (Spinner)view.findViewById(R.id.cbx_marital_status);
             final String maritalStatus = this.copy.getMaritalStatus();
-
-            if (!TextUtils.isEmpty(maritalStatus)) {
-                int index = -1;
-                int i = 0;
-
-                for (final String status : Borrower.MARITAL_TYPE) {
-                    if (status.equals(maritalStatus)) {
-                        index = i;
-                        break;
-                    }
-
-                    ++i;
-                }
-
-                if (index != -1) {
-                    cbxMaritalStatus.setSelection(index);
-                }
-            }
+            Util.selectSpinnerItem(cbxMaritalStatus, maritalStatus, Borrower.MARITAL_TYPE);
 
             cbxMaritalStatus.setOnItemSelectedListener(new ItemSelectedAdapter() {
 

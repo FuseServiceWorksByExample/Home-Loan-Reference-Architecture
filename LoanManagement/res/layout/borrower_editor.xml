@@ -12,10 +12,10 @@
         android:orientation="vertical" >
 
         <RadioGroup
+            android:id="@+id/grp_borrower_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
             android:orientation="horizontal" >
 
             <RadioButton
@@ -202,13 +202,9 @@
                 android:inputType="number" />
         </LinearLayout>
 
-        <include
-            layout="@layout/business_address"
-            android:background="@color/included_layout_background" />
+        <include layout="@layout/business_address" />
 
-        <include
-            layout="@layout/declarations"
-            android:background="@color/included_layout_background" />
+        <include layout="@layout/declarations" />
     </LinearLayout>
 
 </ScrollView>

@@ -29,13 +29,23 @@ public final class HousingExpense implements ModelObject<HousingExpense> {
      */
     public static final String[] HOUSING_EXPENSE_TYPES = new String[] {"Present", "Proposed"}; //$NON-NLS-1$ //$NON-NLS-2$ 
 
+    /**
+     * The index of the present type in {@link #HOUSING_EXPENSE_TYPES}.
+     */
+    public static final int PRESENT_INDEX = 0;
+
     protected static final String PROPERTY_PREFIX = HousingExpense.class.getSimpleName() + '.';
+
+    /**
+     * The index of the proposed type in {@link #HOUSING_EXPENSE_TYPES}.
+     */
+    public static final int PROPOSED_INDEX = 1;
 
     private BigDecimal firstMortgage;
     private BigDecimal hazardInsurance;
     private BigDecimal homeOwnerAssociationDues;
     private BigDecimal other;
-    private BigDecimal otherMortgage;
+    private BigDecimal otherMortgages;
     private final PropertyChangeSupport pcs;
     private BigDecimal realEstateTaxes;
     private BigDecimal rent;
@@ -66,7 +76,7 @@ public final class HousingExpense implements ModelObject<HousingExpense> {
         copy.setHazardInsurance(getHazardInsurance());
         copy.setHomeOwnerAssociationDues(getHomeOwnerAssociationDues());
         copy.setOther(getOther());
-        copy.setOtherMortgage(getOtherMortgage());
+        copy.setOtherMortgages(getOtherMortgages());
         copy.setRealEstateTaxes(getRealEstateTaxes());
         copy.setRent(getRent());
         copy.setType(getType());
@@ -92,7 +102,7 @@ public final class HousingExpense implements ModelObject<HousingExpense> {
                                                                                    that.hazardInsurance)
                         && Util.equals(this.homeOwnerAssociationDues, that.homeOwnerAssociationDues)
                         && Util.equals(this.other, that.other)
-                        && Util.equals(this.otherMortgage, that.otherMortgage)
+                        && Util.equals(this.otherMortgages, that.otherMortgages)
                         && Util.equals(this.realEstateTaxes, that.realEstateTaxes)
                         && Util.equals(this.rent, that.rent) && Util.equals(this.type, that.type));
     }
@@ -156,14 +166,14 @@ public final class HousingExpense implements ModelObject<HousingExpense> {
     }
 
     /**
-     * @return the other mortgage amount
+     * @return the other mortgages amount
      */
-    public double getOtherMortgage() {
-        if (this.otherMortgage == null) {
+    public double getOtherMortgages() {
+        if (this.otherMortgages == null) {
             return 0;
         }
 
-        return this.otherMortgage.doubleValue();
+        return this.otherMortgages.doubleValue();
     }
 
     /**
@@ -201,7 +211,8 @@ public final class HousingExpense implements ModelObject<HousingExpense> {
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {this.firstMortgage, this.hazardInsurance, this.homeOwnerAssociationDues,
-                                             this.other, this.otherMortgage, this.realEstateTaxes, this.rent, this.type});
+                                             this.other, this.otherMortgages, this.realEstateTaxes, this.rent,
+                                             this.type});
     }
 
     /**
@@ -328,31 +339,31 @@ public final class HousingExpense implements ModelObject<HousingExpense> {
     }
 
     /**
-     * @param newOtherMortgage the new value for the otherMortgage
+     * @param newOtherMortgages the new value for the other mortgages
      */
-    public void setOtherMortgage( final double newOtherMortgage ) {
+    public void setOtherMortgages( final double newOtherMortgages ) {
         boolean changed = false;
         Object oldValue = null;
 
-        if ((this.otherMortgage == null) && (newOtherMortgage != 0)) {
+        if ((this.otherMortgages == null) && (newOtherMortgages != 0)) {
             changed = true;
-            oldValue = this.otherMortgage;
-            this.otherMortgage = new BigDecimal(newOtherMortgage);
-            this.otherMortgage.setScale(2, RoundingMode.HALF_EVEN);
-        } else if ((this.otherMortgage != null) && (this.otherMortgage.doubleValue() != newOtherMortgage)) {
+            oldValue = this.otherMortgages;
+            this.otherMortgages = new BigDecimal(newOtherMortgages);
+            this.otherMortgages.setScale(2, RoundingMode.HALF_EVEN);
+        } else if ((this.otherMortgages != null) && (this.otherMortgages.doubleValue() != newOtherMortgages)) {
             changed = true;
-            oldValue = this.otherMortgage;
+            oldValue = this.otherMortgages;
 
-            if (newOtherMortgage == 0) {
-                this.otherMortgage = null;
+            if (newOtherMortgages == 0) {
+                this.otherMortgages = null;
             } else {
-                this.otherMortgage = new BigDecimal(newOtherMortgage);
-                this.otherMortgage.setScale(2, RoundingMode.HALF_EVEN);
+                this.otherMortgages = new BigDecimal(newOtherMortgages);
+                this.otherMortgages.setScale(2, RoundingMode.HALF_EVEN);
             }
         }
 
         if (changed) {
-            firePropertyChange(Properties.OTHER_MORTGAGE, oldValue, this.otherMortgage);
+            firePropertyChange(Properties.OTHER_MORTGAGE, oldValue, this.otherMortgages);
         }
     }
 
@@ -434,7 +445,7 @@ public final class HousingExpense implements ModelObject<HousingExpense> {
         setHazardInsurance(from.getHazardInsurance());
         setHomeOwnerAssociationDues(from.getHomeOwnerAssociationDues());
         setOther(from.getOther());
-        setOtherMortgage(from.getOtherMortgage());
+        setOtherMortgages(from.getOtherMortgages());
         setRealEstateTaxes(from.getRealEstateTaxes());
         setRent(from.getRent());
         setType(from.getType());

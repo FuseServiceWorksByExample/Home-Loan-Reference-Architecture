@@ -43,8 +43,6 @@
             android:inputType="numberDecimal" />
     </LinearLayout>
 
-    <include
-        layout="@layout/address"
-        android:background="@color/included_layout_background" />
+    <include layout="@layout/address" />
 
 </LinearLayout>

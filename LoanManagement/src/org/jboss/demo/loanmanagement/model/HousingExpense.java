@@ -429,9 +429,15 @@ public final class HousingExpense implements ModelObject<HousingExpense> {
      * @param newType the type (can be <code>null</code> or empty)
      */
     public void setType( final String newType ) {
-        if (!Util.equals(this.type, newType)) {
+        String change = newType;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.type, change)) {
             final Object oldValue = this.type;
-            this.type = newType;
+            this.type = change;
             firePropertyChange(Properties.TYPE, oldValue, this.type);
         }
     }

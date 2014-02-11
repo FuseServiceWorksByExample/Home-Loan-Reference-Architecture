@@ -296,9 +296,15 @@ public final class AssetsAndLiabilities implements ModelObject<AssetsAndLiabilit
      * @param newCompletedType the new value for the completed type (can be <code>null</code>)
      */
     public void setCompletedType( final String newCompletedType ) {
-        if (!Util.equals(this.completedType, newCompletedType)) {
+        String change = newCompletedType;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.completedType, change)) {
             final Object oldValue = this.completedType;
-            this.completedType = newCompletedType;
+            this.completedType = change;
             firePropertyChange(Properties.COMPLETED_TYPE, oldValue, this.completedType);
         }
     }

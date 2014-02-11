@@ -21,7 +21,6 @@ import org.jboss.demo.loanmanagement.Util;
 import org.jboss.demo.loanmanagement.Util.Prefs;
 import org.jboss.demo.loanmanagement.model.Evaluation;
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,7 +142,7 @@ public final class EvaluationsAdapter extends ArrayAdapter<Evaluation> {
         String newId = sorterId;
         Comparator<Evaluation> evaluationSorter = null;
 
-        if (TextUtils.isEmpty(newId)) {
+        if (Util.isBlank(newId)) {
             newId = DEFAULT_SORTER_ID;
         }
 

@@ -15,17 +15,11 @@ package org.jboss.demo.loanmanagement.model;
 import org.jboss.demo.loanmanagement.Util;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 /**
  * A representation of an {@link ApplicationStatus} that can be passed into an intent extra.
  */
 public final class ApplicationStatusParcelable implements Parcelable {
-
-    /**
-     * An intent key whose value is a list of available application statuses.
-     */
-    public static final String STATUSES = "statuses"; //$NON-NLS-1$
 
     /**
      * Used to un-marshal or de-serialize a status from a parcel.
@@ -49,6 +43,11 @@ public final class ApplicationStatusParcelable implements Parcelable {
         }
 
     };
+
+    /**
+     * An intent key whose value is a list of available application statuses.
+     */
+    public static final String STATUSES = "statuses"; //$NON-NLS-1$
 
     private final ApplicationStatus appStatus;
 
@@ -94,7 +93,7 @@ public final class ApplicationStatusParcelable implements Parcelable {
         { // applicant name
             String name = this.appStatus.getApplicant();
 
-            if (TextUtils.isEmpty(name)) {
+            if (Util.isBlank(name)) {
                 name = Util.EMPTY_STRING;
             }
 
@@ -106,7 +105,7 @@ public final class ApplicationStatusParcelable implements Parcelable {
         { // application status
             String status = this.appStatus.getStatus();
 
-            if (TextUtils.isEmpty(status)) {
+            if (Util.isBlank(status)) {
                 status = Util.EMPTY_STRING;
             }
 

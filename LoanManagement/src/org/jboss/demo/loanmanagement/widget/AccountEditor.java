@@ -17,7 +17,6 @@ import org.jboss.demo.loanmanagement.Util;
 import org.jboss.demo.loanmanagement.model.Account;
 import org.jboss.demo.loanmanagement.model.Address;
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -154,7 +153,7 @@ final class AccountEditor extends AssetEditor<Account> {
         { // number
             this.number = this.txtNumber.getText().toString();
 
-            if (TextUtils.isEmpty(this.number)) {
+            if (Util.isBlank(this.number)) {
                 this.txtNumber.setError(getContext().getText(R.string.err_invalid_account_number));
             }
         }

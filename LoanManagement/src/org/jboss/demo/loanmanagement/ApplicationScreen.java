@@ -23,6 +23,7 @@ import org.jboss.demo.loanmanagement.model.Application;
 import org.jboss.demo.loanmanagement.model.AssetsAndLiabilities;
 import org.jboss.demo.loanmanagement.model.Automobile;
 import org.jboss.demo.loanmanagement.model.Borrower;
+import org.jboss.demo.loanmanagement.model.BorrowerAddress;
 import org.jboss.demo.loanmanagement.model.CashDeposit;
 import org.jboss.demo.loanmanagement.model.Declarations;
 import org.jboss.demo.loanmanagement.model.HousingExpense;
@@ -140,6 +141,18 @@ public final class ApplicationScreen extends Activity implements PropertyChangeL
             borrower.setTitle("King");
             borrower.setType(Borrower.BORROWER_TYPE[Borrower.BORROWER_INDEX]);
             borrower.setYearsSchool(16);
+
+            final BorrowerAddress address = new BorrowerAddress();
+            address.setCity("city");
+            address.setCounty("county");
+            address.setLine1("line1");
+            address.setLine2("line2");
+            address.setNumYears(5);
+            address.setPostalCode("zip");
+            address.setState("state");
+            address.setType(BorrowerAddress.ADDRESS_TYPES[0]);
+            borrower.addAddress(address);
+
             borrowers.add(borrower);
         }
 
@@ -176,6 +189,33 @@ public final class ApplicationScreen extends Activity implements PropertyChangeL
             borrower.setTitle("Mr");
             borrower.setType(Borrower.BORROWER_TYPE[Borrower.CO_BORROWER_INDEX]);
             borrower.setYearsSchool(12.5);
+
+            {
+                final BorrowerAddress address = new BorrowerAddress();
+                address.setCity("Miami");
+                address.setCounty("Volusia");
+                address.setLine1("111 Main St");
+                address.setLine2("c/o whoever");
+                address.setNumYears(10);
+                address.setPostalCode("32333");
+                address.setState("Florida");
+                address.setType(BorrowerAddress.ADDRESS_TYPES[1]);
+                borrower.addAddress(address);
+            }
+
+            {
+                final BorrowerAddress address = new BorrowerAddress();
+                address.setCity("Jacksonville");
+                address.setCounty("Washington");
+                address.setLine1("222 Your Rd");
+                address.setLine2("Suite 100");
+                address.setNumYears(1.5);
+                address.setPostalCode("356789");
+                address.setState("Georgia");
+                address.setType(BorrowerAddress.ADDRESS_TYPES[2]);
+                borrower.addAddress(address);
+            }
+
             borrowers.add(borrower);
         }
 

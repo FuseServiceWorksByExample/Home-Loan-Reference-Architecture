@@ -19,7 +19,6 @@ import org.jboss.demo.loanmanagement.Util;
 import org.jboss.demo.loanmanagement.Util.Prefs;
 import org.jboss.demo.loanmanagement.model.ApplicationStatus;
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -165,7 +164,7 @@ public final class StatusesAdapter extends ArrayAdapter<ApplicationStatus> {
         String newId = sorterId;
         Comparator<ApplicationStatus> statusSorter = null;
 
-        if (TextUtils.isEmpty(newId)) {
+        if (Util.isBlank(newId)) {
             newId = DEFAULT_SORTER_ID;
         }
 

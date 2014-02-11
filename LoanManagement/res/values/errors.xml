@@ -12,8 +12,13 @@
     <string name="err_get_evaluations_command">Error obtaining application evaluations: %1$s</string>
     <string name="err_get_statuses_command">Error obtaining available application statuses: %1$s</string>
     <string name="err_invalid_account_number">The account number cannot be empty.</string>
+    <string name="err_invalid_address_city">The city cannot be empty.</string>
+    <string name="err_invalid_address_line_1">Line 1 cannot be empty.</string>
+    <string name="err_invalid_address_state">The state cannot be empty.</string>
     <string name="err_invalid_amount">Invalid amount</string>
+    <string name="err_invalid_borrower_address_type">Invalid value. Valid values are \'Own\', \'Rent\', and \'Not_Specified\'</string>
     <string name="err_invalid_description">The description cannot be empty.</string>
+    <string name="err_invalid_number_of_years">The value \'%1$s\' is invalid for number of years.</string>
     <string name="err_null_model_object">The model object is null.</string>
     <string name="err_process_application_command">Error processing application: %1$s</string>
     <string name="err_process_evaluation_command">Error processing evaluation: %1$s</string>

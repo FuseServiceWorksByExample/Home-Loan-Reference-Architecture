@@ -396,9 +396,15 @@ public final class Declarations implements ModelObject<Declarations> {
      * @param newPropertyType the new value for the property type (can be <code>null</code>)
      */
     public void setPropertyType( final String newPropertyType ) {
-        if (!Util.equals(this.propertyType, newPropertyType)) {
+        String change = newPropertyType;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.propertyType, change)) {
             final Object oldValue = this.propertyType;
-            this.propertyType = newPropertyType;
+            this.propertyType = change;
             firePropertyChange(Properties.PROPERTY_TYPE, oldValue, this.propertyType);
         }
     }
@@ -407,9 +413,15 @@ public final class Declarations implements ModelObject<Declarations> {
      * @param newTitled the new value for the titled (can be <code>null</code>)
      */
     public void setTitled( final String newTitled ) {
-        if (!Util.equals(this.titled, newTitled)) {
+        String change = newTitled;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.titled, change)) {
             final Object oldValue = this.titled;
-            this.titled = newTitled;
+            this.titled = change;
             firePropertyChange(Properties.TITLED, oldValue, this.titled);
         }
     }

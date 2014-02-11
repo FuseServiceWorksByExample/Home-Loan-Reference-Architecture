@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/panel_margin"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_addr_line_1"
+                style="@style/loanmanagement.ReadonlyText" />
+
+            <TextView
+                android:id="@+id/lbl_addr_line_2"
+                style="@style/loanmanagement.ReadonlyText" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/buttons"
+            style="@android:style/ButtonBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/btn_edit"
+                style="@style/loanmanagement.ImageButton"
+                android:contentDescription="@string/edit_image_description"
+                android:src="@drawable/ic_edit" />
+
+            <ImageButton
+                android:id="@+id/btn_delete"
+                style="@style/loanmanagement.ImageButton"
+                android:contentDescription="@string/delete_image_description"
+                android:src="@drawable/ic_delete" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView style="@style/loanmanagement.HorizontalDivider" />
+
+</LinearLayout>

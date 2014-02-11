@@ -145,9 +145,15 @@ public abstract class Asset<T> implements ModelObject<T> {
      * @param newDescription the new value for the description (can be <code>null</code> or empty)
      */
     public void setDescription( final String newDescription ) {
-        if (!TextUtils.equals(this.description, newDescription)) {
+        String change = newDescription;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.description, change)) {
             final Object oldValue = this.description;
-            this.description = newDescription;
+            this.description = change;
             firePropertyChange(Properties.DESCRIPTION, oldValue, this.amount);
         }
     }

@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,7 +91,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         { // first
             final String first = borrower.getFirstName();
 
-            if (!TextUtils.isEmpty(first)) {
+            if (!Util.isBlank(first)) {
                 name.append(first);
             }
         }
@@ -100,7 +99,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         { // middle
             final String middle = borrower.getMiddleName();
 
-            if (!TextUtils.isEmpty(middle)) {
+            if (!Util.isBlank(middle)) {
                 if (name.length() != 0) {
                     name.append(' ');
                 }
@@ -112,7 +111,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         { // last
             final String last = borrower.getLastName();
 
-            if (!TextUtils.isEmpty(last)) {
+            if (!Util.isBlank(last)) {
                 if (name.length() != 0) {
                     name.append(' ');
                 }
@@ -160,16 +159,13 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     }
 
     private ViewGroup accountsContainer;
-    private ViewGroup accountsTab;
     private boolean accountsTabSetup = false;
     private final Application application;
     private ViewGroup autosContainer;
-    private ViewGroup autosTab;
     private boolean autosTabSetup = false;
     private ViewGroup borrowersContainer;
     private final Context context;
     private ViewGroup depositsContainer;
-    private ViewGroup depositsTab;
     private boolean depositsTabSetup = false;
     private final ExpandableListView expandableListView;
     private final LayoutInflater inflater;
@@ -337,7 +333,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                 result = this.inflater.inflate(R.layout.assets_liabilities, viewGroup, false);
 
                 if (!this.listenersSetup[ASSETS_INDEX]) {
-                    final TabHost tabHost = (TabHost)result.findViewById(R.id.tabhost);
+                    final TabHost tabHost = (TabHost)result.findViewById(R.id.assets_tab_host);
                     tabHost.setup();
 
                     { // accounts tab
@@ -485,7 +481,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
             public void onClick( final DialogInterface dialog,
                                  final int which ) {
                 final Borrower newBorrower = editor.getBorrower();
-                getBorrowers().add(newBorrower);
+                getApplication().addBorrower(newBorrower);
             }
         });
         editor.show();
@@ -511,7 +507,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     protected void handleDeleteAccount( final Account deleteAccount ) {
         String msg = null;
 
-        if (TextUtils.isEmpty(deleteAccount.getNumber())) {
+        if (Util.isBlank(deleteAccount.getNumber())) {
             msg = getContext().getString(R.string.delete_account_msg);
         } else {
             msg = getContext().getString(R.string.delete_account_with_id_msg, deleteAccount.getNumber());
@@ -536,7 +532,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     protected void handleDeleteAuto( final Automobile deleteAuto ) {
         String msg = null;
 
-        if (TextUtils.isEmpty(deleteAuto.getDescription())) {
+        if (Util.isBlank(deleteAuto.getDescription())) {
             msg = getContext().getString(R.string.delete_auto_msg);
         } else {
             msg = getContext().getString(R.string.delete_auto_with_description_msg, deleteAuto.getDescription());
@@ -579,7 +575,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     protected void handleDeleteDeposit( final CashDeposit deleteDeposit ) {
         String msg = null;
 
-        if (TextUtils.isEmpty(deleteDeposit.getDescription())) {
+        if (Util.isBlank(deleteDeposit.getDescription())) {
             msg = getContext().getString(R.string.delete_deposit_msg);
         } else {
             msg = getContext().getString(R.string.delete_deposit_with_description_msg, deleteDeposit.getDescription());
@@ -671,8 +667,8 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
     protected void handleTabChanged( final String tabId,
                                      final View tabHost ) {
         if (ACCOUNTS_TAB_ID.equals(tabId) && !this.accountsTabSetup) {
-            this.accountsTab = (ViewGroup)tabHost.findViewById(R.id.tab_accounts);
-            this.accountsContainer = (ViewGroup)this.accountsTab.findViewById(R.id.accounts_container);
+            final ViewGroup accountsTab = (ViewGroup)tabHost.findViewById(R.id.tab_accounts);
+            this.accountsContainer = (ViewGroup)accountsTab.findViewById(R.id.accounts_container);
 
             { // add account
                 final ImageButton btn = (ImageButton)tabHost.findViewById(R.id.btn_add_account);
@@ -691,11 +687,11 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
             refreshAccounts();
             this.accountsTabSetup = true;
         } else if (AUTOS_TAB_ID.equals(tabId) && !this.autosTabSetup) {
-            this.autosTab = (ViewGroup)tabHost.findViewById(R.id.tab_autos);
-            this.autosContainer = (ViewGroup)this.autosTab.findViewById(R.id.autos_container);
+            final ViewGroup autosTab = (ViewGroup)tabHost.findViewById(R.id.tab_autos);
+            this.autosContainer = (ViewGroup)autosTab.findViewById(R.id.autos_container);
 
             { // add auto
-                final ImageButton btn = (ImageButton)this.autosTab.findViewById(R.id.btn_add_auto);
+                final ImageButton btn = (ImageButton)autosTab.findViewById(R.id.btn_add_auto);
                 btn.setOnClickListener(new OnClickListener() {
 
                     /**
@@ -711,8 +707,8 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
             refreshAutos();
             this.autosTabSetup = true;
         } else if (DEPOSITS_TAB_ID.equals(tabId) && !this.depositsTabSetup) {
-            this.depositsTab = (ViewGroup)tabHost.findViewById(R.id.tab_cash_deposits);
-            this.depositsContainer = (ViewGroup)this.depositsTab.findViewById(R.id.deposits_container);
+            final ViewGroup depositsTab = (ViewGroup)tabHost.findViewById(R.id.tab_cash_deposits);
+            this.depositsContainer = (ViewGroup)depositsTab.findViewById(R.id.deposits_container);
 
             { // add deposit
                 final ImageButton btn = (ImageButton)tabHost.findViewById(R.id.btn_add_deposit);
@@ -730,6 +726,8 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
 
             refreshDeposits();
             this.depositsTabSetup = true;
+        } else {
+            assert false;
         }
     }
 
@@ -770,7 +768,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         this.accountsContainer.removeAllViews();
 
         for (final Account account : getAssetsAndLiabilities().getAccounts()) {
-            final View view = this.inflater.inflate(R.layout.readonly_account, null);
+            final View view = this.inflater.inflate(R.layout.account_item, null);
             this.accountsContainer.addView(view);
 
             { // number
@@ -831,7 +829,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         this.autosContainer.removeAllViews();
 
         for (final Automobile auto : getAssetsAndLiabilities().getAutomobiles()) {
-            final View view = this.inflater.inflate(R.layout.readonly_asset, null);
+            final View view = this.inflater.inflate(R.layout.asset_item, null);
             this.autosContainer.addView(view);
 
             { // description
@@ -947,7 +945,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
         this.depositsContainer.removeAllViews();
 
         for (final CashDeposit deposit : getAssetsAndLiabilities().getCashDeposits()) {
-            final View view = this.inflater.inflate(R.layout.readonly_asset, null);
+            final View view = this.inflater.inflate(R.layout.asset_item, null);
             this.depositsContainer.addView(view);
 
             { // description
@@ -1016,13 +1014,13 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         completedBy = AssetsAndLiabilities.COMPLETED_BY[AssetsAndLiabilities.NOT_JOINTLY_INDEX];
                     }
 
-                    assert !TextUtils.isEmpty(completedBy);
+                    assert !Util.isBlank(completedBy);
                     getAssetsAndLiabilities().setCompletedType(completedBy);
                 }
             });
         }
 
-        final TabHost tabHost = (TabHost)view.findViewById(R.id.tabhost);
+        final TabHost tabHost = (TabHost)view.findViewById(R.id.assets_tab_host);
         tabHost.setOnTabChangedListener(new OnTabChangeListener() {
 
             /**
@@ -1093,7 +1091,7 @@ public final class ApplicationAdapter extends BaseExpandableListAdapter {
                         newType = HousingExpense.HOUSING_EXPENSE_TYPES[HousingExpense.PROPOSED_INDEX];
                     }
 
-                    assert !TextUtils.isEmpty(newType);
+                    assert !Util.isBlank(newType);
                     housingExpense.setType(newType);
                 }
             });

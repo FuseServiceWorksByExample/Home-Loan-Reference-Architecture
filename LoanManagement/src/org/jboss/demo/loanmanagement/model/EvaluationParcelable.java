@@ -15,7 +15,6 @@ package org.jboss.demo.loanmanagement.model;
 import org.jboss.demo.loanmanagement.Util;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 /**
  * A representation of an {@link Evaluation} that can be passed into an intent extra.
@@ -105,7 +104,7 @@ public final class EvaluationParcelable implements Parcelable {
 
         String name = this.evaluation.getApplicant();
 
-        if (TextUtils.isEmpty(name)) {
+        if (Util.isBlank(name)) {
             name = Util.EMPTY_STRING;
         }
 
@@ -119,7 +118,7 @@ public final class EvaluationParcelable implements Parcelable {
 
         String explanation = this.evaluation.getExplanation();
 
-        if (TextUtils.isEmpty(explanation)) {
+        if (Util.isBlank(explanation)) {
             explanation = Util.EMPTY_STRING;
         }
 

@@ -181,9 +181,15 @@ public final class Account extends Asset<Account> implements PropertyChangeListe
      * @param newNumber the new value for the account number
      */
     public void setNumber( final String newNumber ) {
-        if (!TextUtils.equals(this.number, newNumber)) {
+        String change = newNumber;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.number, change)) {
             final Object oldValue = this.number;
-            this.number = newNumber;
+            this.number = change;
             firePropertyChange(Properties.NUMBER, oldValue, this.number);
         }
     }

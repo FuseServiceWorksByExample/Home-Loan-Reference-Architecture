@@ -319,9 +319,15 @@ public final class Application implements ModelObject<Application>, PropertyChan
      * @param newAmortizationType the new value for the amortization type (can be <code>null</code> or empty)
      */
     public void setAmortizationType( final String newAmortizationType ) {
-        if (!Util.equals(this.amortizationType, newAmortizationType)) {
+        String change = newAmortizationType;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.amortizationType, change)) {
             final Object oldValue = this.amortizationType;
-            this.amortizationType = newAmortizationType;
+            this.amortizationType = change;
             firePropertyChange(Properties.AMORTIZATION_TYPE, oldValue, this.amortizationType);
         }
     }
@@ -377,9 +383,15 @@ public final class Application implements ModelObject<Application>, PropertyChan
      * @param newDescription the new value for the description (can be <code>null</code> or empty)
      */
     public void setDescription( final String newDescription ) {
-        if (!Util.equals(this.description, newDescription)) {
+        String change = newDescription;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.description, change)) {
             final Object oldValue = this.description;
-            this.description = newDescription;
+            this.description = change;
             firePropertyChange(Properties.DESCRIPTION, oldValue, this.description);
         }
     }
@@ -388,9 +400,15 @@ public final class Application implements ModelObject<Application>, PropertyChan
      * @param newDownPaymentSource the new value for the down payment source (can be <code>null</code> or empty)
      */
     public void setDownPaymentSource( final String newDownPaymentSource ) {
-        if (!Util.equals(this.downPaymentSource, newDownPaymentSource)) {
+        String change = newDownPaymentSource;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.downPaymentSource, change)) {
             final Object oldValue = this.downPaymentSource;
-            this.downPaymentSource = newDownPaymentSource;
+            this.downPaymentSource = change;
             firePropertyChange(Properties.DOWN_PAYMENT_SOURCE, oldValue, this.downPaymentSource);
         }
     }
@@ -506,9 +524,15 @@ public final class Application implements ModelObject<Application>, PropertyChan
      * @param newPurchaseType the new value for the purchase type (can be <code>null</code> or empty)
      */
     public void setPurchaseType( final String newPurchaseType ) {
-        if (!Util.equals(this.purchaseType, newPurchaseType)) {
+        String change = newPurchaseType;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.purchaseType, change)) {
             final Object oldValue = this.purchaseType;
-            this.purchaseType = newPurchaseType;
+            this.purchaseType = change;
             firePropertyChange(Properties.PURCHASE_TYPE, oldValue, this.purchaseType);
         }
     }
@@ -517,9 +541,15 @@ public final class Application implements ModelObject<Application>, PropertyChan
      * @param newType the new value for the type (can be <code>null</code> or empty)
      */
     public void setType( final String newType ) {
-        if (!Util.equals(this.type, newType)) {
+        String change = newType;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.type, change)) {
             final Object oldValue = this.type;
-            this.type = newType;
+            this.type = change;
             firePropertyChange(Properties.TYPE, oldValue, this.type);
         }
     }

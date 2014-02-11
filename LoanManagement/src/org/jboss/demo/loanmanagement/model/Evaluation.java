@@ -260,9 +260,15 @@ public final class Evaluation implements ModelObject<Evaluation> {
      * @param newExplanation the new value for the explanation
      */
     public void setExplanation( final String newExplanation ) {
-        if (!Util.equals(this.explanation, newExplanation)) {
+        String change = newExplanation;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.explanation, change)) {
             final Object oldValue = this.explanation;
-            this.explanation = newExplanation;
+            this.explanation = change;
             firePropertyChange(Properties.EXPLANATION, oldValue, this.explanation);
         }
     }

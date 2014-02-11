@@ -186,6 +186,12 @@ public final class Property implements ModelObject<Property>, PropertyChangeList
      * @param newType the new value for the type (can be <code>null</code>)
      */
     public void setType( final String newType ) {
+        String change = newType;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
         if (!Util.equals(this.type, newType)) {
             final Object oldValue = this.type;
             this.type = newType;

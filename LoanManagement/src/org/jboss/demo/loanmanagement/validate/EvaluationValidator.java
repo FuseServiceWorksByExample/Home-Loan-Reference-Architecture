@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.jboss.demo.loanmanagement.R;
+import org.jboss.demo.loanmanagement.Util;
 import org.jboss.demo.loanmanagement.model.Evaluation;
-import android.text.TextUtils;
 
 /**
  * An evaluation validator.
@@ -51,7 +51,7 @@ public final class EvaluationValidator implements Validator<Evaluation> {
             result.add(EvaluationError.SSN);
         }
 
-        if (TextUtils.isEmpty(evaluation.getApplicant())) {
+        if (Util.isBlank(evaluation.getApplicant())) {
             result.add(EvaluationError.APPLICANT);
         }
 
@@ -59,7 +59,7 @@ public final class EvaluationValidator implements Validator<Evaluation> {
             result.add(EvaluationError.CREDIT_SCORE);
         }
 
-        if (TextUtils.isEmpty(evaluation.getExplanation())) {
+        if (Util.isBlank(evaluation.getExplanation())) {
             result.add(EvaluationError.EXPLANATION);
         }
 

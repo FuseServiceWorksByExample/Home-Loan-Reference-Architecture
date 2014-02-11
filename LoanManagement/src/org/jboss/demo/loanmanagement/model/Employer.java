@@ -250,9 +250,15 @@ public final class Employer implements ModelObject<Employer>, PropertyChangeList
      * @param newBusinessType the new value for the businessType
      */
     public void setBusinessType( final String newBusinessType ) {
-        if (!TextUtils.equals(this.businessType, newBusinessType)) {
+        String change = newBusinessType;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.businessType, change)) {
             final Object oldValue = this.businessType;
-            this.businessType = newBusinessType;
+            this.businessType = change;
             firePropertyChange(Properties.BUSINESS_TYPE, oldValue, this.businessType);
         }
     }
@@ -261,9 +267,15 @@ public final class Employer implements ModelObject<Employer>, PropertyChangeList
      * @param newFrom the new value for the from date
      */
     public void setFromDate( final String newFrom ) {
-        if (!TextUtils.equals(this.fromDate, newFrom)) {
+        String change = newFrom;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.fromDate, change)) {
             final Object oldValue = this.fromDate;
-            this.fromDate = newFrom;
+            this.fromDate = change;
             firePropertyChange(Properties.FROM_DATE, oldValue, this.fromDate);
         }
     }
@@ -301,9 +313,15 @@ public final class Employer implements ModelObject<Employer>, PropertyChangeList
      * @param newName the new value for the name
      */
     public void setName( final String newName ) {
-        if (!TextUtils.equals(this.name, newName)) {
+        String change = newName;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.name, change)) {
             final Object oldValue = this.name;
-            this.name = newName;
+            this.name = change;
             firePropertyChange(Properties.NAME, oldValue, this.name);
         }
     }
@@ -312,9 +330,15 @@ public final class Employer implements ModelObject<Employer>, PropertyChangeList
      * @param newPhone the new value for the phone
      */
     public void setPhone( final String newPhone ) {
-        if (!TextUtils.equals(this.phone, newPhone)) {
+        String change = newPhone;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.phone, change)) {
             final Object oldValue = this.phone;
-            this.phone = newPhone;
+            this.phone = change;
             firePropertyChange(Properties.PHONE, oldValue, this.phone);
         }
     }
@@ -323,9 +347,15 @@ public final class Employer implements ModelObject<Employer>, PropertyChangeList
      * @param newPosition the new value for the position
      */
     public void setPosition( final String newPosition ) {
-        if (!TextUtils.equals(this.position, newPosition)) {
+        String change = newPosition;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.position, change)) {
             final Object oldValue = this.position;
-            this.position = newPosition;
+            this.position = change;
             firePropertyChange(Properties.POSITION, oldValue, this.position);
         }
     }
@@ -345,9 +375,15 @@ public final class Employer implements ModelObject<Employer>, PropertyChangeList
      * @param newTitle the new value for the title
      */
     public void setTitle( final String newTitle ) {
-        if (!TextUtils.equals(this.title, newTitle)) {
+        String change = newTitle;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.title, change)) {
             final Object oldValue = this.title;
-            this.title = newTitle;
+            this.title = change;
             firePropertyChange(Properties.TITLE, oldValue, this.title);
         }
     }
@@ -356,9 +392,15 @@ public final class Employer implements ModelObject<Employer>, PropertyChangeList
      * @param newTo the new value for the to date (can be <code>null</code>)
      */
     public void setToDate( final String newTo ) {
-        if (!TextUtils.equals(this.toDate, newTo)) {
+        String change = newTo;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.toDate, change)) {
             final Object oldValue = this.toDate;
-            this.toDate = newTo;
+            this.toDate = change;
             firePropertyChange(Properties.TO_DATE, oldValue, this.toDate);
         }
     }

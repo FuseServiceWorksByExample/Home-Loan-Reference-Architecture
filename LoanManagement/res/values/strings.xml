@@ -80,14 +80,17 @@
 
     <string name="Accounts">Accounts</string>
     <string name="add_account_dialog_title">Add Account</string>
+    <string name="add_address_dialog_title">Add Address</string>
     <string name="add_auto_dialog_title">Add Automobile</string>
     <string name="add_borrower_dialog_title">Add Borrower</string>
     <string name="add_deposit_dialog_title">Add Account</string>
     <string name="add_image_description">An image used when adding objects</string>
     <string name="AddAccount">Add Account</string>
+    <string name="AddAddress">Add Address</string>
     <string name="AddAuto">Add Automobile</string>
     <string name="AddBorrower">Add Borrower</string>
     <string name="AddDeposit">Add Deposit</string>
+    <string name="Addresses">Addresses</string>
     <string name="app_name">Loan Management</string>
     <string name="app_status_approved">APPROVED</string>
     <string name="app_status_pending">PENDING</string>
@@ -114,8 +117,11 @@
     <string name="chk_primary_residence">Primary resident</string>
     <string name="chk_self_employed">Self employed</string>
     <string name="chk_us_citizen">U.S. citizen</string>
+    <string name="Declarations">Declarations</string>
     <string name="delete_account_msg">Are you sure you want to delete the selected account?</string>
     <string name="delete_account_with_id_msg">Are you sure you want to delete account \'%1s\'?</string>
+    <string name="delete_address_msg">Are you sure you want to delete the selected address?</string>
+    <string name="delete_address__with_line1_msg">Are you sure you want to delete the \'%1s\' address?</string>
     <string name="delete_auto_msg">Are you sure you want to delete the selected automobile?</string>
     <string name="delete_auto_with_description_msg">Are you sure you want to delete auto \'%1s\'?</string>
     <string name="delete_borrower_msg">Are you sure you want to delete borrower \'%1s\'?</string>
@@ -124,12 +130,15 @@
     <string name="delete_dialog_title">Delete</string>
     <string name="delete_image_description">An image used when deleting objects</string>
     <string name="Deposits">Deposits</string>
+    <string name="Details">Details</string>
     <string name="edit_account_dialog_title">Edit Account</string>
+    <string name="edit_address_dialog_title">Edit Address</string>
     <string name="edit_auto_dialog_title">Edit Automobile</string>
     <string name="edit_borrower_dialog_title">Edit Borrower</string>
     <string name="edit_deposit_dialog_title">Edit Cash Deposit</string>
     <string name="edit_image_description">An image used when editing objects</string>
     <string name="empty_accounts_message">There are no accounts.</string>
+    <string name="empty_addr_line1">*no address line 1 specified*</string>
     <string name="empty_autos_message">There are no automobiles.</string>
     <string name="empty_borrowers_message">There are no borrowers for this loan application.</string>
     <string name="empty_deposits_message">There are no cash deposits.</string>

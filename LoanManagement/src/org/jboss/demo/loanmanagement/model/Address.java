@@ -160,9 +160,15 @@ public class Address implements ModelObject<Address> {
      * @param newCity the new value for the city
      */
     public void setCity( final String newCity ) {
-        if (!TextUtils.equals(this.city, newCity)) {
+        String change = newCity;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.city, change)) {
             final Object oldValue = this.city;
-            this.city = newCity;
+            this.city = change;
             firePropertyChange(Properties.CITY, oldValue, this.city);
         }
     }
@@ -171,9 +177,15 @@ public class Address implements ModelObject<Address> {
      * @param newCounty the new value for the county
      */
     public void setCounty( final String newCounty ) {
-        if (!TextUtils.equals(this.county, newCounty)) {
+        String change = newCounty;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.county, change)) {
             final Object oldValue = this.county;
-            this.county = newCounty;
+            this.county = change;
             firePropertyChange(Properties.COUNTY, oldValue, this.county);
         }
     }
@@ -182,9 +194,15 @@ public class Address implements ModelObject<Address> {
      * @param newLine1 the new value for the line1
      */
     public void setLine1( final String newLine1 ) {
-        if (!TextUtils.equals(this.line1, newLine1)) {
+        String change = newLine1;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.line1, change)) {
             final Object oldValue = this.line1;
-            this.line1 = newLine1;
+            this.line1 = change;
             firePropertyChange(Properties.LINE_1, oldValue, this.line1);
         }
     }
@@ -193,9 +211,15 @@ public class Address implements ModelObject<Address> {
      * @param newLine2 the new value for the line2
      */
     public void setLine2( final String newLine2 ) {
-        if (!TextUtils.equals(this.line2, newLine2)) {
+        String change = newLine2;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.line2, change)) {
             final Object oldValue = this.line2;
-            this.line2 = newLine2;
+            this.line2 = change;
             firePropertyChange(Properties.LINE_2, oldValue, this.line2);
         }
     }
@@ -204,9 +228,15 @@ public class Address implements ModelObject<Address> {
      * @param newPostalCode the new value for the postalCode
      */
     public void setPostalCode( final String newPostalCode ) {
-        if (!TextUtils.equals(this.postalCode, newPostalCode)) {
+        String change = newPostalCode;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.postalCode, change)) {
             final Object oldValue = this.postalCode;
-            this.postalCode = newPostalCode;
+            this.postalCode = change;
             firePropertyChange(Properties.POSTAL_CODE, oldValue, this.postalCode);
         }
     }
@@ -215,9 +245,15 @@ public class Address implements ModelObject<Address> {
      * @param newState the new value for the state
      */
     public void setState( final String newState ) {
-        if (!TextUtils.equals(this.state, newState)) {
+        String change = newState;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!TextUtils.equals(this.state, change)) {
             final Object oldValue = this.state;
-            this.state = newState;
+            this.state = change;
             firePropertyChange(Properties.STATE, oldValue, this.state);
         }
     }

@@ -20,7 +20,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.InputFilter;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,7 +154,7 @@ class AssetEditor<T extends Asset<T>> extends AlertDialog {
         { // amount
             this.amount = this.txtAmount.getText().toString();
 
-            if (TextUtils.isEmpty(this.amount)) {
+            if (Util.isBlank(this.amount)) {
                 this.txtAmount.setError(getContext().getText(R.string.err_empty_amount));
             }
         }
@@ -163,7 +162,7 @@ class AssetEditor<T extends Asset<T>> extends AlertDialog {
         { // description
             this.description = this.txtDescription.getText().toString();
 
-            if (TextUtils.isEmpty(this.description)) {
+            if (Util.isBlank(this.description)) {
                 this.txtDescription.setError(getContext().getText(R.string.err_invalid_description));
             }
         }

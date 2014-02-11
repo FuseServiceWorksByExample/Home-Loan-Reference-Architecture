@@ -24,7 +24,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -75,7 +74,7 @@ public final class EvaluationDialog extends DialogFragment implements
     }
 
     protected void handleInsuranceCostChanged( final String newInsuranceCost ) {
-        if (TextUtils.isEmpty(newInsuranceCost)) {
+        if (Util.isBlank(newInsuranceCost)) {
             this.copy.setInsuranceCost(0);
         } else {
             this.copy.setInsuranceCost(Double.parseDouble(newInsuranceCost));
@@ -85,7 +84,7 @@ public final class EvaluationDialog extends DialogFragment implements
     }
 
     protected void handleRateChanged( final String newRate ) {
-        if (TextUtils.isEmpty(newRate)) {
+        if (Util.isBlank(newRate)) {
             this.copy.setRate(0);
         } else {
             this.copy.setRate(Double.parseDouble(newRate));

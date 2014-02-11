@@ -332,7 +332,7 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
     /**
      * @param removeAddress the borrower's address being removed (cannot be <code>null</code>)
      */
-    public void removeAddress( final Employer removeAddress ) {
+    public void removeAddress( final BorrowerAddress removeAddress ) {
         if (removeAddress == null) {
             throw new NullPointerException();
         }
@@ -382,9 +382,15 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
      * @param newDob the new value for the date of birth (can be <code>null</code> or empty)
      */
     public void setDob( final String newDob ) {
-        if (!Util.equals(this.dob, newDob)) {
+        String change = newDob;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.dob, change)) {
             final Object oldValue = this.dob;
-            this.dob = newDob;
+            this.dob = change;
             firePropertyChange(Properties.DECLARATIONS, oldValue, this.declarations);
         }
     }
@@ -412,9 +418,15 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
      * @param newFirstName the new value for the first name (can be <code>null</code> or empty)
      */
     public void setFirstName( final String newFirstName ) {
-        if (!Util.equals(this.firstName, newFirstName)) {
+        String change = newFirstName;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.firstName, change)) {
             final Object oldValue = this.firstName;
-            this.firstName = newFirstName;
+            this.firstName = change;
             firePropertyChange(Properties.FIRST_NAME, oldValue, this.firstName);
         }
     }
@@ -423,9 +435,15 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
      * @param newLastName the new value for the lastName (can be <code>null</code> or empty)
      */
     public void setLastName( final String newLastName ) {
-        if (!Util.equals(this.lastName, newLastName)) {
+        String change = newLastName;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.lastName, change)) {
             final Object oldValue = this.lastName;
-            this.lastName = newLastName;
+            this.lastName = change;
             firePropertyChange(Properties.LAST_NAME, oldValue, this.lastName);
         }
     }
@@ -434,9 +452,15 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
      * @param newMaritalStatus the new value for the maritalStatus (can be <code>null</code> or empty)
      */
     public void setMaritalStatus( final String newMaritalStatus ) {
-        if (!Util.equals(this.maritalStatus, newMaritalStatus)) {
+        String change = newMaritalStatus;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.maritalStatus, change)) {
             final Object oldValue = this.maritalStatus;
-            this.maritalStatus = newMaritalStatus;
+            this.maritalStatus = change;
             firePropertyChange(Properties.MARITAL_STATUS, oldValue, this.maritalStatus);
         }
     }
@@ -445,9 +469,15 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
      * @param newMiddleName the new value for the middle name (can be <code>null</code> or empty)
      */
     public void setMiddleName( final String newMiddleName ) {
-        if (!Util.equals(this.middleName, newMiddleName)) {
+        String change = newMiddleName;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.middleName, change)) {
             final Object oldValue = this.middleName;
-            this.middleName = newMiddleName;
+            this.middleName = change;
             firePropertyChange(Properties.MIDDLE_NAME, oldValue, this.middleName);
         }
     }
@@ -467,9 +497,15 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
      * @param newPhone the new value for the phone (can be <code>null</code> or empty)
      */
     public void setPhone( final String newPhone ) {
-        if (!Util.equals(this.phone, newPhone)) {
+        String change = newPhone;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.phone, change)) {
             final Object oldValue = this.phone;
-            this.phone = newPhone;
+            this.phone = change;
             firePropertyChange(Properties.PHONE, oldValue, this.phone);
         }
     }
@@ -478,9 +514,15 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
      * @param newSsn the new value for the SSN (can be <code>null</code> or empty)
      */
     public void setSsn( final String newSsn ) {
-        if (!Util.equals(this.ssn, newSsn)) {
+        String change = newSsn;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.ssn, change)) {
             final Object oldValue = this.ssn;
-            this.ssn = newSsn;
+            this.ssn = change;
             firePropertyChange(Properties.SSN, oldValue, this.ssn);
         }
     }
@@ -489,9 +531,15 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
      * @param newTitle the new value for the title (can be <code>null</code> or empty)
      */
     public void setTitle( final String newTitle ) {
-        if (!Util.equals(this.title, newTitle)) {
+        String change = newTitle;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.title, change)) {
             final Object oldValue = this.title;
-            this.title = newTitle;
+            this.title = change;
             firePropertyChange(Properties.TITLE, oldValue, this.title);
         }
     }
@@ -500,9 +548,15 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
      * @param newType the new value for the type (can be <code>null</code> or empty)
      */
     public void setType( final String newType ) {
-        if (!Util.equals(this.type, newType)) {
+        String change = newType;
+
+        if (change != null) {
+            change = change.trim();
+        }
+
+        if (!Util.equals(this.type, change)) {
             final Object oldValue = this.type;
-            this.type = newType;
+            this.type = change;
             firePropertyChange(Properties.TYPE, oldValue, this.type);
         }
     }

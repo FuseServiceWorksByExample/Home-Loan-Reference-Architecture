@@ -168,12 +168,24 @@ public final class Util {
     }
 
     /**
+     * @param text the text being checked (can be <code>null</code> or empty)
+     * @return <code>true</code> if text is <code>null</code>, empty, or empty when trimmed
+     */
+    public static boolean isBlank( final String text ) {
+        if (TextUtils.isEmpty(text)) {
+            return true;
+        }
+
+        return text.trim().isEmpty();
+    }
+
+    /**
      * @param text the text being parsed (if <code>null</code> or empty the value will be zero)
      * @return the double value
      * @throws ParseException if text cannot be parsed as a double value
      */
     public static double parseDouble( final String text ) throws ParseException {
-        if (TextUtils.isEmpty(text)) {
+        if (Util.isBlank(text)) {
             return 0;
         }
 
@@ -188,7 +200,7 @@ public final class Util {
      * @throws ParseException if text cannot be parsed as an integer value
      */
     public static int parseInt( final String text ) throws ParseException {
-        if (TextUtils.isEmpty(text)) {
+        if (Util.isBlank(text)) {
             return 0;
         }
 
@@ -205,7 +217,7 @@ public final class Util {
     public static void selectSpinnerItem( final Spinner spinner,
                                           final String value,
                                           final String[] validValues ) {
-        if (!TextUtils.isEmpty(value)) {
+        if (!Util.isBlank(value)) {
             int index = -1;
             int i = 0;
 

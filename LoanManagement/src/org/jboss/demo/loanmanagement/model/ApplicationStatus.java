@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import android.text.TextUtils;
+import org.jboss.demo.loanmanagement.Util;
 
 /**
  * A loan application status model object.
@@ -150,7 +150,7 @@ public final class ApplicationStatus {
         this.applicant = applicantName;
         this.rate = new BigDecimal(loanRate);
         this.rate.setScale(2, RoundingMode.HALF_EVEN);
-        this.status = (TextUtils.isEmpty(loanStatus) ? PENDING : loanStatus);
+        this.status = (Util.isBlank(loanStatus) ? PENDING : loanStatus);
     }
 
     /**
@@ -185,7 +185,7 @@ public final class ApplicationStatus {
      * @return <code>true</code> if the application has been approved
      */
     public boolean isApproved() {
-        if (!TextUtils.isEmpty(this.status)) {
+        if (!Util.isBlank(this.status)) {
             if (APPROVED.equalsIgnoreCase(this.status)) {
                 return true;
             }
@@ -205,7 +205,7 @@ public final class ApplicationStatus {
      * @return <code>true</code> if the application has been rejected
      */
     public boolean isRejected() {
-        if (!TextUtils.isEmpty(this.status)) {
+        if (!Util.isBlank(this.status)) {
             if (REJECTED.equalsIgnoreCase(this.status)) {
                 return true;
             }

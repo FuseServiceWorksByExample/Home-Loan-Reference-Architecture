@@ -263,6 +263,10 @@ public final class BorrowerEditor extends AlertDialog implements PropertyChangeL
     }
 
     private void refreshAddresses() {
+        if (this.addressContainer == null) {
+            return;
+        }
+
         this.addressContainer.removeAllViews();
 
         for (final BorrowerAddress address : this.borrower.getAddresses()) {
@@ -794,4 +798,5 @@ public final class BorrowerEditor extends AlertDialog implements PropertyChangeL
         // TODO implement validate
         this.btnOk.setEnabled(true);
     }
+
 }

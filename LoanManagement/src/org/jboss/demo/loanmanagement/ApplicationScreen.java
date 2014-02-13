@@ -393,10 +393,6 @@ public final class ApplicationScreen extends Activity implements PropertyChangeL
      */
     @Override
     public void propertyChange( final PropertyChangeEvent event ) {
-        final String propName = event.getPropertyName();
-        final Object oldValue = event.getOldValue();
-        final Object newValue = event.getNewValue();
-
         runOnUiThread(new Thread(new Runnable() {
 
             /**
@@ -404,23 +400,7 @@ public final class ApplicationScreen extends Activity implements PropertyChangeL
              */
             @Override
             public void run() {
-                if (Application.Properties.ASSETS_LIABILITIES.equals(propName)) {
-                    if ((oldValue instanceof Account) || (newValue instanceof Account)) {
-                        getAdapter().refreshAccounts();
-                    } else if ((oldValue instanceof Automobile) || (newValue instanceof Automobile)) {
-                        getAdapter().refreshAutos();
-                    } else if ((oldValue instanceof CashDeposit) || (newValue instanceof CashDeposit)) {
-                        getAdapter().refreshDeposits();
-                    }
-                } else if (AssetsAndLiabilities.Properties.ACCOUNTS.equals(propName)) {
-                    getAdapter().refreshAccounts();
-                } else if (AssetsAndLiabilities.Properties.AUTOS.equals(propName)) {
-                    getAdapter().refreshAutos();
-                } else if (AssetsAndLiabilities.Properties.CASH_DEPOSITS.equals(propName)) {
-                    getAdapter().refreshDeposits();
-                } else if (Application.Properties.BORROWERS.equals(propName)) {
-                    getAdapter().refreshBorrowers();
-                }
+                getAdapter().refresh(event);
             }
         }));
     }

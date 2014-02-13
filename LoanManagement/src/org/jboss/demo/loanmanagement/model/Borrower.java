@@ -48,7 +48,51 @@ public final class Borrower implements ModelObject<Borrower>, PropertyChangeList
     public static final String[] MARITAL_TYPE = new String[] {"Married", "Unmarried", "Separated", "Not_Specified"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     private static final int[] NO_DEP_AGES = new int[0];
+
     protected static final String PROPERTY_PREFIX = Borrower.class.getSimpleName() + '.';
+
+    /**
+     * @param borrower the borrower whose name is being constructed (cannot be <code>null</code>)
+     * @return the concatenation of the first name, middle name, and last name (never <code>null</code> but can be
+     *         empty)
+     */
+    public static String constructBorrowerName( final Borrower borrower ) {
+        final StringBuilder name = new StringBuilder();
+
+        { // first
+            final String first = borrower.getFirstName();
+
+            if (!Util.isBlank(first)) {
+                name.append(first);
+            }
+        }
+
+        { // middle
+            final String middle = borrower.getMiddleName();
+
+            if (!Util.isBlank(middle)) {
+                if (name.length() != 0) {
+                    name.append(' ');
+                }
+
+                name.append(middle);
+            }
+        }
+
+        { // last
+            final String last = borrower.getLastName();
+
+            if (!Util.isBlank(last)) {
+                if (name.length() != 0) {
+                    name.append(' ');
+                }
+
+                name.append(last);
+            }
+        }
+
+        return name.toString();
+    }
 
     private List<BorrowerAddress> addresses; // ordered, max 3
     private Declarations declarations;

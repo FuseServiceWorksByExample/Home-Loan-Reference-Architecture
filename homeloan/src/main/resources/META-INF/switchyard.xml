@@ -34,7 +34,7 @@
       <bpm:implementation.bpm persistent="true" processId="PreQualificationService">
         <bpm:manifest>
           <bpm:resources>
-            <bpm:resource location="PreQualificationProcess.bpmn" type="BPMN2"/>
+            <bpm:resource location="PreQualProcess.bpmn" type="BPMN2"/>
           </bpm:resources>
         </bpm:manifest>
         <bpm:operations>

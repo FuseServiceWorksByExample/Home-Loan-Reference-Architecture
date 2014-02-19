@@ -97,14 +97,14 @@ Test Automatic Approval with SOAP message:
 mvn -Psoap
 ```
 
-Check status via the status web page - (http://localhost:8080/loanstatus/711-55-5555.
+Check status via the status web page - http://localhost:8080/loanstatus/740123456 .
 
 Test Manual Approval with JMS message:
 ```
-mvn -Pjms
+mvn -Pjms -Dexec.args="Joe"
 ```
 
-Check status page and see that the application is in "Pending" status - http://localhost:8080/loanstatus/755-55-5555 .
+Check status page and see that the application is in "Pending" status - http://localhost:8080/loanstatus/800559876 .
 
 Go to the evaluation page and enter rate, explanation, and set status to Rejected/Approved - http://localhost:8080/loans/evaluation.jsf .
 
